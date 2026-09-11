@@ -67,19 +67,27 @@ export function AuthForm({ mode, onSendOtp, onVerifyOtp, onGoogle }: AuthFormPro
   // starts the cooldown. It never writes an error message itself: the email
   // step and the resend button render in different steps, so each caller
   // decides where its own failure is visible, sharing the same ERROR_KEYS map.
+  // The .catch() turns a rejected network call (offline, DNS failure, a 5xx
+  // that never reaches the server action's own try/catch) into the same
+  // AuthResult shape as a handled failure, and `finally` guarantees the
+  // pending flag clears no matter how the call ends -- otherwise a network
+  // failure leaves the button spinning forever with nothing on screen.
   async function requestCode(address: string): Promise<AuthResult> {
     setSending(true);
-    const result = await onSendOtp(address);
-    setSending(false);
-    if (result.ok) {
-      const sentAt = Date.now();
-      setLastSentAt(sentAt);
-      setNow(sentAt);
-      setCodeError(null);
-      setResendError(null);
-      setStep("code");
+    try {
+      const result = await onSendOtp(address).catch(() => ({ ok: false, code: "network" }) as const);
+      if (result.ok) {
+        const sentAt = Date.now();
+        setLastSentAt(sentAt);
+        setNow(sentAt);
+        setCodeError(null);
+        setResendError(null);
+        setStep("code");
+      }
+      return result;
+    } finally {
+      setSending(false);
     }
-    return result;
   }
 
   async function handleSendCode(event: FormEvent<HTMLFormElement>) {
@@ -97,14 +105,19 @@ export function AuthForm({ mode, onSendOtp, onVerifyOtp, onGoogle }: AuthFormPro
   async function handleVerify(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setVerifying(true);
-    const result = await onVerifyOtp(email.trim(), code.trim());
-    setVerifying(false);
-    if (!result.ok) {
-      setCodeError(t(ERROR_KEYS[result.code]));
-      return;
+    try {
+      const result = await onVerifyOtp(email.trim(), code.trim()).catch(
+        () => ({ ok: false, code: "network" }) as const,
+      );
+      if (!result.ok) {
+        setCodeError(t(ERROR_KEYS[result.code]));
+        return;
+      }
+      setCodeError(null);
+      setStep("verified");
+    } finally {
+      setVerifying(false);
     }
-    setCodeError(null);
-    setStep("verified");
   }
 
   async function handleResend() {

@@ -31,7 +31,9 @@ export function resolveRedirect({ path, isAuthed, hasConsented, hasOnboarded }: 
     return next ? `/?next=${encodeURIComponent(next)}` : "/";
   }
 
-  if (!hasConsented) return path === CONSENT_PATH ? null : CONSENT_PATH;
+  if (!hasConsented) {
+    return path === CONSENT_PATH || path.startsWith(LEGAL_PREFIX) ? null : CONSENT_PATH;
+  }
 
   if (!hasOnboarded) {
     if (path === ONBOARDING_FORM || path === ONBOARDING_INTRO || path.startsWith(LEGAL_PREFIX)) return null;

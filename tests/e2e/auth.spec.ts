@@ -44,3 +44,14 @@ test("a signed-out deep link to /today redirects to / with a next query param pr
   await page.goto("/today");
   await expect(page).toHaveURL(/\/\?next=%2Ftoday$/);
 });
+
+// startGoogleSignIn() and app/auth/callback/route.ts both redirect a failed Google
+// sign-in to /signin?error=... . Before this fix neither page read that param, so
+// she landed back on a blank form with no explanation at all.
+test("a failed Google sign-in redirect explains what happened, instead of a blank form", async ({ page }) => {
+  await page.goto("/signin?error=google");
+  // Not getByRole("alert"): Next.js's own route announcer
+  // (#__next-route-announcer__) also carries role="alert", so that query
+  // resolves to two elements. The message text itself is unambiguous.
+  await expect(page.getByText(/google sign-in did not work/i)).toBeVisible();
+});

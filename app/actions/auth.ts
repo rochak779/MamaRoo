@@ -21,9 +21,13 @@ export async function verifyEmailOtp(email: string, code: string): Promise<AuthR
   const supabase = await createServerSupabase();
   const { error } = await supabase.auth.verifyOtp({ email, token: code, type: "email" });
   if (!error) return { ok: true };
-  const message = error.message.toLowerCase();
-  if (message.includes("expired")) return { ok: false, code: "expired" };
-  if (message.includes("invalid")) return { ok: false, code: "invalid_code" };
+  // Branch on GoTrue's structured error code, not the message text: a wrong
+  // code and an actually-expired one both come back as the single string
+  // "Token has expired or is invalid" (confirmed directly against the live
+  // project), which the old message.includes("expired") check matched first
+  // for either case -- misreporting a mistyped code as expired every time.
+  if (error.code === "otp_expired") return { ok: false, code: "expired" };
+  if (error.status === 403 || error.code === "otp_disabled") return { ok: false, code: "invalid_code" };
   return { ok: false, code: "unknown" };
 }
 

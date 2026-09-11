@@ -51,6 +51,7 @@
     "errorRateLimited": "Too many attempts. Please wait a little before trying again.",
     "errorNetwork": "We could not reach the server. Check your connection and try again.",
     "errorUnknown": "Something did not go through. Please try again.",
+    "errorGoogle": "Google sign-in did not work. Please try again or use your email instead.",
     "continueWithGoogle": "Continue with Google",
     "switchToSignIn": "Already have an account? Sign in",
     "switchToSignUp": "New here? Create an account",

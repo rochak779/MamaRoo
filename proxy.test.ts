@@ -57,4 +57,14 @@ describe("launch gate", () => {
     vi.stubEnv("APP_LAUNCHED", "true");
     expect((await proxy(request("/api/waitlist"))).status).toBe(200);
   });
+
+  it("lets a signed-out visitor's OAuth callback through with its code intact, rather than bouncing it to / and losing ?code", async () => {
+    vi.stubEnv("APP_LAUNCHED", "true");
+    const result = await proxy(request("/auth/callback?code=abc123"));
+    expect(result.status).toBe(200);
+    // NextResponse.next() carries no Location header -- confirming that, not
+    // just the status, is what actually proves the request reached the route
+    // handler instead of being redirected.
+    expect(result.headers.get("location")).toBeNull();
+  });
 });

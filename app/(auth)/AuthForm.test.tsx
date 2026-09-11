@@ -107,6 +107,31 @@ describe("AuthForm", () => {
     }
   });
 
+  it("recovers from a network failure sending the code, instead of hanging forever", async () => {
+    sendOtp.mockRejectedValueOnce(new Error("network down"));
+    renderForm();
+    await userEvent.type(screen.getByLabelText(/email/i), "her@example.com");
+    const sendButton = screen.getByRole("button", { name: /send/i });
+    await userEvent.click(sendButton);
+
+    expect(await screen.findByText(/could not reach the server/i)).toBeInTheDocument();
+    expect(sendButton).not.toBeDisabled();
+    expect(screen.queryByLabelText(/6-digit code/i)).not.toBeInTheDocument();
+  });
+
+  it("recovers from a network failure verifying the code, instead of hanging forever", async () => {
+    verifyOtp.mockRejectedValueOnce(new Error("network down"));
+    renderForm();
+    await userEvent.type(screen.getByLabelText(/email/i), "her@example.com");
+    await userEvent.click(screen.getByRole("button", { name: /send/i }));
+    await userEvent.type(await screen.findByLabelText(/6-digit code/i), "123456");
+    const verifyButton = screen.getByRole("button", { name: /verify/i });
+    await userEvent.click(verifyButton);
+
+    expect(await screen.findByText(/could not reach the server/i)).toBeInTheDocument();
+    expect(verifyButton).not.toBeDisabled();
+  });
+
   it("confirms she is signed in after a successful verify, without navigating anywhere", async () => {
     renderForm();
     await userEvent.type(screen.getByLabelText(/email/i), "her@example.com");

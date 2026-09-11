@@ -26,9 +26,19 @@ export async function proxy(request: NextRequest) {
   // API routes answer their own auth questions (or, like the waitlist API,
   // answer none) -- resolveRedirect() is a page-navigation concept, and
   // sending a POST to a JSON endpoint a 307 to "/" would silently break it.
-  // The dev component gallery is an internal QA tool, not part of her funnel;
-  // it stays reachable without an account, same as before this gate existed.
-  if (request.nextUrl.pathname.startsWith("/api/") || request.nextUrl.pathname.startsWith("/dev/")) {
+  // /auth/* (the OAuth callback) must also be exempt: she has no session yet
+  // when Google redirects her back with ?code=..., so isAuthed is false and
+  // the funnel would send her to "/" (or, once signed in but not consented,
+  // to "/consent"), discarding the code and the route handler that exchanges
+  // it would never run. The dev component gallery is an internal QA tool, not
+  // part of her funnel; it stays reachable without an account, same as before
+  // this gate existed.
+  const { pathname: launchedPathname } = request.nextUrl;
+  if (
+    launchedPathname.startsWith("/api/") ||
+    launchedPathname.startsWith("/auth/") ||
+    launchedPathname.startsWith("/dev/")
+  ) {
     return NextResponse.next();
   }
 
@@ -61,7 +71,14 @@ export async function proxy(request: NextRequest) {
     const [pathname, query] = target.split("?");
     url.pathname = pathname!;
     url.search = query ? `?${query}` : "";
-    return NextResponse.redirect(url);
+    const redirectResponse = NextResponse.redirect(url);
+    // withSupabaseSession() may have just rotated the auth cookies onto
+    // `response`. Building a fresh NextResponse.redirect() here means those
+    // Set-Cookie headers live on a response object we're about to discard --
+    // copy them onto the one we actually return, or a refreshed token is
+    // silently dropped and the browser keeps retrying with the stale one.
+    for (const cookie of response.cookies.getAll()) redirectResponse.cookies.set(cookie);
+    return redirectResponse;
   }
 
   return response;

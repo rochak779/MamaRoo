@@ -40,6 +40,12 @@ describe("resolveRedirect", () => {
     ).toBeNull();
   });
 
+  it("lets a signed-in user without consent read a legal page, because the consent screen links there", () => {
+    expect(
+      resolveRedirect({ path: "/legal/privacy", isAuthed: true, hasConsented: false, hasOnboarded: false }),
+    ).toBeNull();
+  });
+
   it("sends a consented user without a profile to the onboarding form", () => {
     expect(
       resolveRedirect({ path: "/today", isAuthed: true, hasConsented: true, hasOnboarded: false }),
