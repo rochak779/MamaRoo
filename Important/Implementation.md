@@ -6492,6 +6492,8 @@ git commit -m "feat(auth): add email OTP and Google sign-in with a pure, fully t
 
 **Done when:** both sign-in paths work against local Supabase, every OTP failure mode has its own message, and the routing truth table passes. Screen layout here is still the scaffold; Session 14 applies the designer's markup to these same components.
 
+> **Pre-deployment follow-up (must be done before final deployment, added when this session shipped):** the live Supabase project is still using Supabase's default mailer, which is hard-capped at a couple of emails per hour regardless of plan — it is meant for testing only, not real OTP traffic. Before launch, configure custom SMTP in Supabase's Auth settings (e.g. Resend's free tier) so sign-up/sign-in emails send reliably at real volume. This needs a verified sending domain, which is blocked on getting DNS access approved. Tracked again in Session 34's Gate C and release checklist. Until this is done, do not rely on OTP sign-in for real users beyond testing.
+
 ---
 
 ## Session 13: Consent register and legal document drafts
@@ -10250,7 +10252,7 @@ git commit -m "feat(pwa): add manifest, app-shell service worker, offline states
 
 ## Session 34: TWA packaging and Play Store readiness
 
-**Gate C — request before starting:** ask for a Google Play Console account with a developer profile completed, the production domain live over HTTPS, an upload keystore decision (let Bubblewrap generate one and store it in a password manager), and the store listing copy in both languages.
+**Gate C — request before starting:** ask for a Google Play Console account with a developer profile completed, the production domain live over HTTPS, an upload keystore decision (let Bubblewrap generate one and store it in a password manager), the store listing copy in both languages, and confirmation that custom SMTP is configured for Supabase Auth (see Session 12's pre-deployment follow-up) — the default mailer's rate limit is not viable for real sign-up/sign-in traffic.
 
 **Goal:** A signed Android App Bundle wrapping the same web build, plus every store artefact the listing requires.
 
@@ -10294,7 +10296,7 @@ This document exists in the repository so the declaration and the implementation
 
 - [ ] **Step 5: Write the release checklist**
 
-Create `docs/play-store/release-checklist.md` with the repeatable steps: bump `versionCode` and `versionName`, rebuild the web app, rebuild the bundle, verify asset links, verify the privacy policy URL resolves, confirm the Data Safety form matches the document, upload to internal testing first, test the install from Play, then promote.
+Create `docs/play-store/release-checklist.md` with the repeatable steps: confirm custom SMTP is configured for Supabase Auth so OTP email is not rate-limited (Session 12's pre-deployment follow-up), bump `versionCode` and `versionName`, rebuild the web app, rebuild the bundle, verify asset links, verify the privacy policy URL resolves, confirm the Data Safety form matches the document, upload to internal testing first, test the install from Play, then promote.
 
 - [ ] **Step 6: Assemble the listing artefacts**
 
