@@ -26,7 +26,7 @@ jobs:
       # a prepared statement"), but db reset's own seed loader can.
       - run: npx supabase db reset
       - run: npx supabase gen types typescript --local | node scripts/gen-db-types.mjs > /tmp/types.ts && diff /tmp/types.ts lib/supabase/database.types.ts
-      - name: Export local Supabase credentials for the RLS suite
+      - name: Export local Supabase credentials for the RLS suite and the app
         run: |
           npx supabase status -o json > /tmp/supabase-status.json
           node scripts/export-supabase-status.mjs /tmp/supabase-status.json >> "$GITHUB_ENV"
@@ -36,13 +36,11 @@ jobs:
         run: npm run test:e2e
         env:
           APP_LAUNCHED: "true"
-      # Temporary diagnostics for the auth e2e failure (Session 12 follow-up).
-      # Remove once the root cause is found and fixed.
-      - name: Dump local GoTrue (auth) logs
-        if: always()
-        run: docker logs supabase_auth_MamaRoo 2>&1 | tail -200
+      # Kept permanently (not just for this debug session): a red e2e run with
+      # no trace/screenshot to look at is much slower to diagnose than one
+      # with this artifact attached.
       - name: Upload Playwright artifacts
-        if: always()
+        if: failure()
         uses: actions/upload-artifact@v4
         with:
           name: playwright-report
