@@ -1,5 +1,5 @@
 import { describe, expect, it, vi, beforeEach } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { render, screen, act } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { NextIntlClientProvider } from "next-intl";
 import en from "@/i18n/en.json";
@@ -84,5 +84,37 @@ describe("AuthForm", () => {
     renderForm("signin");
     await userEvent.click(screen.getByRole("button", { name: /continue with google/i }));
     expect(startGoogle).toHaveBeenCalledOnce();
+  });
+
+  it("shows a resend failure during the code step, not silently", async () => {
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+    try {
+      renderForm();
+      await userEvent.type(screen.getByLabelText(/email/i), "her@example.com");
+      await userEvent.click(screen.getByRole("button", { name: /send/i }));
+      await screen.findByLabelText(/6-digit code/i);
+
+      sendOtp.mockResolvedValueOnce({ ok: false, code: "rate_limited" });
+      act(() => void vi.advanceTimersByTime(60_000));
+
+      const resend = screen.getByRole("button", { name: /resend/i });
+      expect(resend).toBeEnabled();
+      await userEvent.click(resend);
+
+      expect(await screen.findByText(/too many attempts/i)).toBeInTheDocument();
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it("confirms she is signed in after a successful verify, without navigating anywhere", async () => {
+    renderForm();
+    await userEvent.type(screen.getByLabelText(/email/i), "her@example.com");
+    await userEvent.click(screen.getByRole("button", { name: /send/i }));
+    await userEvent.type(await screen.findByLabelText(/6-digit code/i), "123456");
+    await userEvent.click(screen.getByRole("button", { name: /verify/i }));
+
+    expect(await screen.findByText(/you are signed in/i)).toBeInTheDocument();
+    expect(screen.queryByLabelText(/6-digit code/i)).not.toBeInTheDocument();
   });
 });

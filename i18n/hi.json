@@ -53,6 +53,7 @@
     "errorUnknown": "कुछ गड़बड़ हो गई। कृपया फिर कोशिश करें।",
     "continueWithGoogle": "Google से जारी रखें",
     "switchToSignIn": "पहले से खाता है? साइन इन करें",
-    "switchToSignUp": "नए हैं? नया खाता बनाएँ"
+    "switchToSignUp": "नए हैं? नया खाता बनाएँ",
+    "verified": "आप साइन इन हो चुकी हैं।"
   }
 }

@@ -10,7 +10,7 @@ import type { AuthResult } from "@/app/actions/auth";
 const EMAIL_PATTERN = /.+@.+\..+/;
 const RESEND_COOLDOWN_SECONDS = 60;
 
-type Step = "email" | "code";
+type Step = "email" | "code" | "verified";
 type FailureCode = Exclude<AuthResult, { ok: true }>["code"];
 
 const ERROR_KEYS: Record<FailureCode, string> = {
@@ -43,6 +43,7 @@ export function AuthForm({ mode, onSendOtp, onVerifyOtp, onGoogle }: AuthFormPro
   const [code, setCode] = useState("");
   const [emailError, setEmailError] = useState<string | null>(null);
   const [codeError, setCodeError] = useState<string | null>(null);
+  const [resendError, setResendError] = useState<string | null>(null);
   const [sending, setSending] = useState(false);
   const [verifying, setVerifying] = useState(false);
   const [lastSentAt, setLastSentAt] = useState<number | null>(null);
@@ -62,19 +63,23 @@ export function AuthForm({ mode, onSendOtp, onVerifyOtp, onGoogle }: AuthFormPro
     cooldownSeconds: RESEND_COOLDOWN_SECONDS,
   });
 
-  async function requestCode(address: string) {
+  // Only decides whether the send succeeded and, if so, advances the step and
+  // starts the cooldown. It never writes an error message itself: the email
+  // step and the resend button render in different steps, so each caller
+  // decides where its own failure is visible, sharing the same ERROR_KEYS map.
+  async function requestCode(address: string): Promise<AuthResult> {
     setSending(true);
     const result = await onSendOtp(address);
     setSending(false);
-    if (!result.ok) {
-      setEmailError(t(ERROR_KEYS[result.code]));
-      return;
+    if (result.ok) {
+      const sentAt = Date.now();
+      setLastSentAt(sentAt);
+      setNow(sentAt);
+      setCodeError(null);
+      setResendError(null);
+      setStep("code");
     }
-    const sentAt = Date.now();
-    setLastSentAt(sentAt);
-    setNow(sentAt);
-    setCodeError(null);
-    setStep("code");
+    return result;
   }
 
   async function handleSendCode(event: FormEvent<HTMLFormElement>) {
@@ -85,7 +90,8 @@ export function AuthForm({ mode, onSendOtp, onVerifyOtp, onGoogle }: AuthFormPro
       return;
     }
     setEmailError(null);
-    await requestCode(trimmed);
+    const result = await requestCode(trimmed);
+    if (!result.ok) setEmailError(t(ERROR_KEYS[result.code]));
   }
 
   async function handleVerify(event: FormEvent<HTMLFormElement>) {
@@ -98,11 +104,14 @@ export function AuthForm({ mode, onSendOtp, onVerifyOtp, onGoogle }: AuthFormPro
       return;
     }
     setCodeError(null);
+    setStep("verified");
   }
 
   async function handleResend() {
     if (!canResend) return;
-    await requestCode(email.trim());
+    setResendError(null);
+    const result = await requestCode(email.trim());
+    if (!result.ok) setResendError(t(ERROR_KEYS[result.code]));
   }
 
   return (
@@ -161,12 +170,17 @@ export function AuthForm({ mode, onSendOtp, onVerifyOtp, onGoogle }: AuthFormPro
           >
             {t("auth.resend")}
           </Button>
+          {resendError && <p role="alert">{resendError}</p>}
         </form>
       )}
 
-      <Button type="button" variant="secondary" onClick={() => onGoogle()}>
-        {t("auth.continueWithGoogle")}
-      </Button>
+      {step === "verified" && <p role="status">{t("auth.verified")}</p>}
+
+      {step !== "verified" && (
+        <Button type="button" variant="secondary" onClick={() => onGoogle()}>
+          {t("auth.continueWithGoogle")}
+        </Button>
+      )}
     </div>
   );
 }

@@ -53,6 +53,7 @@
     "errorUnknown": "Something did not go through. Please try again.",
     "continueWithGoogle": "Continue with Google",
     "switchToSignIn": "Already have an account? Sign in",
-    "switchToSignUp": "New here? Create an account"
+    "switchToSignUp": "New here? Create an account",
+    "verified": "You are signed in."
   }
 }
