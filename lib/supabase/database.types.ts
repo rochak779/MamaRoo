@@ -603,7 +603,9 @@ export type Database = {
           ended_reason: string | null
           id: string
           lmp_date: string | null
+          pregnancy_flags: string[]
           status: string
+          twin_type: string | null
           updated_at: string
           user_id: string
         }
@@ -616,7 +618,9 @@ export type Database = {
           ended_reason?: string | null
           id?: string
           lmp_date?: string | null
+          pregnancy_flags?: string[]
           status?: string
+          twin_type?: string | null
           updated_at?: string
           user_id: string
         }
@@ -629,7 +633,9 @@ export type Database = {
           ended_reason?: string | null
           id?: string
           lmp_date?: string | null
+          pregnancy_flags?: string[]
           status?: string
+          twin_type?: string | null
           updated_at?: string
           user_id?: string
         }
@@ -643,10 +649,13 @@ export type Database = {
           created_at: string
           display_name: string
           doctor_name: string | null
+          emergency_contact_name: string | null
+          emergency_contact_phone: string | null
           height_cm: number | null
           id: string
           is_first_pregnancy: boolean | null
           locale: string
+          notification_privacy: string
           onboarding_completed_at: string | null
           pre_pregnancy_weight_kg: number | null
           updated_at: string
@@ -658,10 +667,13 @@ export type Database = {
           created_at?: string
           display_name: string
           doctor_name?: string | null
+          emergency_contact_name?: string | null
+          emergency_contact_phone?: string | null
           height_cm?: number | null
           id: string
           is_first_pregnancy?: boolean | null
           locale?: string
+          notification_privacy?: string
           onboarding_completed_at?: string | null
           pre_pregnancy_weight_kg?: number | null
           updated_at?: string
@@ -673,10 +685,13 @@ export type Database = {
           created_at?: string
           display_name?: string
           doctor_name?: string | null
+          emergency_contact_name?: string | null
+          emergency_contact_phone?: string | null
           height_cm?: number | null
           id?: string
           is_first_pregnancy?: boolean | null
           locale?: string
+          notification_privacy?: string
           onboarding_completed_at?: string | null
           pre_pregnancy_weight_kg?: number | null
           updated_at?: string
