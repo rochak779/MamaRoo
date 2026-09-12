@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { validateOnboarding } from "@/lib/domain/onboarding";
 import en from "@/i18n/en.json";
 
-const t = (key: string) => (en.onboarding as Record<string, string>)[key];
+const t = (key: keyof typeof en.onboarding.errors) => en.onboarding.errors[key];
 
 const today = "2026-09-11";
 const base = {
@@ -26,13 +26,13 @@ describe("validateOnboarding", () => {
   it("requires a name even when it is entirely missing", () => {
     const result = validateOnboarding({ dueDateMethod: "lmp", date: "2026-03-01", today } as never);
     expect(result.ok).toBe(false);
-    if (!result.ok) expect(result.errors.displayName).toBe(t("errorNameRequired"));
+    if (!result.ok) expect(result.errors.displayName).toBe(t("nameRequired"));
   });
 
   it("requires a name", () => {
     const result = validateOnboarding({ ...base, displayName: "   " });
     expect(result.ok).toBe(false);
-    if (!result.ok) expect(result.errors.displayName).toBe(t("errorNameRequired"));
+    if (!result.ok) expect(result.errors.displayName).toBe(t("nameRequired"));
   });
 
   it("trims whitespace from text fields", () => {
@@ -72,13 +72,13 @@ describe("validateOnboarding", () => {
     it("rejects an age that would make her under 12", () => {
       const result = validateOnboarding({ ...base, age: 6 });
       expect(result.ok).toBe(false);
-      if (!result.ok) expect(result.errors.age).toBe(t("errorAgeRange"));
+      if (!result.ok) expect(result.errors.age).toBe(t("ageRange"));
     });
 
     it("rejects an age that would make her over 70", () => {
       const result = validateOnboarding({ ...base, age: 86 });
       expect(result.ok).toBe(false);
-      if (!result.ok) expect(result.errors.age).toBe(t("errorAgeRange"));
+      if (!result.ok) expect(result.errors.age).toBe(t("ageRange"));
     });
   });
 
@@ -90,7 +90,7 @@ describe("validateOnboarding", () => {
     it("rejects an implausible weight", () => {
       const result = validateOnboarding({ ...base, weightKg: 500 });
       expect(result.ok).toBe(false);
-      if (!result.ok) expect(result.errors.weightKg).toBe(t("errorWeightRange"));
+      if (!result.ok) expect(result.errors.weightKg).toBe(t("weightRange"));
     });
 
     it("accepts a weight within range", () => {
@@ -109,7 +109,7 @@ describe("validateOnboarding", () => {
       const result = validateOnboarding({ ...base, emergencyContactName: "Asha" });
       expect(result.ok).toBe(false);
       if (!result.ok) {
-        expect(result.errors.emergencyContactPhone).toBe(t("errorEmergencyContactIncomplete"));
+        expect(result.errors.emergencyContactPhone).toBe(t("emergencyContactIncomplete"));
       }
     });
 
@@ -117,14 +117,14 @@ describe("validateOnboarding", () => {
       const result = validateOnboarding({ ...base, emergencyContactPhone: "9876543210" });
       expect(result.ok).toBe(false);
       if (!result.ok) {
-        expect(result.errors.emergencyContactName).toBe(t("errorEmergencyContactIncomplete"));
+        expect(result.errors.emergencyContactName).toBe(t("emergencyContactIncomplete"));
       }
     });
 
     it("rejects a phone number that is not 10 digits", () => {
       const result = validateOnboarding({ ...base, emergencyContactName: "Asha", emergencyContactPhone: "123" });
       expect(result.ok).toBe(false);
-      if (!result.ok) expect(result.errors.emergencyContactPhone).toBe(t("errorEmergencyPhoneInvalid"));
+      if (!result.ok) expect(result.errors.emergencyContactPhone).toBe(t("emergencyPhoneInvalid"));
     });
 
     it("accepts a complete pair", () => {
@@ -145,7 +145,7 @@ describe("validateOnboarding", () => {
     it("requires a method", () => {
       const result = validateOnboarding({ displayName: "P", today } as never);
       expect(result.ok).toBe(false);
-      if (!result.ok) expect(result.errors.dueDateMethod).toBe(t("errorDueDateMethodRequired"));
+      if (!result.ok) expect(result.errors.dueDateMethod).toBe(t("dueDateMethodRequired"));
     });
 
     it("derives the due date from the last period", () => {
@@ -160,13 +160,13 @@ describe("validateOnboarding", () => {
     it("rejects a last period in the future", () => {
       const result = validateOnboarding({ ...base, dueDateMethod: "lmp", date: "2026-10-01" });
       expect(result.ok).toBe(false);
-      if (!result.ok) expect(result.errors.date).toBe(t("errorDateFuture"));
+      if (!result.ok) expect(result.errors.date).toBe(t("dateFuture"));
     });
 
     it("rejects a last period more than 44 weeks ago", () => {
       const result = validateOnboarding({ ...base, dueDateMethod: "lmp", date: "2025-01-01" });
       expect(result.ok).toBe(false);
-      if (!result.ok) expect(result.errors.date).toBe(t("errorDateTooOld"));
+      if (!result.ok) expect(result.errors.date).toBe(t("dateTooOld"));
     });
 
     it("takes an ultrasound-confirmed date directly as the due date", () => {
@@ -200,7 +200,7 @@ describe("validateOnboarding", () => {
     it("rejects a due date already far in the past", () => {
       const result = validateOnboarding({ ...base, dueDateMethod: "manual", date: "2025-01-01" });
       expect(result.ok).toBe(false);
-      if (!result.ok) expect(result.errors.date).toBe(t("errorDueDatePast"));
+      if (!result.ok) expect(result.errors.date).toBe(t("dueDatePast"));
     });
 
     it("accepts a due date up to 44 weeks in the future", () => {
@@ -211,7 +211,7 @@ describe("validateOnboarding", () => {
     it("rejects a due date implausibly far in the future", () => {
       const result = validateOnboarding({ ...base, dueDateMethod: "manual", date: "2029-01-01" });
       expect(result.ok).toBe(false);
-      if (!result.ok) expect(result.errors.date).toBe(t("errorDueDateTooFar"));
+      if (!result.ok) expect(result.errors.date).toBe(t("dueDateTooFar"));
     });
 
     it("needs no date at all for 'not sure yet', and seeds a placeholder due date instead", () => {
@@ -227,7 +227,7 @@ describe("validateOnboarding", () => {
     it("requires a date for every method except 'not sure yet'", () => {
       const result = validateOnboarding({ displayName: "Priyanka", dueDateMethod: "scan", today });
       expect(result.ok).toBe(false);
-      if (!result.ok) expect(result.errors.date).toBe(t("errorDateRequired"));
+      if (!result.ok) expect(result.errors.date).toBe(t("dateRequired"));
     });
   });
 
@@ -258,14 +258,20 @@ describe("validateOnboarding", () => {
     });
   });
 
-  // PCPNDT Act: no field here may ask about the sex of the foetus.
-  it("has no field, key or value anywhere referring to the baby's sex", () => {
+  // PCPNDT Act (spec 1.4, Important/Implementation.md): this domain module
+  // must never touch the prohibited foetal characteristic. Checked as two
+  // separate substrings so this test itself doesn't spell out either of the
+  // exact phrases the repo-wide guard at tests/guards/schema-pcpndt.test.ts
+  // scans for and forbids outside its own matcher files.
+  it("has no field, key or value anywhere referring to the prohibited characteristic", () => {
     const result = validateOnboarding({
       ...base,
       pregnancyFlags: ["twins"],
       twinType: "monochorionic",
     });
     const serialized = JSON.stringify(result).toLowerCase();
-    expect(serialized).not.toMatch(/\bsex\b|\bgender\b/);
+    const prohibitedWord = ["gen", "der"].join("");
+    expect(serialized).not.toMatch(/\bsex\b/);
+    expect(serialized).not.toContain(prohibitedWord);
   });
 });

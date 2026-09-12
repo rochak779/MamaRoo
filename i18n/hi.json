@@ -58,17 +58,75 @@
     "verified": "आप साइन इन हो चुकी हैं।"
   },
   "onboarding": {
-    "errorAgeRange": "उम्र 12 से 70 साल के बीच होनी चाहिए।",
-    "errorDateFuture": "यह तारीख भविष्य की नहीं हो सकती।",
-    "errorDateRequired": "एक तारीख चुनें।",
-    "errorDateTooOld": "यह तारीख 44 हफ़्तों से भी पुरानी है।",
-    "errorDueDateMethodRequired": "आप अपनी तारीखें कैसे जानती हैं, यह चुनें।",
-    "errorDueDatePast": "यह अनुमानित तारीख पहले ही बीत चुकी है।",
-    "errorDueDateTooFar": "यह अनुमानित तारीख बहुत दूर है।",
-    "errorEmergencyContactIncomplete": "नाम और फ़ोन नंबर दोनों भरें, या दोनों खाली छोड़ दें।",
-    "errorEmergencyPhoneInvalid": "10 अंकों का फ़ोन नंबर डालें।",
-    "errorNameRequired": "अपना नाम लिखें, ताकि हम आपको सही नाम से बुला सकें।",
-    "errorWeightRange": "वज़न 25 से 250 किलो के बीच होना चाहिए।"
+    "aboutYou": {
+      "ageLabel": "आपकी उम्र",
+      "agePlaceholder": "उम्र, वर्षों में",
+      "emergencyNamePlaceholder": "संपर्क का नाम",
+      "emergencyNameLabel": "नाम",
+      "emergencyNote": "अगर आप कभी कहें कि आपको अभी मदद चाहिए, तभी इसका उपयोग होगा।",
+      "emergencyPhoneLabel": "फ़ोन नंबर",
+      "emergencyPhonePlaceholder": "10 अंकों का नंबर",
+      "emergencyTitle": "आपातकालीन संपर्क (वैकल्पिक)",
+      "nameLabel": "हम आपको क्या कहकर बुलाएँ?",
+      "namePlaceholder": "आपका नाम",
+      "title": "अपने बारे में थोड़ा बताएँ",
+      "weightLabel": "आपका वज़न (वैकल्पिक, अभी उपयोग नहीं किया जाता)",
+      "weightPlaceholder": "वज़न"
+    },
+    "pregnancyStart": {
+      "dateLabel": "तारीख",
+      "methodIvfDesc": "भ्रूण या IUI ट्रांसफ़र की तारीख",
+      "methodIvfTitle": "IVF या IUI ट्रांसफ़र की तारीख",
+      "methodLmpDesc": "आपके आख़िरी मासिक धर्म का पहला दिन",
+      "methodLmpTitle": "आख़िरी मासिक धर्म",
+      "methodManualDesc": "एक तारीख जो आपके डॉक्टर ने पहले ही बताई है",
+      "methodManualTitle": "डॉक्टर ने बताई अनुमानित तारीख",
+      "methodScanDesc": "आपके डॉक्टर द्वारा दी गई स्कैन से",
+      "methodScanTitle": "अल्ट्रासाउंड की तारीख",
+      "methodUnsureTitle": "अभी पता नहीं",
+      "subtitle": "जो भी आप जानती हों, वह चुनें। अनुमान भी ठीक है।",
+      "title": "आपकी गर्भावस्था कब शुरू हुई?"
+    },
+    "pregnancyDetails": {
+      "flagIvf": "IVF या IUI करवाया था",
+      "flagMonitored": "मेरे डॉक्टर इस पर बारीकी से नज़र रख रहे हैं",
+      "flagPriorLoss": "मैंने पहले एक गर्भावस्था खोई है",
+      "flagSingle": "एक ही शिशु",
+      "flagTwins": "जुड़वाँ या उससे अधिक",
+      "flagUnsure": "अभी पता नहीं",
+      "sensitiveNote": "यह बताने के लिए धन्यवाद। हम इसे ध्यान में रखकर आपकी यात्रा तय करेंगे।",
+      "subtitle": "जो भी लागू हो, चुनें। इससे हमें सही जानकारी दिखाने में मदद मिलेगी।",
+      "title": "क्या इस गर्भावस्था के बारे में कुछ और बताना चाहेंगी?",
+      "twinDichorionic": "दो अलग-अलग प्लेसेंटा",
+      "twinMonochorionic": "एक साझा प्लेसेंटा",
+      "twinQuestion": "अगर आपके डॉक्टर ने बताया हो, तो यह किस तरह की जुड़वाँ गर्भावस्था है?",
+      "twinUnconfirmed": "अभी पक्का नहीं"
+    },
+    "notificationPrivacy": {
+      "detailedDesc": "हम ऐप का नाम और रिमाइंडर किस बारे में है, दोनों दिखाएँगे",
+      "detailedTitle": "विवरण दिखाएँ",
+      "intro": "हम आपके रिमाइंडर निजी रख सकते हैं।",
+      "privateDesc": "हम सिर्फ़ \"रिमाइंडर\" लिखेंगे, और कुछ नहीं",
+      "privateTitle": "निजी रखें",
+      "title": "अगर आप यह फ़ोन किसी और के साथ साझा करती हैं"
+    },
+    "journeyReady": {
+      "cta": "मेरी आज की स्क्रीन पर जाएँ",
+      "greeting": "नमस्ते {name}, आपका स्वागत है।"
+    },
+    "errors": {
+      "ageRange": "उम्र 12 से 70 साल के बीच होनी चाहिए।",
+      "dateFuture": "यह तारीख भविष्य की नहीं हो सकती।",
+      "dateRequired": "एक तारीख चुनें।",
+      "dateTooOld": "यह तारीख 44 हफ़्तों से भी पुरानी है।",
+      "dueDateMethodRequired": "आप अपनी तारीखें कैसे जानती हैं, यह चुनें।",
+      "dueDatePast": "यह अनुमानित तारीख पहले ही बीत चुकी है।",
+      "dueDateTooFar": "यह अनुमानित तारीख बहुत दूर है।",
+      "emergencyContactIncomplete": "नाम और फ़ोन नंबर दोनों भरें, या दोनों खाली छोड़ दें।",
+      "emergencyPhoneInvalid": "10 अंकों का फ़ोन नंबर डालें।",
+      "nameRequired": "अपना नाम लिखें, ताकि हम आपको सही नाम से बुला सकें।",
+      "weightRange": "वज़न 25 से 250 किलो के बीच होना चाहिए।"
+    }
   },
   "consent": {
     "summary": "आगे बढ़ने का मतलब है कि आप हमारी जानकारी इस्तेमाल करने के तरीके से सहमत हैं। नीचे दिए गए विकल्प चुनने से पहले पूरी जानकारी पढ़ सकती हैं।",

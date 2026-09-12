@@ -58,17 +58,75 @@
     "verified": "You are signed in."
   },
   "onboarding": {
-    "errorAgeRange": "Age should be between 12 and 70.",
-    "errorDateFuture": "This date cannot be in the future.",
-    "errorDateRequired": "Choose a date.",
-    "errorDateTooOld": "That date is more than 44 weeks ago.",
-    "errorDueDateMethodRequired": "Choose how you know your dates.",
-    "errorDueDatePast": "This due date has already passed.",
-    "errorDueDateTooFar": "This due date is too far in the future.",
-    "errorEmergencyContactIncomplete": "Add both a name and a phone number, or leave both blank.",
-    "errorEmergencyPhoneInvalid": "Enter a 10 digit phone number.",
-    "errorNameRequired": "Enter your name so we know what to call you.",
-    "errorWeightRange": "Weight should be between 25 and 250 kg."
+    "aboutYou": {
+      "ageLabel": "Your age",
+      "agePlaceholder": "Age in years",
+      "emergencyNamePlaceholder": "Contact name",
+      "emergencyNameLabel": "Name",
+      "emergencyNote": "Only used if you ever tell us you need help right now.",
+      "emergencyPhoneLabel": "Phone number",
+      "emergencyPhonePlaceholder": "10 digit number",
+      "emergencyTitle": "Emergency contact (optional)",
+      "nameLabel": "What should we call you?",
+      "namePlaceholder": "Your name",
+      "title": "Tell us a little about you",
+      "weightLabel": "Your weight (optional, not used yet)",
+      "weightPlaceholder": "Weight"
+    },
+    "pregnancyStart": {
+      "dateLabel": "Date",
+      "methodIvfDesc": "The date of embryo or IUI transfer",
+      "methodIvfTitle": "IVF or IUI transfer date",
+      "methodLmpDesc": "The first day of your last period",
+      "methodLmpTitle": "Last period",
+      "methodManualDesc": "A date your doctor already confirmed",
+      "methodManualTitle": "Due date my doctor gave me",
+      "methodScanDesc": "From a scan your doctor gave you",
+      "methodScanTitle": "Ultrasound date",
+      "methodUnsureTitle": "Not sure yet",
+      "subtitle": "Pick whichever you know. An estimate is fine.",
+      "title": "When did your pregnancy begin?"
+    },
+    "pregnancyDetails": {
+      "flagIvf": "Had IVF or IUI",
+      "flagMonitored": "My doctor is watching this closely",
+      "flagPriorLoss": "I have lost a pregnancy before",
+      "flagSingle": "One baby",
+      "flagTwins": "Twins or multiples",
+      "flagUnsure": "Not sure yet",
+      "sensitiveNote": "Thank you for sharing that. We will shape your journey around it.",
+      "subtitle": "Choose all that apply. This helps us show you the right information.",
+      "title": "Is there anything else about this pregnancy?",
+      "twinDichorionic": "Two separate placentas",
+      "twinMonochorionic": "One shared placenta",
+      "twinQuestion": "If your doctor has told you, what kind of twin pregnancy is it?",
+      "twinUnconfirmed": "Not confirmed yet"
+    },
+    "notificationPrivacy": {
+      "detailedDesc": "We will show the app name and what the reminder is about",
+      "detailedTitle": "Show details",
+      "intro": "We can keep your reminders private.",
+      "privateDesc": "We will just say Reminder, nothing more",
+      "privateTitle": "Keep it private",
+      "title": "If you share this phone"
+    },
+    "journeyReady": {
+      "cta": "Go to my Today screen",
+      "greeting": "Hi {name}, we are glad you are here."
+    },
+    "errors": {
+      "ageRange": "Age should be between 12 and 70.",
+      "dateFuture": "This date cannot be in the future.",
+      "dateRequired": "Choose a date.",
+      "dateTooOld": "That date is more than 44 weeks ago.",
+      "dueDateMethodRequired": "Choose how you know your dates.",
+      "dueDatePast": "This due date has already passed.",
+      "dueDateTooFar": "This due date is too far in the future.",
+      "emergencyContactIncomplete": "Add both a name and a phone number, or leave both blank.",
+      "emergencyPhoneInvalid": "Enter a 10 digit phone number.",
+      "nameRequired": "Enter your name so we know what to call you.",
+      "weightRange": "Weight should be between 25 and 250 kg."
+    }
   },
   "consent": {
     "summary": "By continuing, you agree to how we collect and use your information. You can read the full details before deciding on the choices below.",
