@@ -57,6 +57,19 @@
     "switchToSignUp": "New here? Create an account",
     "verified": "You are signed in."
   },
+  "onboarding": {
+    "errorAgeRange": "Age should be between 12 and 70.",
+    "errorDateFuture": "This date cannot be in the future.",
+    "errorDateRequired": "Choose a date.",
+    "errorDateTooOld": "That date is more than 44 weeks ago.",
+    "errorDueDateMethodRequired": "Choose how you know your dates.",
+    "errorDueDatePast": "This due date has already passed.",
+    "errorDueDateTooFar": "This due date is too far in the future.",
+    "errorEmergencyContactIncomplete": "Add both a name and a phone number, or leave both blank.",
+    "errorEmergencyPhoneInvalid": "Enter a 10 digit phone number.",
+    "errorNameRequired": "Enter your name so we know what to call you.",
+    "errorWeightRange": "Weight should be between 25 and 250 kg."
+  },
   "consent": {
     "summary": "By continuing, you agree to how we collect and use your information. You can read the full details before deciding on the choices below.",
     "baseline": "I agree to the Terms of Use and Privacy Policy",
