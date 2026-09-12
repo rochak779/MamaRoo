@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  eddFromIvfTransfer,
   eddFromLmp,
   eddFromScan,
   lmpFromEdd,
@@ -27,6 +28,14 @@ describe("eddFromScan", () => {
 
   it("treats a missing day count as zero days", () => {
     expect(eddFromScan({ scanDate: "2026-03-10", gestWeeks: 12 })).toBe("2026-09-22");
+  });
+});
+
+describe("eddFromIvfTransfer", () => {
+  it("computes the due date from a day-5 blastocyst transfer", () => {
+    // 261 days: the standard day-5 blastocyst convention (280 - 19, where 19
+    // days is the LMP-equivalent age of a 5-day blastocyst at transfer).
+    expect(eddFromIvfTransfer("2026-03-10")).toBe("2026-11-26");
   });
 });
 
