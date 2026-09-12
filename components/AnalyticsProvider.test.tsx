@@ -53,22 +53,56 @@ describe("AnalyticsProvider", () => {
     expect(fakeAnalytics.reset).toHaveBeenCalled();
   });
 
-  it("captures consent_granted as the first event, and nothing before the transition to granted", () => {
+  function consentGrantedCalls() {
+    return fakeAnalytics.capture.mock.calls.filter(([event]) => event === EVENTS.consent_granted);
+  }
+
+  it("captures consent_granted on the transition to granted, and not before it", () => {
+    // app_opened also captures on mount (tested separately below), so this test
+    // isolates consent_granted specifically rather than asserting on call count.
     const { rerender } = render(
       <AnalyticsProvider userId="user-1" analyticsConsented={false} optionalDataSharingConsented={false} />,
     );
-    expect(fakeAnalytics.capture).not.toHaveBeenCalled();
+    expect(consentGrantedCalls()).toHaveLength(0);
 
     rerender(<AnalyticsProvider userId="user-1" analyticsConsented={true} optionalDataSharingConsented={true} />);
-    expect(fakeAnalytics.capture).toHaveBeenCalledTimes(1);
-    expect(fakeAnalytics.capture).toHaveBeenCalledWith(
-      EVENTS.consent_granted,
-      { optional_data_sharing: true, analytics: true },
-    );
+    expect(consentGrantedCalls()).toEqual([
+      [EVENTS.consent_granted, { optional_data_sharing: true, analytics: true }],
+    ]);
   });
 
   it("does not re-fire consent_granted on a fresh mount for an already-consented user", () => {
     render(<AnalyticsProvider userId="user-1" analyticsConsented={true} optionalDataSharingConsented={true} />);
-    expect(fakeAnalytics.capture).not.toHaveBeenCalled();
+    expect(consentGrantedCalls()).toHaveLength(0);
+  });
+
+  it("captures app_opened as source: browser by default", () => {
+    render(<AnalyticsProvider userId={null} analyticsConsented={false} optionalDataSharingConsented={false} />);
+    expect(fakeAnalytics.capture).toHaveBeenCalledWith(EVENTS.app_opened, { source: "browser" });
+  });
+
+  it("captures app_opened as source: standalone when launched as an installed PWA", () => {
+    const original = window.matchMedia;
+    window.matchMedia = ((query: string) => ({
+      matches: query === "(display-mode: standalone)",
+      media: query,
+      addEventListener: () => {},
+      removeEventListener: () => {},
+    })) as typeof window.matchMedia;
+
+    render(<AnalyticsProvider userId={null} analyticsConsented={false} optionalDataSharingConsented={false} />);
+    expect(fakeAnalytics.capture).toHaveBeenCalledWith(EVENTS.app_opened, { source: "standalone" });
+
+    window.matchMedia = original;
+  });
+
+  it("captures app_opened as source: twa when launched from the Android referrer", () => {
+    const original = Object.getOwnPropertyDescriptor(document, "referrer");
+    Object.defineProperty(document, "referrer", { value: "android-app://com.mamaroo.app", configurable: true });
+
+    render(<AnalyticsProvider userId={null} analyticsConsented={false} optionalDataSharingConsented={false} />);
+    expect(fakeAnalytics.capture).toHaveBeenCalledWith(EVENTS.app_opened, { source: "twa" });
+
+    if (original) Object.defineProperty(document, "referrer", original);
   });
 });
