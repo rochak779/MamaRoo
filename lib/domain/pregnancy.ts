@@ -23,6 +23,18 @@ export function lmpFromEdd(edd: string): string {
   return addDays(edd, -GESTATION_DAYS);
 }
 
+/**
+ * Standard day-5 blastocyst transfer convention: the embryo is already 19 days
+ * past a notional LMP at transfer, so the due date is 280 - 19 = 261 days out.
+ * (A day-3 transfer would be 263 days; the onboarding form doesn't ask which,
+ * so this assumes the more common day-5 protocol.)
+ */
+const IVF_TRANSFER_AGE_DAYS = 19;
+
+export function eddFromIvfTransfer(transferDate: string): string {
+  return addDays(transferDate, GESTATION_DAYS - IVF_TRANSFER_AGE_DAYS);
+}
+
 export function eddFromScan({
   scanDate,
   gestWeeks,
