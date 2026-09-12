@@ -1,9 +1,18 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi, beforeEach } from "vitest";
 import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { NextIntlClientProvider } from "next-intl";
 import en from "@/i18n/en.json";
 import hi from "@/i18n/hi.json";
 import { BottomNav } from "@/components/patterns/BottomNav";
+import { EVENTS } from "@/lib/analytics/events";
+
+const track = vi.fn();
+vi.mock("@/components/AnalyticsProvider", () => ({ track: (...args: unknown[]) => track(...args) }));
+
+beforeEach(() => {
+  track.mockReset();
+});
 
 function renderNav(activePath: string) {
   render(
@@ -60,5 +69,12 @@ describe("BottomNav", () => {
       </NextIntlClientProvider>,
     );
     expect(screen.getByRole("link", { name: "आज" })).toBeInTheDocument();
+  });
+
+  it("captures tab_viewed with the tapped tab", async () => {
+    const user = userEvent.setup();
+    renderNav("/today");
+    await user.click(screen.getByRole("link", { name: /my care/i }));
+    expect(track).toHaveBeenCalledWith(EVENTS.tab_viewed, { tab: "care" });
   });
 });
