@@ -40,4 +40,13 @@ describe("parseEnv", () => {
       parseEnv({ ...valid, NEXT_PUBLIC_POSTHOG_KEY: "phc_test", NEXT_PUBLIC_POSTHOG_HOST: "not-a-url" }),
     ).toThrow(/NEXT_PUBLIC_POSTHOG_HOST/);
   });
+
+  // .env.example leaves these two commented out (# NEXT_PUBLIC_POSTHOG_KEY=), but
+  // an uncommented, blank line ("NEXT_PUBLIC_POSTHOG_KEY=") is an easy slip and
+  // must not crash the server the same way a genuinely malformed value should.
+  it("treats an empty-string PostHog key and host as unset, not invalid", () => {
+    const result = parseEnv({ ...valid, NEXT_PUBLIC_POSTHOG_KEY: "", NEXT_PUBLIC_POSTHOG_HOST: "" });
+    expect(result.NEXT_PUBLIC_POSTHOG_KEY).toBeUndefined();
+    expect(result.NEXT_PUBLIC_POSTHOG_HOST).toBeUndefined();
+  });
 });
