@@ -4,6 +4,8 @@ import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { Icon } from "@/components/ui/Icon";
 import { cn } from "@/lib/cn";
+import { track } from "@/components/AnalyticsProvider";
+import { EVENTS } from "@/lib/analytics/events";
 
 // Icon and active-state styling are placeholders (blank on purpose) until the
 // designer's bottom-navigation markup arrives; only the structure, labels and
@@ -31,6 +33,7 @@ export function BottomNav({ activePath }: { activePath: string }) {
             key={tab.href}
             href={tab.href}
             aria-current={isActive ? "page" : undefined}
+            onClick={() => track(EVENTS.tab_viewed, { tab: tab.labelKey })}
             className={cn(
               "tap-target flex flex-1 flex-col items-center justify-center gap-xs py-xs text-caption",
               isActive ? "font-medium text-accent-primary" : "text-text-secondary",
