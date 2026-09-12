@@ -27,6 +27,22 @@ describe("AuthForm", () => {
   it("asks for an email first", () => {
     renderForm();
     expect(screen.getByLabelText(/email/i)).toHaveAttribute("type", "email");
+    expect(screen.getByRole("heading", { name: "What is your email?" })).toBeInTheDocument();
+    expect(screen.getByText("We will send you a code to check it is really you.")).toBeInTheDocument();
+    expect(screen.getByText("Your email is never shared.")).toBeInTheDocument();
+  });
+
+  it("keeps Send code disabled until the email is valid", async () => {
+    renderForm();
+    const email = screen.getByLabelText(/email/i);
+    const sendButton = screen.getByRole("button", { name: /send code/i });
+
+    expect(sendButton).toBeDisabled();
+    await userEvent.type(email, "not-an-email");
+    expect(sendButton).toBeDisabled();
+    await userEvent.clear(email);
+    await userEvent.type(email, "her@example.com");
+    expect(sendButton).toBeEnabled();
   });
 
   it("refuses to send a code to an address that is not an email", async () => {
@@ -41,7 +57,34 @@ describe("AuthForm", () => {
     renderForm();
     await userEvent.type(screen.getByLabelText(/email/i), "her@example.com");
     await userEvent.click(screen.getByRole("button", { name: /send/i }));
-    expect(await screen.findByLabelText(/6-digit code/i)).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { name: "Enter the code" })).toBeInTheDocument();
+    expect(screen.getByText("Sent to her@example.com.")).toBeInTheDocument();
+    expect(screen.getAllByTestId("otp-cell")).toHaveLength(6);
+    expect(screen.getByLabelText(/6-digit code/i)).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /verify and continue/i })).toBeDisabled();
+  });
+
+  it("enables verification only when all six code digits are present", async () => {
+    renderForm();
+    await userEvent.type(screen.getByLabelText(/email/i), "her@example.com");
+    await userEvent.click(screen.getByRole("button", { name: /send code/i }));
+    const code = await screen.findByLabelText(/6-digit code/i);
+    const verifyButton = screen.getByRole("button", { name: /verify and continue/i });
+
+    await userEvent.type(code, "12345");
+    expect(verifyButton).toBeDisabled();
+    await userEvent.type(code, "6");
+    expect(verifyButton).toBeEnabled();
+  });
+
+  it("lets her return to the email step to correct the address", async () => {
+    renderForm();
+    await userEvent.type(screen.getByLabelText(/email/i), "wrong@example.com");
+    await userEvent.click(screen.getByRole("button", { name: /send code/i }));
+
+    await userEvent.click(await screen.findByRole("button", { name: /change email/i }));
+    expect(screen.getByRole("heading", { name: "What is your email?" })).toBeInTheDocument();
+    expect(screen.getByLabelText(/email/i)).toHaveValue("wrong@example.com");
   });
 
   it("tells her the code expired, specifically, not just that something failed", async () => {

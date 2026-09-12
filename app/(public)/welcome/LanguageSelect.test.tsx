@@ -60,7 +60,7 @@ describe("LanguageSelect", () => {
     expect(push).not.toHaveBeenCalled();
     await user.click(screen.getByRole("button", { name: "Continue" }));
     expect(onChooseLocale).toHaveBeenCalledWith("hi");
-    expect(push).toHaveBeenCalledWith("/signup");
+    expect(push).toHaveBeenCalledWith("/start");
   });
 
   it("carries a deep-link target through to sign up", async () => {
@@ -68,6 +68,6 @@ describe("LanguageSelect", () => {
     renderScreen("/care/summary");
     await user.click(screen.getByRole("button", { name: /English/ }));
     await user.click(screen.getByRole("button", { name: "Continue" }));
-    expect(push).toHaveBeenCalledWith("/signup?next=%2Fcare%2Fsummary");
+    expect(push).toHaveBeenCalledWith("/start?next=%2Fcare%2Fsummary");
   });
 });

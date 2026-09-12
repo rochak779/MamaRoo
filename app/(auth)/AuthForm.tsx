@@ -3,9 +3,9 @@
 import { useEffect, useId, useState, type FormEvent } from "react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/Button";
-import { Input } from "@/components/ui/Input";
 import { resendState } from "@/lib/domain/otp";
 import type { AuthResult } from "@/app/actions/auth";
+import "@/styles/start.css";
 
 const EMAIL_PATTERN = /.+@.+\..+/;
 const RESEND_COOLDOWN_SECONDS = 60;
@@ -28,11 +28,7 @@ export interface AuthFormProps {
   onGoogle: () => void | Promise<void>;
 }
 
-/**
- * Two steps, email then code, because a single long form reads as more work than it
- * is. Takes its three actions as props rather than importing the server actions
- * directly, so it is testable without mocking the Supabase client.
- */
+/** Two-step email authentication, with its server actions injected for testability. */
 export function AuthForm({ mode, onSendOtp, onVerifyOtp, onGoogle }: AuthFormProps) {
   const t = useTranslations();
   const emailId = useId();
@@ -49,8 +45,6 @@ export function AuthForm({ mode, onSendOtp, onVerifyOtp, onGoogle }: AuthFormPro
   const [lastSentAt, setLastSentAt] = useState<number | null>(null);
   const [now, setNow] = useState<number>(() => Date.now());
 
-  // Ticks the resend countdown while she is on the code step, so the button
-  // re-enables itself without a manual refresh.
   useEffect(() => {
     if (step !== "code") return;
     const interval = setInterval(() => setNow(Date.now()), 1000);
@@ -62,16 +56,9 @@ export function AuthForm({ mode, onSendOtp, onVerifyOtp, onGoogle }: AuthFormPro
     now,
     cooldownSeconds: RESEND_COOLDOWN_SECONDS,
   });
+  const emailIsValid = EMAIL_PATTERN.test(email.trim());
+  const codeIsComplete = code.length === 6;
 
-  // Only decides whether the send succeeded and, if so, advances the step and
-  // starts the cooldown. It never writes an error message itself: the email
-  // step and the resend button render in different steps, so each caller
-  // decides where its own failure is visible, sharing the same ERROR_KEYS map.
-  // The .catch() turns a rejected network call (offline, DNS failure, a 5xx
-  // that never reaches the server action's own try/catch) into the same
-  // AuthResult shape as a handled failure, and `finally` guarantees the
-  // pending flag clears no matter how the call ends -- otherwise a network
-  // failure leaves the button spinning forever with nothing on screen.
   async function requestCode(address: string): Promise<AuthResult> {
     setSending(true);
     try {
@@ -104,9 +91,10 @@ export function AuthForm({ mode, onSendOtp, onVerifyOtp, onGoogle }: AuthFormPro
 
   async function handleVerify(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (!codeIsComplete) return;
     setVerifying(true);
     try {
-      const result = await onVerifyOtp(email.trim(), code.trim()).catch(
+      const result = await onVerifyOtp(email.trim(), code).catch(
         () => ({ ok: false, code: "network" }) as const,
       );
       if (!result.ok) {
@@ -128,72 +116,156 @@ export function AuthForm({ mode, onSendOtp, onVerifyOtp, onGoogle }: AuthFormPro
   }
 
   return (
-    <div>
-      <h1>{t(mode === "signup" ? "auth.signupTitle" : "auth.signinTitle")}</h1>
+    <main className="auth-screen">
+      <h1 className="sr-only">{t(mode === "signup" ? "auth.signupTitle" : "auth.signinTitle")}</h1>
 
       {step === "email" && (
-        <form onSubmit={handleSendCode} noValidate>
-          <Input
-            id={emailId}
-            name="email"
-            type="email"
-            label={t("auth.emailLabel")}
-            autoComplete="email"
-            inputMode="email"
-            value={email}
-            onChange={(event) => {
-              setEmail(event.target.value);
-              setEmailError(null);
-            }}
-            {...(emailError ? { error: emailError } : {})}
-          />
-          <Button type="submit" loading={sending}>
-            {t("auth.sendCode")}
-          </Button>
+        <form className="auth-form" onSubmit={handleSendCode} noValidate>
+          <div className="auth-heading-group">
+            <h2 className="auth-title">{t("auth.emailHeading")}</h2>
+            <p className="auth-subtitle">{t("auth.emailSubtext")}</p>
+          </div>
+
+          <div className="auth-field">
+            <label htmlFor={emailId} className="sr-only">
+              {t("auth.emailLabel")}
+            </label>
+            <input
+              id={emailId}
+              name="email"
+              type="email"
+              className="auth-email-input"
+              placeholder={t("auth.emailLabel")}
+              autoComplete="email"
+              inputMode="email"
+              value={email}
+              aria-invalid={emailError ? "true" : undefined}
+              aria-describedby={emailError ? `${emailId}-error` : `${emailId}-hint`}
+              onChange={(event) => {
+                const nextEmail = event.target.value;
+                setEmail(nextEmail);
+                setEmailError(nextEmail && !EMAIL_PATTERN.test(nextEmail.trim()) ? t("auth.invalidEmail") : null);
+              }}
+            />
+            {emailError && (
+              <p id={`${emailId}-error`} className="auth-error">
+                {emailError}
+              </p>
+            )}
+          </div>
+          <p id={`${emailId}-hint`} className="auth-reassurance">
+            {t("auth.emailReassurance")}
+          </p>
+
+          <div className="auth-spacer" />
+
+          <div className="auth-actions">
+            <Button className="auth-primary" type="submit" loading={sending} disabled={!emailIsValid}>
+              {t("auth.sendCode")}
+            </Button>
+            <Button className="auth-google" type="button" variant="secondary" onClick={() => onGoogle()}>
+              {t("auth.continueWithGoogle")}
+            </Button>
+          </div>
         </form>
       )}
 
       {step === "code" && (
-        <form onSubmit={handleVerify} noValidate>
-          <p>{t("auth.checkSpam")}</p>
-          <Input
-            id={codeId}
-            name="code"
-            type="text"
-            inputMode="numeric"
-            autoComplete="one-time-code"
-            maxLength={6}
-            label={t("auth.codeLabel")}
-            value={code}
-            onChange={(event) => {
-              setCode(event.target.value);
-              setCodeError(null);
-            }}
-            {...(codeError ? { error: codeError } : {})}
-          />
-          <Button type="submit" loading={verifying}>
-            {t("auth.verify")}
-          </Button>
-          <Button
-            type="button"
-            variant="tertiary"
-            onClick={handleResend}
-            disabled={!canResend}
-            {...(!canResend ? { disabledReason: t("auth.resendWait", { seconds: secondsLeft }) } : {})}
-          >
-            {t("auth.resend")}
-          </Button>
-          {resendError && <p role="alert">{resendError}</p>}
+        <form className="auth-form" onSubmit={handleVerify} noValidate>
+          <div className="auth-heading-group">
+            <h2 className="auth-title">{t("auth.codeHeading")}</h2>
+            <p className="auth-subtitle">
+              {t("auth.codeSentTo", { email })}{" "}
+              <button type="button" className="auth-change" onClick={() => setStep("email")}>
+                {t("auth.changeEmail")}
+              </button>
+            </p>
+          </div>
+
+          <div className="auth-code-field">
+            <label htmlFor={codeId} className="sr-only">
+              {t("auth.codeLabel")}
+            </label>
+            <div className="auth-code-shell">
+              <input
+                id={codeId}
+                name="code"
+                type="text"
+                className="auth-code-input"
+                inputMode="numeric"
+                autoComplete="one-time-code"
+                maxLength={6}
+                value={code}
+                aria-invalid={codeError ? "true" : undefined}
+                aria-describedby={codeError ? `${codeId}-error` : `${codeId}-hint`}
+                onChange={(event) => {
+                  setCode(event.target.value.replace(/\D/g, "").slice(0, 6));
+                  setCodeError(null);
+                }}
+              />
+              {Array.from({ length: 6 }, (_, index) => (
+                <span
+                  key={index}
+                  className="auth-code-cell"
+                  data-testid="otp-cell"
+                  data-filled={code[index] ? "true" : undefined}
+                  data-active={code.length === index ? "true" : undefined}
+                  aria-hidden="true"
+                >
+                  {code[index] ?? ""}
+                </span>
+              ))}
+            </div>
+            {codeError && (
+              <p id={`${codeId}-error`} className="auth-error">
+                {codeError}
+              </p>
+            )}
+          </div>
+
+          <p id={`${codeId}-hint`} className="auth-reassurance">
+            {t("auth.checkSpam")}
+          </p>
+
+          <div className="auth-resend-row">
+            <p>{canResend ? t("auth.resendAvailable") : t("auth.resendWait", { seconds: secondsLeft })}</p>
+            <Button
+              type="button"
+              className="auth-resend"
+              variant="tertiary"
+              onClick={handleResend}
+              disabled={!canResend}
+              {...(!canResend
+                ? { disabledReason: t("auth.resendDisabledReason", { seconds: secondsLeft }) }
+                : {})}
+            >
+              {t("auth.resend")}
+            </Button>
+          </div>
+          {resendError && (
+            <p className="auth-error" role="alert">
+              {resendError}
+            </p>
+          )}
+
+          <div className="auth-spacer" />
+
+          <div className="auth-actions">
+            <Button className="auth-primary" type="submit" loading={verifying} disabled={!codeIsComplete}>
+              {t("auth.verify")}
+            </Button>
+            <Button className="auth-google" type="button" variant="secondary" onClick={() => onGoogle()}>
+              {t("auth.continueWithGoogle")}
+            </Button>
+          </div>
         </form>
       )}
 
-      {step === "verified" && <p role="status">{t("auth.verified")}</p>}
-
-      {step !== "verified" && (
-        <Button type="button" variant="secondary" onClick={() => onGoogle()}>
-          {t("auth.continueWithGoogle")}
-        </Button>
+      {step === "verified" && (
+        <div className="auth-verified" role="status">
+          {t("auth.verified")}
+        </div>
       )}
-    </div>
+    </main>
   );
 }
