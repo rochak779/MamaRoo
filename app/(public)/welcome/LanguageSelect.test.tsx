@@ -2,11 +2,15 @@ import { describe, expect, it, vi, beforeEach } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { LanguageSelect } from "@/app/(public)/welcome/LanguageSelect";
+import { EVENTS } from "@/lib/analytics/events";
 
 const push = vi.fn();
 vi.mock("next/navigation", () => ({
   useRouter: () => ({ push }),
 }));
+
+const track = vi.fn();
+vi.mock("@/components/AnalyticsProvider", () => ({ track: (...args: unknown[]) => track(...args) }));
 
 const onChooseLocale = vi.fn();
 
@@ -17,6 +21,7 @@ function renderScreen(next: string | null = null) {
 beforeEach(() => {
   push.mockReset();
   onChooseLocale.mockReset();
+  track.mockReset();
 });
 
 describe("LanguageSelect", () => {
@@ -61,6 +66,14 @@ describe("LanguageSelect", () => {
     await user.click(screen.getByRole("button", { name: "Continue" }));
     expect(onChooseLocale).toHaveBeenCalledWith("hi");
     expect(push).toHaveBeenCalledWith("/start");
+  });
+
+  it("captures language_chosen with the picked locale", async () => {
+    const user = userEvent.setup();
+    renderScreen();
+    await user.click(screen.getByRole("button", { name: /हिंदी/ }));
+    await user.click(screen.getByRole("button", { name: "Continue" }));
+    expect(track).toHaveBeenCalledWith(EVENTS.language_chosen, { locale: "hi" });
   });
 
   it("carries a deep-link target through to sign up", async () => {
