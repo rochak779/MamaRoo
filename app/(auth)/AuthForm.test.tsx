@@ -4,10 +4,13 @@ import userEvent from "@testing-library/user-event";
 import { NextIntlClientProvider } from "next-intl";
 import en from "@/i18n/en.json";
 import { AuthForm } from "@/app/(auth)/AuthForm";
+import { EVENTS } from "@/lib/analytics/events";
 
 const sendOtp = vi.fn();
 const verifyOtp = vi.fn();
 const startGoogle = vi.fn();
+const track = vi.fn();
+vi.mock("@/components/AnalyticsProvider", () => ({ track: (...args: unknown[]) => track(...args) }));
 
 function renderForm(mode: "signup" | "signin" = "signup") {
   return render(
@@ -21,6 +24,7 @@ beforeEach(() => {
   sendOtp.mockReset().mockResolvedValue({ ok: true });
   verifyOtp.mockReset().mockResolvedValue({ ok: true });
   startGoogle.mockReset();
+  track.mockReset();
 });
 
 describe("AuthForm", () => {
@@ -184,5 +188,49 @@ describe("AuthForm", () => {
 
     expect(await screen.findByText(/you are signed in/i)).toBeInTheDocument();
     expect(screen.queryByLabelText(/6-digit code/i)).not.toBeInTheDocument();
+  });
+
+  it("captures signup_started (email_otp) when a code is sent in signup mode", async () => {
+    renderForm("signup");
+    await userEvent.type(screen.getByLabelText(/email/i), "her@example.com");
+    await userEvent.click(screen.getByRole("button", { name: /send/i }));
+    expect(track).toHaveBeenCalledWith(EVENTS.signup_started, { method: "email_otp" });
+  });
+
+  it("captures signup_started (google) when Google is chosen in signup mode, but no signin_started equivalent exists for signin mode", async () => {
+    renderForm("signup");
+    await userEvent.click(screen.getByRole("button", { name: /continue with google/i }));
+    expect(track).toHaveBeenCalledWith(EVENTS.signup_started, { method: "google" });
+
+    track.mockReset();
+    renderForm("signin");
+    await userEvent.click(screen.getByRole("button", { name: /continue with google/i }));
+    expect(track).not.toHaveBeenCalledWith(EVENTS.signup_started, expect.anything());
+  });
+
+  it("does not capture signup_started when a code is sent in signin mode", async () => {
+    renderForm("signin");
+    await userEvent.type(screen.getByLabelText(/email/i), "her@example.com");
+    await userEvent.click(screen.getByRole("button", { name: /send/i }));
+    expect(track).not.toHaveBeenCalledWith(EVENTS.signup_started, expect.anything());
+  });
+
+  it("captures signup_completed after a successful verify in signup mode", async () => {
+    renderForm("signup");
+    await userEvent.type(screen.getByLabelText(/email/i), "her@example.com");
+    await userEvent.click(screen.getByRole("button", { name: /send/i }));
+    await userEvent.type(await screen.findByLabelText(/6-digit code/i), "123456");
+    await userEvent.click(screen.getByRole("button", { name: /verify/i }));
+    expect(track).toHaveBeenCalledWith(EVENTS.signup_completed, { method: "email_otp" });
+  });
+
+  it("captures signin_completed, not signup_completed, after a successful verify in signin mode", async () => {
+    renderForm("signin");
+    await userEvent.type(screen.getByLabelText(/email/i), "her@example.com");
+    await userEvent.click(screen.getByRole("button", { name: /send/i }));
+    await userEvent.type(await screen.findByLabelText(/6-digit code/i), "123456");
+    await userEvent.click(screen.getByRole("button", { name: /verify/i }));
+    expect(track).toHaveBeenCalledWith(EVENTS.signin_completed, { method: "email_otp" });
+    expect(track).not.toHaveBeenCalledWith(EVENTS.signup_completed, expect.anything());
   });
 });
