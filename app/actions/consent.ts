@@ -38,6 +38,13 @@ export async function recordConsents(input: RecordConsentsInput): Promise<void> 
   const { error } = await supabase.from("consents").insert(rows);
   if (error) throw error;
 
+  // No analytics call here, deliberately: posthog-js is a browser SDK and this
+  // runs on the server. The redirect below re-renders the root layout, which
+  // re-reads getCurrentConsents() and hands the fresh analytics flag to
+  // AnalyticsProvider -- that's what actually opts in and fires
+  // EVENTS.consent_granted, exactly once, on this transition (see
+  // components/AnalyticsProvider.tsx).
+
   // Session 15's originally-planned intro carousel is superseded by the
   // delivered mockups' pre-auth /start (Welcome) screen -- there is no
   // post-consent intro step to land on, so this goes straight to the form.
