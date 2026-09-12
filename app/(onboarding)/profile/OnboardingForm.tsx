@@ -12,7 +12,7 @@ import {
   validateOnboarding,
   type DueDateMethod,
   type NotificationPrivacy,
-  type OnboardingValue,
+  type OnboardingInput,
   type PregnancyFlag,
   type TwinType,
 } from "@/lib/domain/onboarding";
@@ -78,7 +78,10 @@ const TWIN_TYPES: TwinType[] = ["unconfirmed", "dichorionic", "monochorionic"];
 export type SaveOutcome = { ok: true } | { ok: false; errors: Record<string, string> };
 
 export interface OnboardingFormProps {
-  onSave: (value: OnboardingValue) => Promise<SaveOutcome>;
+  /** Takes the raw collected input, not the client-validated value -- the
+   * server re-validates independently, the same "never trust the UI"
+   * pattern as recordConsents in app/actions/consent.ts. */
+  onSave: (input: OnboardingInput) => Promise<SaveOutcome>;
 }
 
 export function OnboardingForm({ onSave }: OnboardingFormProps) {
@@ -154,7 +157,7 @@ export function OnboardingForm({ onSave }: OnboardingFormProps) {
 
     setSaving(true);
     try {
-      const outcome = await onSave(result.value);
+      const outcome = await onSave(buildInput());
       if (!outcome.ok) {
         const firstStepWithError = STEP_ORDER.find(
           (s) => Object.keys(errorsForStep(outcome.errors, s)).length > 0,
