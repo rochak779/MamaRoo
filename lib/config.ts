@@ -9,3 +9,6 @@ export const APP_TIMEZONE = "Asia/Kolkata";
 
 /** Gestation length used for EDD maths, in days (Naegele's rule). */
 export const GESTATION_DAYS = 280;
+
+/** Bump when the policy text changes. Every consent row records the version it agreed to. */
+export const LEGAL_VERSION = "2026-09-12";
