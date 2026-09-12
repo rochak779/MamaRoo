@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500&family=Mukta:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>body{margin:0;background:linear-gradient(180deg, #F7EEE3, #F7DFD9);}</style>
+</helmet>
+<div style="width:375px;min-height:812px;margin:0 auto;background:linear-gradient(180deg, #F7EEE3, #F7DFD9);font-family:'Mukta',sans-serif;display:flex;flex-direction:column;box-sizing:border-box;padding:56px 20px 40px 20px;">
+  <h1 style="font-family:'Poppins',sans-serif;font-weight:500;font-size:24px;line-height:32px;color:#670035;margin:0 0 8px 0;">When did your pregnancy begin?</h1>
+  <p style="font-size:16px;line-height:24px;color:rgba(103,0,53,0.85);margin:0 0 36px 0;">Pick whichever you know. An estimate is fine.</p>
+
+  <div style="background:#FFFFFF;border-radius:20px;box-shadow:0 1px 3px rgba(103,0,53,0.08);overflow:hidden;">
+    <sc-for list="{{ options }}" as="opt" hint-placeholder-count="5">
+      <div>
+        <div style="{{ opt.rowStyle }}" onClick="{{ opt.onSelect }}">
+          <div style="{{ opt.textCol }}">
+            <span style="font-family:'Mukta',sans-serif;font-weight:500;font-size:16px;line-height:24px;color:#670035;">{{ opt.title }}</span>
+            <sc-if value="{{ opt.desc }}" hint-placeholder-val="{{ true }}">
+              <span style="font-size:14px;line-height:20px;color:rgba(103,0,53,0.85);">{{ opt.desc }}</span>
+            </sc-if>
+          </div>
+          <div style="{{ opt.radioOuter }}">
+            <div style="{{ opt.radioInner }}"></div>
+          </div>
+        </div>
+        <sc-if value="{{ opt.showDate }}" hint-placeholder-val="{{ false }}">
+          <div style="padding:0 20px 20px 20px;">
+            <input type="date" max="{{ maxDate }}" style="{{ opt.dateStyle }}"/>
+          </div>
+        </sc-if>
+        <sc-if value="{{ opt.hasDivider }}" hint-placeholder-val="{{ true }}">
+          <div style="height:1px;background:rgba(103,0,53,0.18);margin:0 20px;"></div>
+        </sc-if>
+      </div>
+    </sc-for>
+  </div>
+
+  <div style="flex:1;min-height:32px;"></div>
+
+  <button style="{{ buttonStyle }}" disabled="{{ buttonDisabled }}">Continue</button>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { selected: null };
+
+  renderVals() {
+    const sel = this.state.selected;
+    const defs = [
+      { key: 'lmp', title: 'Last period', desc: 'The first day of your last period', dated: true },
+      { key: 'us', title: 'Ultrasound date', desc: 'From a scan your doctor gave you', dated: true },
+      { key: 'edd', title: 'Due date my doctor gave me', desc: 'A date your doctor already confirmed', dated: true },
+      { key: 'ivf', title: 'IVF or IUI transfer date', desc: 'The date of embryo or IUI transfer', dated: true },
+      { key: 'unsure', title: 'Not sure yet', desc: null, dated: false },
+    ];
+
+    const options = defs.map((d, i) => {
+      const isSel = sel === d.key;
+      return {
+        title: d.title,
+        desc: d.desc,
+        showDate: isSel && d.dated,
+        hasDivider: i < defs.length - 1,
+        rowStyle: {
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          gap: '16px',
+          padding: '20px',
+          cursor: 'pointer',
+        },
+        textCol: { display: 'flex', flexDirection: 'column', gap: '4px', flex: 1 },
+        radioOuter: {
+          width: '22px',
+          height: '22px',
+          borderRadius: '999px',
+          border: isSel ? '2px solid #D63A29' : '1.5px solid rgba(103,0,53,0.18)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          flexShrink: 0,
+        },
+        radioInner: {
+          width: '11px',
+          height: '11px',
+          borderRadius: '999px',
+          background: isSel ? '#D63A29' : 'transparent',
+        },
+        dateStyle: {
+          width: '100%',
+          boxSizing: 'border-box',
+          padding: '14px 16px',
+          borderRadius: '12px',
+          background: '#FFFFFF',
+          border: '1px solid rgba(103,0,53,0.18)',
+          fontFamily: 'Mukta, sans-serif',
+          fontSize: '16px',
+          color: '#670035',
+          outline: 'none',
+        },
+        onSelect: () => this.setState({ selected: d.key }),
+      };
+    });
+
+    return {
+      options,
+      maxDate: new Date().toISOString().slice(0, 10),
+      buttonDisabled: !sel,
+      buttonStyle: {
+        width: '100%',
+        boxSizing: 'border-box',
+        padding: '16px',
+        borderRadius: '999px',
+        border: 'none',
+        background: sel ? '#D63A29' : '#F6C7B9',
+        color: sel ? '#FFFFFF' : 'rgba(103,0,53,0.55)',
+        fontFamily: 'Mukta, sans-serif',
+        fontWeight: 500,
+        fontSize: '16px',
+        lineHeight: '20px',
+        cursor: sel ? 'pointer' : 'default',
+      },
+    };
+  }
+}
+
+</script>
+</body>
+</html>

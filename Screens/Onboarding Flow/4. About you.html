@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500&family=Mukta:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>body{margin:0;background:linear-gradient(180deg, #F7EEE3, #F7DFD9);}</style>
+</helmet>
+<div style="width:375px;min-height:812px;margin:0 auto;background:linear-gradient(180deg, #F7EEE3, #F7DFD9);font-family:'Mukta',sans-serif;display:flex;flex-direction:column;box-sizing:border-box;padding:64px 20px 40px 20px;">
+  <h1 style="font-family:'Poppins',sans-serif;font-weight:500;font-size:24px;line-height:32px;color:#670035;margin:0 0 32px 0;">Tell us a little about you</h1>
+
+  <div style="display:flex;flex-direction:column;gap:28px;">
+
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <label style="font-size:14px;line-height:20px;color:rgba(103,0,53,0.85);">What should we call you?</label>
+      <input type="text" placeholder="Your name" style="{{ fieldStyle }}"/>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <label style="font-size:14px;line-height:20px;color:rgba(103,0,53,0.85);">Your age</label>
+      <input type="number" inputmode="numeric" placeholder="Age in years" style="{{ fieldStyle }}"/>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <label style="font-size:14px;line-height:20px;color:rgba(103,0,53,0.85);">Your weight <span style="color:rgba(103,0,53,0.85);">(optional, not used yet)</span></label>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <input type="number" inputmode="decimal" placeholder="Weight" style="{{ fieldStyle }}"/>
+        <span style="font-size:16px;color:rgba(103,0,53,0.85);">kg</span>
+      </div>
+    </div>
+
+    <div style="background:#FFFFFF;border-radius:20px;box-shadow:0 1px 3px rgba(103,0,53,0.08);padding:20px;display:flex;flex-direction:column;gap:16px;">
+      <h2 style="font-family:'Poppins',sans-serif;font-weight:500;font-size:18px;line-height:26px;color:#670035;margin:0;">Emergency contact (optional)</h2>
+
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <label style="font-size:14px;line-height:20px;color:rgba(103,0,53,0.85);">Name</label>
+        <input type="text" placeholder="Contact name" style="{{ cardFieldStyle }}"/>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <label style="font-size:14px;line-height:20px;color:rgba(103,0,53,0.85);">Phone number</label>
+        <input type="tel" inputmode="numeric" placeholder="10 digit number" style="{{ cardFieldStyle }}"/>
+      </div>
+
+      <p style="font-size:13px;line-height:18px;color:rgba(103,0,53,0.85);margin:0;">Only used if you ever tell us you need help right now.</p>
+    </div>
+
+  </div>
+
+  <div style="flex:1;min-height:32px;"></div>
+
+  <button style="{{ buttonStyle }}">Continue</button>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  renderVals() {
+    const field = {
+      boxSizing: 'border-box',
+      width: '100%',
+      padding: '14px 16px',
+      borderRadius: '12px',
+      background: '#FFFFFF',
+      border: '1px solid rgba(103,0,53,0.18)',
+      fontFamily: 'Mukta, sans-serif',
+      fontSize: '16px',
+      color: '#670035',
+      outline: 'none',
+    };
+    return {
+      fieldStyle: field,
+      cardFieldStyle: field,
+      buttonStyle: {
+        width: '100%',
+        boxSizing: 'border-box',
+        padding: '16px',
+        borderRadius: '999px',
+        border: 'none',
+        background: '#D63A29',
+        color: '#FFFFFF',
+        fontFamily: 'Mukta, sans-serif',
+        fontWeight: 500,
+        fontSize: '16px',
+        lineHeight: '20px',
+        cursor: 'pointer',
+      },
+    };
+  }
+}
+
+</script>
+</body>
+</html>

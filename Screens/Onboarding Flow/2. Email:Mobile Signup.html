@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500&family=Mukta:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>body{margin:0;background:linear-gradient(180deg, #F7EEE3, #F7DFD9);}</style>
+</helmet>
+<div style="width:375px;min-height:812px;margin:0 auto;background:linear-gradient(180deg, #F7EEE3, #F7DFD9);font-family:'Mukta',sans-serif;display:flex;flex-direction:column;box-sizing:border-box;padding:64px 20px 32px 20px;">
+  <h1 style="font-family:'Poppins',sans-serif;font-weight:500;font-size:24px;line-height:32px;color:#670035;margin:0 0 8px 0;">What is your mobile number?</h1>
+  <p style="font-size:16px;line-height:24px;color:rgba(103,0,53,0.85);margin:0 0 32px 0;">We will send you a code to check it is really you.</p>
+
+  <div style="display:flex;gap:8px;">
+    <div style="min-width:64px;display:flex;align-items:center;justify-content:center;padding:14px 12px;border-radius:12px;background:#FFFFFF;border:1px solid rgba(103,0,53,0.18);font-size:16px;color:#670035;">+91</div>
+    <input
+      type="tel"
+      inputmode="numeric"
+      maxlength="10"
+      placeholder="10 digit number"
+      value="{{ number }}"
+      onChange="{{ onNumberChange }}"
+      style="{{ inputStyle }}"
+    />
+  </div>
+
+  <p style="font-size:13px;line-height:18px;color:rgba(103,0,53,0.85);margin:12px 0 0 0;">Your number is never shared.</p>
+
+  <div style="flex:1;"></div>
+
+  <button
+    style="{{ buttonStyle }}"
+    disabled="{{ buttonDisabled }}"
+  >Send code</button>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { number: '' };
+
+  renderVals() {
+    const valid = this.state.number.length === 10;
+    return {
+      number: this.state.number,
+      onNumberChange: (e) => {
+        const digits = e.target.value.replace(/\D/g, '').slice(0, 10);
+        this.setState({ number: digits });
+      },
+      inputStyle: {
+        flex: 1,
+        boxSizing: 'border-box',
+        padding: '14px 16px',
+        borderRadius: '12px',
+        background: '#FFFFFF',
+        border: '1px solid rgba(103,0,53,0.18)',
+        fontFamily: 'Mukta, sans-serif',
+        fontSize: '16px',
+        color: '#670035',
+        outline: 'none',
+      },
+      buttonDisabled: !valid,
+      buttonStyle: {
+        width: '100%',
+        boxSizing: 'border-box',
+        padding: '16px',
+        borderRadius: '999px',
+        border: 'none',
+        background: valid ? '#D63A29' : '#F6C7B9',
+        color: valid ? '#FFFFFF' : 'rgba(103,0,53,0.55)',
+        fontFamily: 'Mukta, sans-serif',
+        fontWeight: 500,
+        fontSize: '16px',
+        lineHeight: '20px',
+        cursor: valid ? 'pointer' : 'default',
+      },
+    };
+  }
+}
+
+</script>
+</body>
+</html>

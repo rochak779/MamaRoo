@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500&family=Mukta:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>body{margin:0;background:linear-gradient(180deg, #F7EEE3, #F7DFD9);}</style>
+</helmet>
+<div style="width:375px;min-height:812px;margin:0 auto;background:linear-gradient(180deg, #F7EEE3, #F7DFD9);font-family:'Mukta',sans-serif;display:flex;flex-direction:column;box-sizing:border-box;padding:56px 20px 40px 20px;">
+  <h1 style="font-family:'Poppins',sans-serif;font-weight:500;font-size:24px;line-height:32px;color:#670035;margin:0 0 8px 0;">Is there anything else about this pregnancy?</h1>
+  <p style="font-size:16px;line-height:24px;color:rgba(103,0,53,0.85);margin:0 0 28px 0;">Choose all that apply. This helps us show you the right information.</p>
+
+  <div style="display:flex;flex-wrap:wrap;gap:12px;">
+    <sc-for list="{{ chips }}" as="chip" hint-placeholder-count="6">
+      <button style="{{ chip.style }}" onClick="{{ chip.onClick }}">{{ chip.label }}</button>
+    </sc-for>
+  </div>
+
+  <sc-if value="{{ showTwinQuestion }}" hint-placeholder-val="{{ false }}">
+    <div style="margin-top:24px;padding:20px;background:#FFFFFF;border-radius:20px;box-shadow:0 1px 3px rgba(103,0,53,0.08);display:flex;flex-direction:column;gap:14px;">
+      <p style="font-size:16px;line-height:24px;color:#670035;margin:0;">If your doctor has told you, what kind of twin pregnancy is it?</p>
+      <div style="display:flex;flex-wrap:wrap;gap:10px;">
+        <sc-for list="{{ twinOptions }}" as="opt" hint-placeholder-count="3">
+          <button style="{{ opt.style }}" onClick="{{ opt.onClick }}">{{ opt.label }}</button>
+        </sc-for>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ showSensitiveNote }}" hint-placeholder-val="{{ false }}">
+    <p style="margin:20px 0 0 0;font-size:14px;line-height:20px;color:rgba(103,0,53,0.85);">Thank you for sharing that. We will shape your journey around it.</p>
+  </sc-if>
+
+  <div style="flex:1;min-height:32px;"></div>
+
+  <button style="{{ buttonStyle }}">Continue</button>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { selected: {}, twinType: null, sensitiveEverShown: false };
+
+  sensitiveSet = new Set([
+    'Had IVF or IUI',
+    'My doctor is watching this closely',
+    'I have lost a pregnancy before',
+  ]);
+
+  chipStyle(active) {
+    return {
+      padding: '10px 18px',
+      borderRadius: '999px',
+      fontFamily: 'Mukta, sans-serif',
+      fontSize: '15px',
+      fontWeight: active ? 600 : 400,
+      background: active ? '#FFA48F' : '#FFFFFF',
+      color: '#670035',
+      border: active ? '1.5px solid #FFA48F' : '1px solid rgba(103,0,53,0.18)',
+      cursor: 'pointer',
+    };
+  }
+
+  renderVals() {
+    const labels = [
+      'One baby',
+      'Twins or multiples',
+      'Had IVF or IUI',
+      'My doctor is watching this closely',
+      'I have lost a pregnancy before',
+      'Not sure yet',
+    ];
+    const sel = this.state.selected;
+
+    const chips = labels.map((label) => ({
+      label,
+      style: this.chipStyle(!!sel[label]),
+      onClick: () => {
+        const next = { ...sel, [label]: !sel[label] };
+        const anySensitive = Object.keys(next).some((k) => next[k] && this.sensitiveSet.has(k));
+        this.setState({
+          selected: next,
+          sensitiveEverShown: this.state.sensitiveEverShown || anySensitive,
+        });
+      },
+    }));
+
+    const twinLabels = ['Not confirmed yet', 'Two separate placentas', 'One shared placenta'];
+    const twinOptions = twinLabels.map((label) => ({
+      label,
+      style: this.chipStyle(this.state.twinType === label),
+      onClick: () => this.setState({ twinType: label }),
+    }));
+
+    return {
+      chips,
+      showTwinQuestion: !!sel['Twins or multiples'],
+      twinOptions,
+      showSensitiveNote: this.state.sensitiveEverShown,
+      buttonStyle: {
+        width: '100%',
+        boxSizing: 'border-box',
+        padding: '16px',
+        borderRadius: '999px',
+        border: 'none',
+        background: '#D63A29',
+        color: '#FFFFFF',
+        fontFamily: 'Mukta, sans-serif',
+        fontWeight: 500,
+        fontSize: '16px',
+        lineHeight: '20px',
+        cursor: 'pointer',
+      },
+    };
+  }
+}
+
+</script>
+</body>
+</html>

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500&family=Mukta:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>body{margin:0;background:linear-gradient(180deg, #F7EEE3, #F7DFD9);}</style>
+</helmet>
+<div style="width:375px;min-height:812px;margin:0 auto;background:linear-gradient(180deg, #F7EEE3, #F7DFD9);font-family:'Mukta',sans-serif;display:flex;flex-direction:column;box-sizing:border-box;padding:64px 20px 32px 20px;">
+  <h1 style="font-family:'Poppins',sans-serif;font-weight:500;font-size:24px;line-height:32px;color:#670035;margin:0 0 8px 0;">If you share this phone</h1>
+  <p style="font-size:16px;line-height:24px;color:rgba(103,0,53,0.85);margin:0 0 32px 0;">We can keep your reminders private.</p>
+
+  <div style="display:flex;flex-direction:column;gap:16px;">
+    <button style="{{ showStyle }}" onClick="{{ selectShow }}">
+      <span style="font-family:'Poppins',sans-serif;font-weight:500;font-size:18px;line-height:26px;color:#670035;">Show details</span>
+      <span style="font-size:14px;line-height:20px;color:rgba(103,0,53,0.85);">We will show the app name and what the reminder is about</span>
+    </button>
+    <button style="{{ privateStyle }}" onClick="{{ selectPrivate }}">
+      <span style="font-family:'Poppins',sans-serif;font-weight:500;font-size:18px;line-height:26px;color:#670035;">Keep it private</span>
+      <span style="font-size:14px;line-height:20px;color:rgba(103,0,53,0.85);">We will just say Reminder, nothing more</span>
+    </button>
+  </div>
+
+  <div style="flex:1;"></div>
+
+  <button style="{{ buttonStyle }}" disabled="{{ buttonDisabled }}">Continue</button>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { selected: null };
+
+  cardStyle(isSelected) {
+    return {
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '4px',
+      textAlign: 'left',
+      width: '100%',
+      boxSizing: 'border-box',
+      padding: '20px',
+      borderRadius: '20px',
+      background: '#FFFFFF',
+      border: isSelected ? '1.5px solid #D63A29' : '1.5px solid transparent',
+      boxShadow: '0 1px 3px rgba(103,0,53,0.08)',
+      cursor: 'pointer',
+      fontFamily: 'Mukta, sans-serif',
+    };
+  }
+
+  renderVals() {
+    const sel = this.state.selected;
+    return {
+      showStyle: this.cardStyle(sel === 'show'),
+      privateStyle: this.cardStyle(sel === 'private'),
+      selectShow: () => this.setState({ selected: 'show' }),
+      selectPrivate: () => this.setState({ selected: 'private' }),
+      buttonDisabled: !sel,
+      buttonStyle: {
+        width: '100%',
+        boxSizing: 'border-box',
+        padding: '16px',
+        borderRadius: '999px',
+        border: 'none',
+        background: sel ? '#D63A29' : '#F6C7B9',
+        color: sel ? '#FFFFFF' : 'rgba(103,0,53,0.55)',
+        fontFamily: 'Mukta, sans-serif',
+        fontWeight: 500,
+        fontSize: '16px',
+        lineHeight: '20px',
+        cursor: sel ? 'pointer' : 'default',
+      },
+    };
+  }
+}
+
+</script>
+</body>
+</html>
