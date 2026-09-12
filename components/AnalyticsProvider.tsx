@@ -16,6 +16,21 @@ export function track<E extends EventName>(event: E, properties?: EventPropertie
   analytics.capture(event, properties);
 }
 
+/** TWA launches carry the `android-app://` referrer (the standard signal Chrome
+ * sets for a Trusted Web Activity, see Session 34); a TWA also reports
+ * `display-mode: standalone`, so the referrer check must come first. The return
+ * type is written as its own literal union rather than derived from
+ * EventProperties by indexed access, because that spelling would quote this
+ * event's key in source, which the repo-wide analytics guard cannot tell apart
+ * from an inline event-name literal passed to capture. */
+function detectAppSource(): "browser" | "standalone" | "twa" {
+  if (typeof document !== "undefined" && document.referrer.startsWith("android-app://")) return "twa";
+  if (typeof window !== "undefined" && window.matchMedia?.("(display-mode: standalone)").matches) {
+    return "standalone";
+  }
+  return "browser";
+}
+
 export interface AnalyticsProviderProps {
   userId: string | null;
   analyticsConsented: boolean;
@@ -39,6 +54,11 @@ export function AnalyticsProvider({ userId, analyticsConsented, optionalDataShar
         host: env.NEXT_PUBLIC_POSTHOG_HOST,
       });
     }
+    // Fires every mount, consented or not: PostHog's own opt-out-by-default state
+    // (set in lib/analytics/posthog.ts) is what actually withholds the network
+    // send pre-consent, same as every other event -- there is nothing app_opened
+    // specific to gate here.
+    track(EVENTS.app_opened, { source: detectAppSource() });
   }, []);
 
   useEffect(() => {

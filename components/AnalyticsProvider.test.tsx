@@ -88,7 +88,7 @@ describe("AnalyticsProvider", () => {
       media: query,
       addEventListener: () => {},
       removeEventListener: () => {},
-    })) as typeof window.matchMedia;
+    })) as unknown as typeof window.matchMedia;
 
     render(<AnalyticsProvider userId={null} analyticsConsented={false} optionalDataSharingConsented={false} />);
     expect(fakeAnalytics.capture).toHaveBeenCalledWith(EVENTS.app_opened, { source: "standalone" });
