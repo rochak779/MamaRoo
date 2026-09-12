@@ -22,6 +22,12 @@ describe("resolveRedirect", () => {
     ).toBeNull();
   });
 
+  it("leaves a signed-out visitor on the welcome entry screen", () => {
+    expect(
+      resolveRedirect({ path: "/start", isAuthed: false, hasConsented: false, hasOnboarded: false }),
+    ).toBeNull();
+  });
+
   it("leaves a signed-out visitor on the sign-in page", () => {
     expect(
       resolveRedirect({ path: "/signin", isAuthed: false, hasConsented: false, hasOnboarded: false }),
@@ -70,6 +76,10 @@ describe("resolveRedirect", () => {
 
   it("sends a fully onboarded user away from sign-up to Today", () => {
     expect(resolveRedirect({ path: "/signup", ...authed })).toBe("/today");
+  });
+
+  it("sends a fully onboarded user away from the welcome entry screen to Today", () => {
+    expect(resolveRedirect({ path: "/start", ...authed })).toBe("/today");
   });
 
   it("sends a fully onboarded user away from the onboarding form to Today", () => {
