@@ -4,6 +4,8 @@ import { useEffect, useId, useState, type FormEvent } from "react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/Button";
 import { resendState } from "@/lib/domain/otp";
+import { track } from "@/components/AnalyticsProvider";
+import { EVENTS } from "@/lib/analytics/events";
 import type { AuthResult } from "@/app/actions/auth";
 import "@/styles/start.css";
 
@@ -86,7 +88,19 @@ export function AuthForm({ mode, onSendOtp, onVerifyOtp, onGoogle }: AuthFormPro
     }
     setEmailError(null);
     const result = await requestCode(trimmed);
-    if (!result.ok) setEmailError(t(ERROR_KEYS[result.code]));
+    if (!result.ok) {
+      setEmailError(t(ERROR_KEYS[result.code]));
+      return;
+    }
+    // Signin has no equivalent "started" event in the taxonomy: only
+    // signup_started exists, since there is no analogous funnel step worth
+    // measuring for someone who already has an account.
+    if (mode === "signup") track(EVENTS.signup_started, { method: "email_otp" });
+  }
+
+  function handleGoogle() {
+    if (mode === "signup") track(EVENTS.signup_started, { method: "google" });
+    void onGoogle();
   }
 
   async function handleVerify(event: FormEvent<HTMLFormElement>) {
@@ -103,6 +117,7 @@ export function AuthForm({ mode, onSendOtp, onVerifyOtp, onGoogle }: AuthFormPro
       }
       setCodeError(null);
       setStep("verified");
+      track(mode === "signup" ? EVENTS.signup_completed : EVENTS.signin_completed, { method: "email_otp" });
     } finally {
       setVerifying(false);
     }
@@ -163,7 +178,7 @@ export function AuthForm({ mode, onSendOtp, onVerifyOtp, onGoogle }: AuthFormPro
             <Button className="auth-primary" type="submit" loading={sending} disabled={!emailIsValid}>
               {t("auth.sendCode")}
             </Button>
-            <Button className="auth-google" type="button" variant="secondary" onClick={() => onGoogle()}>
+            <Button className="auth-google" type="button" variant="secondary" onClick={handleGoogle}>
               {t("auth.continueWithGoogle")}
             </Button>
           </div>
@@ -254,7 +269,7 @@ export function AuthForm({ mode, onSendOtp, onVerifyOtp, onGoogle }: AuthFormPro
             <Button className="auth-primary" type="submit" loading={verifying} disabled={!codeIsComplete}>
               {t("auth.verify")}
             </Button>
-            <Button className="auth-google" type="button" variant="secondary" onClick={() => onGoogle()}>
+            <Button className="auth-google" type="button" variant="secondary" onClick={handleGoogle}>
               {t("auth.continueWithGoogle")}
             </Button>
           </div>

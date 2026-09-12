@@ -197,12 +197,13 @@ describe("AuthForm", () => {
     expect(track).toHaveBeenCalledWith(EVENTS.signup_started, { method: "email_otp" });
   });
 
-  it("captures signup_started (google) when Google is chosen in signup mode, but no signin_started equivalent exists for signin mode", async () => {
+  it("captures signup_started (google) when Google is chosen in signup mode", async () => {
     renderForm("signup");
     await userEvent.click(screen.getByRole("button", { name: /continue with google/i }));
     expect(track).toHaveBeenCalledWith(EVENTS.signup_started, { method: "google" });
+  });
 
-    track.mockReset();
+  it("captures no signup_started when Google is chosen in signin mode, since no equivalent event exists", async () => {
     renderForm("signin");
     await userEvent.click(screen.getByRole("button", { name: /continue with google/i }));
     expect(track).not.toHaveBeenCalledWith(EVENTS.signup_started, expect.anything());
