@@ -38,5 +38,8 @@ export async function recordConsents(input: RecordConsentsInput): Promise<void> 
   const { error } = await supabase.from("consents").insert(rows);
   if (error) throw error;
 
-  redirect("/onboarding/intro");
+  // Session 15's originally-planned intro carousel is superseded by the
+  // delivered mockups' pre-auth /start (Welcome) screen -- there is no
+  // post-consent intro step to land on, so this goes straight to the form.
+  redirect("/onboarding/profile");
 }

@@ -2,7 +2,6 @@ const PUBLIC_PATHS = ["/", "/welcome", "/signin", "/signup", "/verify"];
 const LEGAL_PREFIX = "/legal";
 const CONSENT_PATH = "/consent";
 const ONBOARDING_FORM = "/onboarding/profile";
-const ONBOARDING_INTRO = "/onboarding/intro";
 const HOME = "/today";
 
 export interface RedirectInput {
@@ -36,7 +35,7 @@ export function resolveRedirect({ path, isAuthed, hasConsented, hasOnboarded }: 
   }
 
   if (!hasOnboarded) {
-    if (path === ONBOARDING_FORM || path === ONBOARDING_INTRO || path.startsWith(LEGAL_PREFIX)) return null;
+    if (path === ONBOARDING_FORM || path.startsWith(LEGAL_PREFIX)) return null;
     return ONBOARDING_FORM;
   }
 
