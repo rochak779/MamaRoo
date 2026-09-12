@@ -4,6 +4,9 @@ import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
 import { PRODUCT_NAME } from "@/lib/config";
 import { getLocale } from "@/i18n/locale";
+import { createServerSupabase } from "@/lib/supabase/server";
+import { getCurrentConsents } from "@/lib/supabase/queries/consent";
+import { AnalyticsProvider } from "@/components/AnalyticsProvider";
 import "@/styles/tokens.css";
 import "@/styles/globals.css";
 
@@ -49,10 +52,26 @@ export const viewport = {
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const locale = await getLocale();
   const messages = await getMessages();
+
+  // Derived from the shared consent query, never a bespoke read -- see
+  // lib/supabase/queries/consent.ts. Runs on every page, including the public
+  // waitlist, where user is always null and this resolves to "not consented"
+  // without a second query.
+  const supabase = await createServerSupabase();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  const consents = user ? await getCurrentConsents(supabase) : null;
+
   return (
     <html lang={locale} className={`${poppins.variable} ${hind.variable} ${mukta.variable}`}>
       <body className="min-h-dvh bg-bg text-text-primary font-body">
         <NextIntlClientProvider messages={messages} locale={locale}>
+          <AnalyticsProvider
+            userId={user?.id ?? null}
+            analyticsConsented={consents?.analytics.granted ?? false}
+            optionalDataSharingConsented={consents?.optional_data_sharing.granted ?? false}
+          />
           {children}
         </NextIntlClientProvider>
       </body>
