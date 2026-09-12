@@ -5970,7 +5970,7 @@ The second test is the one that matters. A guard test that asserts "no matches f
   - `sendEmailOtp(email)`, `verifyEmailOtp(email, code)`, `signInWithGoogle()`, `signOut()` server actions
   - `AuthForm({ mode })` where mode is `"signup" | "signin"`
 
-- [ ] **Step 1: Write the failing routing test as a truth table**
+- [x] **Step 1: Write the failing routing test as a truth table**
 
 Create `lib/domain/routing.test.ts`:
 
@@ -6059,12 +6059,12 @@ describe("resolveRedirect", () => {
 });
 ```
 
-- [ ] **Step 2: Run it and watch it fail**
+- [x] **Step 2: Run it and watch it fail**
 
 Run: `npx vitest run lib/domain/routing.test.ts`
 Expected: FAIL — module not found.
 
-- [ ] **Step 3: Implement routing.ts**
+- [x] **Step 3: Implement routing.ts**
 
 Create `lib/domain/routing.ts`:
 
@@ -6114,12 +6114,12 @@ export function resolveRedirect({ path, isAuthed, hasConsented, hasOnboarded }: 
 }
 ```
 
-- [ ] **Step 4: Run it and watch it pass**
+- [x] **Step 4: Run it and watch it pass**
 
 Run: `npx vitest run lib/domain/routing.test.ts`
 Expected: PASS.
 
-- [ ] **Step 5: Write the failing OTP resend test**
+- [x] **Step 5: Write the failing OTP resend test**
 
 Create `lib/domain/otp.test.ts`:
 
@@ -6168,7 +6168,7 @@ describe("resendState", () => {
 });
 ```
 
-- [ ] **Step 6: Run it, watch it fail, then implement**
+- [x] **Step 6: Run it, watch it fail, then implement**
 
 Create `lib/domain/otp.ts`:
 
@@ -6193,7 +6193,7 @@ export function resendState({
 Run: `npx vitest run lib/domain/otp.test.ts`
 Expected: PASS.
 
-- [ ] **Step 7: Add the middleware session refresh and guard**
+- [x] **Step 7: Add the middleware session refresh and guard**
 
 Create `lib/supabase/middleware.ts`:
 
@@ -6276,7 +6276,7 @@ export const config = {
 };
 ```
 
-- [ ] **Step 8: Add the auth server actions**
+- [x] **Step 8: Add the auth server actions**
 
 Create `app/actions/auth.ts`:
 
@@ -6354,7 +6354,7 @@ export async function GET(request: NextRequest) {
 }
 ```
 
-- [ ] **Step 9: Write the failing AuthForm test**
+- [x] **Step 9: Write the failing AuthForm test**
 
 Create `app/(auth)/AuthForm.test.tsx`:
 
@@ -6449,12 +6449,12 @@ describe("AuthForm", () => {
 });
 ```
 
-- [ ] **Step 10: Run it and watch it fail**
+- [x] **Step 10: Run it and watch it fail**
 
 Run: `npx vitest run "app/(auth)/AuthForm.test.tsx"`
 Expected: FAIL — module not found.
 
-- [ ] **Step 11: Implement AuthForm**
+- [x] **Step 11: Implement AuthForm**
 
 Create `app/(auth)/AuthForm.tsx` as a client component taking its three actions as props, so it is testable without mocking server actions. It holds two steps (`email`, `code`), validates the email with a simple `/.+@.+\..+/` test before calling anything, maps each `AuthResult` code to a distinct translated message, and drives the resend button from `resendState()` with a one-second interval. Add these keys to both catalogues:
 
@@ -6474,14 +6474,14 @@ English values for the three the test asserts on:
 Run: `npx vitest run "app/(auth)/AuthForm.test.tsx"`
 Expected: PASS.
 
-- [ ] **Step 12: Write the e2e auth spec**
+- [x] **Step 12: Write the e2e auth spec**
 
 Create `tests/e2e/auth.spec.ts` covering: the landing page offers sign up and sign in; submitting an email shows the code step; a deep link to `/today` while signed out lands on `/` with a `next` parameter; and `/consent` is reached after a successful sign-in. Use Supabase's local Inbucket (`http://127.0.0.1:54324`) to read the OTP email and extract the code.
 
 Run: `npx playwright test tests/e2e/auth.spec.ts`
 Expected: PASS.
 
-- [ ] **Step 13: Verify and commit**
+- [x] **Step 13: Verify and commit**
 
 Run: `npm run verify`
 
@@ -6492,7 +6492,7 @@ git commit -m "feat(auth): add email OTP and Google sign-in with a pure, fully t
 
 **Done when:** both sign-in paths work against local Supabase, every OTP failure mode has its own message, and the routing truth table passes. Screen layout here is still the scaffold; Session 14 applies the designer's markup to these same components.
 
-> **Pre-deployment follow-up (must be done before final deployment, added when this session shipped):** the live Supabase project is still using Supabase's default mailer, which is hard-capped at a couple of emails per hour regardless of plan — it is meant for testing only, not real OTP traffic. Before launch, configure custom SMTP in Supabase's Auth settings (e.g. Resend's free tier) so sign-up/sign-in emails send reliably at real volume. This needs a verified sending domain, which is blocked on getting DNS access approved. Tracked again in Session 34's Gate C and release checklist. Until this is done, do not rely on OTP sign-in for real users beyond testing.
+> **Pre-deployment follow-up, updated 2026-09-12 (partially resolved):** the live Supabase project was using Supabase's default mailer, hard-capped at a couple of emails per hour — meant for testing only, not real OTP traffic. Custom SMTP is now configured (Resend, verified sending domain), the email rate limit has been raised (Supabase auto-bumped it to 30/hour on enabling custom SMTP), and a live `signInWithOtp` call against the production project returns 200 and delivers mail. **Not yet resolved:** the delivered email still renders Supabase's default "sign-in link" wording instead of the plain `{{ .Token }}` code the app's sign-in screen expects the user to type, even though the Magic Link template in the Dashboard editor shows the corrected body saved. Suspected cause not yet confirmed: a "Send Email" Auth Hook overriding the Dashboard template, or a stale/cached send. **Do not rely on OTP sign-in for real users until this is fixed** — she would have no way to get the code by typing it; clicking the link would still work today via `/auth/callback`, but that's not the flow the UI is built for. Tracked again in Session 34's Gate C and release checklist.
 
 ---
 
