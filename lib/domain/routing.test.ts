@@ -64,6 +64,12 @@ describe("resolveRedirect", () => {
     ).toBe("/onboarding/profile");
   });
 
+  it("lets a consented user without a profile still read a legal page", () => {
+    expect(
+      resolveRedirect({ path: "/legal/privacy", isAuthed: true, hasConsented: true, hasOnboarded: false }),
+    ).toBeNull();
+  });
+
   // Session 15's originally-planned standalone intro carousel is superseded by
   // the delivered mockups' single pre-auth /start screen (Welcome), so
   // /onboarding/intro is no longer a real route -- a stale link to it should
