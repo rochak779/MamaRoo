@@ -50,7 +50,7 @@ describe("recordConsents", () => {
 
     await expect(
       recordConsents({ baseline: true, optionalDataSharing: true, analytics: false, locale: "hi" }),
-    ).rejects.toThrow("REDIRECT:/onboarding/intro");
+    ).rejects.toThrow("REDIRECT:/onboarding/profile");
 
     expect(from).toHaveBeenCalledWith("consents");
     expect(insert).toHaveBeenCalledWith([

@@ -58,10 +58,14 @@ describe("resolveRedirect", () => {
     ).toBe("/onboarding/profile");
   });
 
-  it("lets a consented user without a profile see the onboarding intro", () => {
+  // Session 15's originally-planned standalone intro carousel is superseded by
+  // the delivered mockups' single pre-auth /start screen (Welcome), so
+  // /onboarding/intro is no longer a real route -- a stale link to it should
+  // land on the actual onboarding form, not be treated as an exempt path.
+  it("sends a consented user without a profile away from the retired intro route to the onboarding form", () => {
     expect(
       resolveRedirect({ path: "/onboarding/intro", isAuthed: true, hasConsented: true, hasOnboarded: false }),
-    ).toBeNull();
+    ).toBe("/onboarding/profile");
   });
 
   it("sends a fully onboarded user away from the landing page to Today", () => {
