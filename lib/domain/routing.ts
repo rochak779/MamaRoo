@@ -1,4 +1,4 @@
-const PUBLIC_PATHS = ["/", "/welcome", "/signin", "/signup", "/verify"];
+const PUBLIC_PATHS = ["/", "/welcome", "/start", "/signin", "/signup", "/verify"];
 const LEGAL_PREFIX = "/legal";
 const CONSENT_PATH = "/consent";
 const ONBOARDING_FORM = "/onboarding/profile";

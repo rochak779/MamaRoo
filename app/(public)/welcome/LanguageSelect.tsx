@@ -34,7 +34,7 @@ export function LanguageSelect({ next, onChooseLocale }: LanguageSelectProps) {
   async function handleContinue() {
     if (!selected) return;
     await onChooseLocale(selected);
-    router.push(next ? `/signup?next=${encodeURIComponent(next)}` : "/signup");
+    router.push(next ? `/start?next=${encodeURIComponent(next)}` : "/start");
   }
 
   return (
