@@ -12,6 +12,10 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Delivered design mockups, not application source -- support.js in
+    // particular is the Claude Design canvas runtime, vendored as-is by the
+    // design tool, not code this project authors or ships.
+    "Screens/**",
   ]),
 ]);
 
