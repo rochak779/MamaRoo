@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { env } from "@/lib/env";
 import { createPosthogAnalytics } from "@/lib/analytics/posthog";
 import { noopAnalytics, type Analytics } from "@/lib/analytics/provider";
 import { EVENTS, type EventName, type EventProperties } from "@/lib/analytics/events";
@@ -48,11 +47,19 @@ export function AnalyticsProvider({ userId, analyticsConsented, optionalDataShar
   const wasConsented = useRef(analyticsConsented);
 
   useEffect(() => {
-    if (analytics === noopAnalytics && env.NEXT_PUBLIC_POSTHOG_KEY && env.NEXT_PUBLIC_POSTHOG_HOST) {
-      analytics = createPosthogAnalytics({
-        key: env.NEXT_PUBLIC_POSTHOG_KEY,
-        host: env.NEXT_PUBLIC_POSTHOG_HOST,
-      });
+    // Read directly off process.env, NOT the shared lib/env.ts -- that module's
+    // parseEnv(process.env) call is eager (it throws at import time on an invalid
+    // environment) and was written for server-side startup validation. Next.js
+    // only inlines NEXT_PUBLIC_ vars into the client bundle for a literal,
+    // statically-visible `process.env.NEXT_PUBLIC_X` access like this one; lib/env.ts's
+    // dynamic `parseEnv(process.env)` defeats that, so in the browser its `process.env`
+    // reads back empty and its unconditional validation throws during module
+    // evaluation. That crashed every page, because this AnalyticsProvider is the
+    // first client component ever to import lib/env.ts.
+    const posthogKey = process.env.NEXT_PUBLIC_POSTHOG_KEY;
+    const posthogHost = process.env.NEXT_PUBLIC_POSTHOG_HOST;
+    if (analytics === noopAnalytics && posthogKey && posthogHost) {
+      analytics = createPosthogAnalytics({ key: posthogKey, host: posthogHost });
     }
     // Fires every mount, consented or not: PostHog's own opt-out-by-default state
     // (set in lib/analytics/posthog.ts) is what actually withholds the network

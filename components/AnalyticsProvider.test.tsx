@@ -10,12 +10,11 @@ const fakeAnalytics = {
   reset: vi.fn(),
 };
 
-vi.mock("@/lib/env", () => ({
-  env: {
-    NEXT_PUBLIC_POSTHOG_KEY: "phc_test",
-    NEXT_PUBLIC_POSTHOG_HOST: "https://us.i.posthog.com",
-  },
-}));
+// AnalyticsProvider reads these directly off process.env (see its own comment on
+// why), not through lib/env.ts, so setting them here is what stands in for a
+// configured PostHog project.
+process.env.NEXT_PUBLIC_POSTHOG_KEY = "phc_test";
+process.env.NEXT_PUBLIC_POSTHOG_HOST = "https://us.i.posthog.com";
 
 vi.mock("@/lib/analytics/posthog", () => ({
   createPosthogAnalytics: () => fakeAnalytics,
