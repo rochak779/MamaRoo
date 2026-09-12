@@ -4,15 +4,20 @@ import { NextIntlClientProvider } from "next-intl";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import en from "@/i18n/en.json";
 import { OnboardingForm } from "@/app/(onboarding)/profile/OnboardingForm";
+import { EVENTS } from "@/lib/analytics/events";
 
 const push = vi.fn();
 vi.mock("next/navigation", () => ({
   useRouter: () => ({ push }),
 }));
 
+const track = vi.fn();
+vi.mock("@/components/AnalyticsProvider", () => ({ track: (...args: unknown[]) => track(...args) }));
+
 afterEach(() => {
   sessionStorage.clear();
   push.mockClear();
+  track.mockClear();
 });
 
 function renderForm(onSave = vi.fn().mockResolvedValue({ ok: true as const })) {
@@ -127,6 +132,36 @@ describe("OnboardingForm", () => {
     expect(onSave).toHaveBeenCalledWith(expect.objectContaining({ displayName: "Priyanka" }));
     expect(await screen.findByText(/we are glad you are here/i)).toBeInTheDocument();
     expect(screen.getByText(/priyanka/i)).toBeInTheDocument();
+  });
+
+  it("captures onboarding_step_viewed once per step, in order, starting from step 1", async () => {
+    const user = userEvent.setup();
+    renderForm();
+    expect(track).toHaveBeenCalledWith(EVENTS.onboarding_step_viewed, { step: 1 });
+
+    await passAboutYou(user);
+    expect(track).toHaveBeenCalledWith(EVENTS.onboarding_step_viewed, { step: 2 });
+
+    await passPregnancyStart(user);
+    expect(track).toHaveBeenCalledWith(EVENTS.onboarding_step_viewed, { step: 3 });
+
+    await user.click(screen.getByRole("button", { name: /continue/i })); // Pregnancy Details
+    expect(track).toHaveBeenCalledWith(EVENTS.onboarding_step_viewed, { step: 4 });
+  });
+
+  it("captures onboarding_completed with the due-date method and a count of optional fields filled", async () => {
+    const user = userEvent.setup();
+    renderForm();
+    await passAboutYou(user, "Priyanka");
+    await passPregnancyStart(user);
+    await user.click(screen.getByRole("button", { name: /continue/i })); // Pregnancy Details
+    await user.click(screen.getByRole("button", { name: /continue/i })); // Notification Privacy
+
+    await screen.findByText(/we are glad you are here/i);
+    expect(track).toHaveBeenCalledWith(EVENTS.onboarding_completed, {
+      date_mode: "lmp",
+      optional_fields_filled: 0,
+    });
   });
 
   it("navigates to /today from Journey Ready", async () => {
