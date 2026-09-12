@@ -1,14 +1,24 @@
 import { z } from "zod";
 
+/** An empty string counts as "unset", the same as the key being absent. A .env
+ * file commonly leaves an optional var present but blank (.env.example does
+ * exactly this) rather than omitting it, and `.optional()` alone does not cover
+ * that case: "" is still a defined value, so it still fails a following
+ * `.min(1)` or `.url()` check instead of being treated as absent. */
+const optionalNonEmpty = (inner: z.ZodType<string>) =>
+  z.preprocess((value) => (value === "" ? undefined : value), inner.optional());
+
 const schema = z.object({
   NEXT_PUBLIC_SUPABASE_URL: z.url(),
   NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string().min(1),
   NEXT_PUBLIC_SITE_URL: z.url(),
   // Optional: analytics is vendor-swappable and no-ops without these (see
-  // lib/analytics/provider.ts). Not required so dev and test environments
-  // never need real PostHog credentials just to run the app.
-  NEXT_PUBLIC_POSTHOG_KEY: z.string().min(1).optional(),
-  NEXT_PUBLIC_POSTHOG_HOST: z.url().optional(),
+  // lib/analytics/provider.ts). Validated here only to catch a malformed value
+  // at server startup -- the actual read at runtime is
+  // components/AnalyticsProvider.tsx accessing process.env directly, not this
+  // module (see that component's own comment on why it can't use `env` here).
+  NEXT_PUBLIC_POSTHOG_KEY: optionalNonEmpty(z.string().min(1)),
+  NEXT_PUBLIC_POSTHOG_HOST: optionalNonEmpty(z.url()),
 });
 
 export type Env = z.infer<typeof schema>;
