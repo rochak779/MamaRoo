@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useState } from "react";
+import { useEffect, useId, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/Button";
@@ -8,11 +8,14 @@ import { Input } from "@/components/ui/Input";
 import { Card } from "@/components/ui/Card";
 import { useDraft } from "@/lib/useDraft";
 import { todayInAppZone } from "@/lib/domain/dates";
+import { track } from "@/components/AnalyticsProvider";
+import { EVENTS } from "@/lib/analytics/events";
 import {
   validateOnboarding,
   type DueDateMethod,
   type NotificationPrivacy,
   type OnboardingInput,
+  type OnboardingValue,
   type PregnancyFlag,
   type TwinType,
 } from "@/lib/domain/onboarding";
@@ -99,6 +102,25 @@ export function OnboardingForm({ onSave }: OnboardingFormProps) {
   const emergencyPhoneId = useId();
   const dateId = useId();
 
+  useEffect(() => {
+    const index = STEP_ORDER.indexOf(step as (typeof STEP_ORDER)[number]);
+    if (index !== -1) track(EVENTS.onboarding_step_viewed, { step: index + 1 });
+    // journeyReady isn't in STEP_ORDER (index -1) and isn't a step to view --
+    // it's the completion screen, covered by onboarding_completed instead.
+  }, [step]);
+
+  /** Counts optional fields on the validated value, not the raw draft: birthYear,
+   * weightKg, an emergency contact (name and phone count as one), and any
+   * pregnancy flag. Used only for the onboarding_completed analytics bucket. */
+  function countOptionalFieldsFilled(value: OnboardingValue): number {
+    let count = 0;
+    if (value.birthYear !== null) count++;
+    if (value.weightKg !== null) count++;
+    if (value.emergencyContactName && value.emergencyContactPhone) count++;
+    if (value.pregnancyFlags.length > 0) count++;
+    return count;
+  }
+
   function buildInput() {
     return {
       displayName: draft.displayName,
@@ -167,6 +189,10 @@ export function OnboardingForm({ onSave }: OnboardingFormProps) {
         return;
       }
       setSavedName(result.value.displayName);
+      track(EVENTS.onboarding_completed, {
+        date_mode: result.value.eddSource,
+        optional_fields_filled: countOptionalFieldsFilled(result.value),
+      });
       reset();
       setStep("journeyReady");
     } finally {
