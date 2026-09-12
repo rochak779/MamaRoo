@@ -6511,7 +6511,7 @@ git commit -m "feat(auth): add email OTP and Google sign-in with a pure, fully t
 **Interfaces:**
 - Produces: `recordConsents({ baseline, optionalDataSharing, analytics, locale })` server action; `LEGAL_VERSION` constant.
 
-- [ ] **Step 1: Add the policy version constant**
+- [x] **Step 1: Add the policy version constant**
 
 In `lib/config.ts`:
 
@@ -6520,7 +6520,7 @@ In `lib/config.ts`:
 export const LEGAL_VERSION = "2026-09-11";
 ```
 
-- [ ] **Step 2: Write the failing ConsentForm test**
+- [x] **Step 2: Write the failing ConsentForm test**
 
 Create `app/(auth)/consent/ConsentForm.test.tsx`:
 
@@ -6602,19 +6602,19 @@ describe("ConsentForm", () => {
 });
 ```
 
-- [ ] **Step 3: Run it and watch it fail**
+- [x] **Step 3: Run it and watch it fail**
 
 Run: `npx vitest run "app/(auth)/consent/ConsentForm.test.tsx"`
 Expected: FAIL — module not found.
 
-- [ ] **Step 4: Implement ConsentForm**
+- [x] **Step 4: Implement ConsentForm**
 
 Create `app/(auth)/consent/ConsentForm.tsx`. It renders, in order: a `data-testid="consent-summary"` paragraph of two lines at `text-body`; three `Checkbox` controls (required terms-and-privacy, optional doctor sharing, optional analytics); a `data-testid="consent-links"` block of tertiary links to `/legal/privacy` and `/legal/terms`; the `LanguageSwitcher`; and a primary `Button` carrying `disabledReason` until the required box is ticked. Background is `color-surface-raised`, no illustration, no motion, no motif.
 
 Run: `npx vitest run "app/(auth)/consent/ConsentForm.test.tsx"`
 Expected: PASS.
 
-- [ ] **Step 5: Write the consent-recording server action**
+- [x] **Step 5: Write the consent-recording server action**
 
 Create `app/actions/consent.ts`:
 
@@ -6659,7 +6659,7 @@ export async function recordConsents(input: {
 }
 ```
 
-- [ ] **Step 6: Write the legal drafts**
+- [x] **Step 6: Write the legal drafts**
 
 Create the four markdown files. Each begins with a clearly visible draft marker that a reviewer cannot miss:
 
@@ -6690,7 +6690,7 @@ it("names the residual categories redaction cannot catch", () => {
 });
 ``` Write it in the product's voice, then run the copy validator over it.
 
-- [ ] **Step 7: Add a test that the legal drafts are complete and honest**
+- [x] **Step 7: Add a test that the legal drafts are complete and honest**
 
 Create `tests/guards/legal.test.ts`:
 
@@ -6733,7 +6733,7 @@ describe("legal documents", () => {
 });
 ```
 
-- [ ] **Step 8: Render the legal pages**
+- [x] **Step 8: Render the legal pages**
 
 Create `app/(public)/legal/privacy/page.tsx` and `terms/page.tsx`. Each reads the markdown for the current locale, renders it in the restrained register, and includes the `LanguageSwitcher`. Use a minimal markdown renderer rather than adding a heavy dependency:
 
@@ -6741,7 +6741,7 @@ Create `app/(public)/legal/privacy/page.tsx` and `terms/page.tsx`. Each reads th
 npm i react-markdown
 ```
 
-- [ ] **Step 9: Run the suite and commit**
+- [x] **Step 9: Run the suite and commit**
 
 Run: `npm run verify`
 
