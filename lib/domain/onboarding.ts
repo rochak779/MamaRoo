@@ -3,7 +3,7 @@ import { eddFromIvfTransfer, eddFromLmp, lmpFromEdd, validateLmp } from "@/lib/d
 import { GESTATION_DAYS } from "@/lib/config";
 import en from "@/i18n/en.json";
 
-const t = (key: keyof typeof en.onboarding) => en.onboarding[key];
+const t = (key: keyof typeof en.onboarding.errors) => en.onboarding.errors[key];
 
 const MIN_AGE = 12;
 const MAX_AGE = 70;
@@ -65,7 +65,7 @@ export function validateOnboarding(input: OnboardingInput): OnboardingResult {
 
   const displayName = (input.displayName ?? "").trim();
   if (displayName.length < 1 || displayName.length > 80) {
-    errors.displayName = t("errorNameRequired");
+    errors.displayName = t("nameRequired");
   }
 
   let birthYear: number | null = null;
@@ -73,7 +73,7 @@ export function validateOnboarding(input: OnboardingInput): OnboardingResult {
     const todayYear = Number(input.today.slice(0, 4));
     const age = input.age;
     if (!Number.isFinite(age) || age < MIN_AGE || age > MAX_AGE) {
-      errors.age = t("errorAgeRange");
+      errors.age = t("ageRange");
     } else {
       birthYear = todayYear - Math.trunc(age);
     }
@@ -82,7 +82,7 @@ export function validateOnboarding(input: OnboardingInput): OnboardingResult {
   let weightKg: number | null = null;
   if (input.weightKg !== undefined) {
     if (!Number.isFinite(input.weightKg) || input.weightKg < MIN_WEIGHT_KG || input.weightKg > MAX_WEIGHT_KG) {
-      errors.weightKg = t("errorWeightRange");
+      errors.weightKg = t("weightRange");
     } else {
       weightKg = input.weightKg;
     }
@@ -129,9 +129,9 @@ function validateEmergencyContact(
   const hasName = name.length > 0;
   const hasPhone = digits.length > 0;
 
-  if (hasName && !hasPhone) errors.emergencyContactPhone = t("errorEmergencyContactIncomplete");
-  if (hasPhone && !hasName) errors.emergencyContactName = t("errorEmergencyContactIncomplete");
-  if (hasPhone && digits.length !== 10) errors.emergencyContactPhone = t("errorEmergencyPhoneInvalid");
+  if (hasName && !hasPhone) errors.emergencyContactPhone = t("emergencyContactIncomplete");
+  if (hasPhone && !hasName) errors.emergencyContactName = t("emergencyContactIncomplete");
+  if (hasPhone && digits.length !== 10) errors.emergencyContactPhone = t("emergencyPhoneInvalid");
 
   return {
     emergencyContactName: hasName ? name : null,
@@ -145,7 +145,7 @@ function validateDueDate(
 ): { lmp: string | null; edd: string | null; eddSource: DueDateMethod | null } {
   const method = input.dueDateMethod;
   if (!method) {
-    errors.dueDateMethod = t("errorDueDateMethodRequired");
+    errors.dueDateMethod = t("dueDateMethodRequired");
     return { lmp: null, edd: null, eddSource: null };
   }
 
@@ -157,14 +157,14 @@ function validateDueDate(
   }
 
   if (!input.date || !isValidDateString(input.date)) {
-    errors.date = t("errorDateRequired");
+    errors.date = t("dateRequired");
     return { lmp: null, edd: null, eddSource: null };
   }
 
   if (method === "lmp") {
     const validation = validateLmp({ lmp: input.date, today: input.today });
     if (!validation.ok) {
-      errors.date = validation.reason === "future" ? t("errorDateFuture") : t("errorDateTooOld");
+      errors.date = validation.reason === "future" ? t("dateFuture") : t("dateTooOld");
       return { lmp: null, edd: null, eddSource: null };
     }
     return { lmp: input.date, edd: eddFromLmp(input.date), eddSource: "lmp" };
@@ -175,11 +175,11 @@ function validateDueDate(
   const edd = method === "ivf" ? eddFromIvfTransfer(input.date) : input.date;
   const daysUntilEdd = diffDays(input.today, edd);
   if (daysUntilEdd < -DUE_DATE_PAST_GRACE_DAYS) {
-    errors.date = t("errorDueDatePast");
+    errors.date = t("dueDatePast");
     return { lmp: null, edd: null, eddSource: null };
   }
   if (daysUntilEdd > DUE_DATE_FUTURE_LIMIT_DAYS) {
-    errors.date = t("errorDueDateTooFar");
+    errors.date = t("dueDateTooFar");
     return { lmp: null, edd: null, eddSource: null };
   }
   return { lmp: lmpFromEdd(edd), edd, eddSource: method };
