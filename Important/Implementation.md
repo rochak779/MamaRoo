@@ -7476,17 +7476,25 @@ git commit -m "feat(shell): add app shell with five-tab navigation, offline bann
 
 ## Session 17A: Analytics foundation
 
-**Gate C — request before starting:** ask the product owner for a PostHog project (EU cloud recommended) and its project API key plus host. Confirm in writing that session replay is to be enabled with full input and text masking.
+**Gate C — status:** satisfied 2026-09-12, standalone (not the Vercel Marketplace PostHog integration — Rochak's explicit call). PostHog project on **US cloud** (EU was recommended for a health-data app; Rochak chose to stay on US). Project key and host live in `.env.local` as `NEXT_PUBLIC_POSTHOG_KEY` / `NEXT_PUBLIC_POSTHOG_HOST`. Session replay confirmed enabled with full input and text masking, in writing.
 
 **Goal:** A consent-gated, vendor-swappable analytics layer with a typed event taxonomy and a guard test that makes it impossible to leak health data into an event.
 
 **Files:**
-- Create: `lib/analytics/provider.ts`, `lib/analytics/posthog.ts`, `lib/analytics/events.ts`
+- Create: `lib/analytics/provider.ts` + test, `lib/analytics/posthog.ts` + test, `lib/analytics/events.ts`
 - Create: `lib/analytics/sanitise.ts` (per-event allowlist schemas) + test
 - Create: `components/AnalyticsProvider.tsx` + test
 - Create: `tests/guards/analytics-properties.test.ts`
-- Modify: `app/layout.tsx`, `lib/env.ts`, `.env.example`
-- Modify: `app/actions/consent.ts` (opt in after consent)
+- Modify: `app/layout.tsx`, `lib/env.ts` + test, `.env.example`
+- Modify: `app/actions/consent.ts` (explains why it stays server-only, doesn't call analytics itself)
+- Modify (Step 10 — existing call sites from Sessions 12–17, not in the original block above but named explicitly by Step 10's own text): `app/(public)/welcome/LanguageSelect.tsx` + test, `app/(auth)/AuthForm.tsx` + test, `app/(onboarding)/profile/OnboardingForm.tsx` + test, `components/patterns/BottomNav.tsx` + test
+
+**Deviations from the written plan:**
+- `onboarding_completed`'s `date_mode` is the real five-value `DueDateMethod` (`lmp` / `scan` / `manual` / `ivf` / `unsure`), not the two-value `lmp`/`edd` split this event was originally scoped for — Sessions 15+16 shipped five due-date methods, not two, and bucketing four of them into `"edd"` would misrepresent the funnel. See `lib/analytics/events.ts`.
+- Added one taxonomy-adjacent i18n key not in the original session, `nav.label` (en/hi), for `BottomNav`'s `aria-label`. (Belongs to Session 17, not this one — noted here because it was added while wiring `tab_viewed`.)
+- **Google OAuth's `signup_completed` / `signin_completed` are not captured.** `AuthForm` captures `signup_started`/`signup_completed`/`signin_completed` for the email-OTP path, and `signup_started` for Google (fired client-side before the redirect). But Google's *completion* is only observable in `app/auth/callback/route.ts`, a server route handler with no analytics access (`posthog-js` is a browser SDK) and no reliable way to tell a first-time signup apart from a returning signin from session state alone. Flagging as a known gap rather than forcing a fragile fix; revisit if Google sign-in funnel data turns out to matter.
+- **Found and fixed a launch-blocking bug while wiring `app/layout.tsx`:** `lib/env.ts`'s `parseEnv(process.env)` runs eagerly at module load and throws on an invalid environment — fine for its original server-only callers, but `AnalyticsProvider` (a client component) was the first thing to ever import `lib/env.ts` from client code. Next.js can only inline `NEXT_PUBLIC_` vars into the client bundle for a literal, statically-visible `process.env.X` access; `lib/env.ts`'s dynamic `parseEnv(process.env)` defeats that, so in the browser `process.env` read back empty and the unconditional validation threw during module evaluation — crashing every single page behind Next's global error boundary ("This page couldn't load"). Caught by the `npm run test:e2e` launched-app pass (axe and several auth/onboarding specs failed with the page never rendering, not with an assertion failure). Fixed by having `AnalyticsProvider` read `process.env.NEXT_PUBLIC_POSTHOG_KEY`/`HOST` directly instead of through `lib/env.ts`. `lib/supabase/browser.ts` has the same `@/lib/env` import and is dead code (zero call sites) — it was never actually bundled client-side, which is why this had never surfaced before.
+- Also hardened `lib/env.ts` itself: `.optional()` alone doesn't tolerate an empty string (`""` is still a defined value, so it still failed `.min(1)`/`.url()`), which matters because `.env.example` shows the PostHog vars commented out (`# NEXT_PUBLIC_POSTHOG_KEY=`) and an uncommented-but-blank line is an easy slip. Empty string is now treated the same as absent.
 
 **Interfaces:**
 - Produces:
@@ -7495,13 +7503,13 @@ git commit -m "feat(shell): add app shell with five-tab navigation, offline bann
   - `EVENTS` taxonomy and the `EventName` union
   - `EVENT_SCHEMAS` (one strict schema per event) and `validateEvent(event, props)`, which throws on an unknown event, an undeclared key, or an out-of-range value
 
-- [ ] **Step 1: Install PostHog**
+- [x] **Step 1: Install PostHog**
 
 ```bash
 npm i posthog-js
 ```
 
-- [ ] **Step 2: Define the event taxonomy as types, not strings**
+- [x] **Step 2: Define the event taxonomy as types, not strings**
 
 Create `lib/analytics/events.ts`:
 
@@ -7582,7 +7590,7 @@ export interface EventProperties {
 
 Every property above is a bucket, an enum, a count or a boolean. `checkin_submitted` carries a length bucket rather than the text, which is the pattern to follow for anything she typed.
 
-- [ ] **Step 3: Write the failing event-schema test**
+- [x] **Step 3: Write the failing event-schema test**
 
 Create `lib/analytics/sanitise.test.ts`:
 
@@ -7659,7 +7667,7 @@ describe("validateEvent", () => {
 
 The last two tests keep `events.ts` and the schema map from drifting apart, which is the way an allowlist usually fails in practice: someone adds an event and forgets the schema, and it either throws in production or, worse, gets a permissive schema to make the error go away.
 
-- [ ] **Step 4: Run it, watch it fail, then implement**
+- [x] **Step 4: Run it, watch it fail, then implement**
 
 Create `lib/analytics/sanitise.ts`. **This is an allowlist, not a denylist.** A list of forbidden key names does not work: `{ condition: "bleeding" }` passes every such list while carrying exactly the data the rule exists to stop. Instead each event declares the exact keys it may carry and the exact values each key may hold, and anything else is rejected.
 
@@ -7773,7 +7781,7 @@ export function validateEvent(event: string, properties: Record<string, unknown>
 Run: `npx vitest run lib/analytics/sanitise.test.ts`
 Expected: PASS.
 
-- [ ] **Step 5: Define the provider interface and the PostHog implementation**
+- [x] **Step 5: Define the provider interface and the PostHog implementation**
 
 Create `lib/analytics/provider.ts`:
 
@@ -7842,11 +7850,11 @@ export function createPosthogAnalytics({ key, host }: { key: string; host: strin
 
 `autocapture: false` is not a performance choice. Autocapture records the text of elements people click, which on this product would sweep up medicine names and symptom text.
 
-- [ ] **Step 6: Write the failing AnalyticsProvider test**
+- [x] **Step 6: Write the failing AnalyticsProvider test**
 
 Assert: it does not call `optIn` when no analytics consent is present; it calls `optIn` and `identify` when consent is present and a user id is given; it calls `optOut` and `reset` when consent is withdrawn; and `track()` is a no-op with no provider mounted.
 
-- [ ] **Step 7: Implement AnalyticsProvider and the `track` helper**
+- [x] **Step 7: Implement AnalyticsProvider and the `track` helper**
 
 `components/AnalyticsProvider.tsx` is a client component taking `{ userId, analyticsConsented }`, creating the provider once, and calling `optIn`/`identify` or `optOut`/`reset` accordingly. It exposes `track` through a module-level reference so any component can call `track(EVENTS.tab_viewed, { tab: "today" })` without threading context.
 
@@ -7862,11 +7870,11 @@ const consents = user ? await getCurrentConsents(supabase) : null;
 
 Add a test asserting that a `granted: true` followed by a `granted: false` analytics row results in `analyticsConsented === false`, which is the consumer-side half of the withdrawal path.
 
-- [ ] **Step 8: Opt in at the moment of consent**
+- [x] **Step 8: Opt in at the moment of consent**
 
 In `app/actions/consent.ts`, after the insert succeeds, nothing changes server-side; the provider picks up the new consent on the next render. Add a test asserting that `consent_granted` is the first event captured after consent, and that nothing is captured before it.
 
-- [ ] **Step 9: Add the repo-wide analytics guard**
+- [x] **Step 9: Add the repo-wide analytics guard**
 
 Create `tests/guards/analytics-properties.test.ts`:
 
@@ -7919,11 +7927,11 @@ describe("analytics discipline", () => {
 });
 ```
 
-- [ ] **Step 10: Emit the events that already have screens**
+- [x] **Step 10: Emit the events that already have screens**
 
 Add `app_opened`, `language_chosen`, `signup_started`, `signup_completed`, `signin_completed`, `consent_granted`, `onboarding_step_viewed`, `onboarding_completed` and `tab_viewed` at their existing call sites from Sessions 12 to 17.
 
-- [ ] **Step 11: Verify and commit**
+- [x] **Step 11: Verify and commit**
 
 Run: `npm run verify`
 
