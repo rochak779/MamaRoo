@@ -679,6 +679,28 @@
       "uploadFailed": "फ़ाइल अपलोड नहीं हुई। फिर कोशिश करें।"
     }
   },
+  "foodSafety": {
+    "heading": "खाने की सुरक्षा",
+    "searchPlaceholder": "आप क्या ढूँढ रही हैं",
+    "micAriaLabel": "आवाज़ से खोजें",
+    "browseLabel": "अक्सर खोजे जाने वाले",
+    "commonlySearched": {
+      "papaya": "पपीता",
+      "paneer": "पनीर",
+      "teaCoffee": "चाय और कॉफ़ी",
+      "sprouts": "अंकुरित अनाज",
+      "pickles": "अचार",
+      "fish": "मछली"
+    },
+    "status": {
+      "safe": "सुरक्षित",
+      "moderation": "सीमित मात्रा में",
+      "avoid": "न खाना बेहतर है"
+    },
+    "citation": "{productName} की मेडिकल टीम द्वारा समीक्षित",
+    "notFound": "यह जानकारी अभी हमारे पास नहीं है। अगर आप निश्चित न हों, तो अपने डॉक्टर से पूछें।",
+    "backLabel": "गाइड पर वापस जाएँ"
+  },
   "questions": {
     "title": "डॉक्टर से पूछने के सवाल",
     "appointmentWith": "{name} के साथ मेरी मुलाक़ात के लिए, {date} को",

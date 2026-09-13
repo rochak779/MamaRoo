@@ -558,6 +558,42 @@ export type Database = {
           },
         ]
       }
+      food_safety_items: {
+        Row: {
+          created_at: string
+          id: string
+          is_active: boolean
+          locale: string
+          long_text: string
+          name: string
+          short_text: string
+          sort_order: number
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          locale: string
+          long_text: string
+          name: string
+          short_text: string
+          sort_order?: number
+          status: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          locale?: string
+          long_text?: string
+          name?: string
+          short_text?: string
+          sort_order?: number
+          status?: string
+        }
+        Relationships: []
+      }
       kick_events: {
         Row: {
           id: string

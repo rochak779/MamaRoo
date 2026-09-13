@@ -679,6 +679,28 @@
       "uploadFailed": "The file didn't upload. Try again."
     }
   },
+  "foodSafety": {
+    "heading": "Food safety",
+    "searchPlaceholder": "What are you looking for",
+    "micAriaLabel": "Search by voice",
+    "browseLabel": "Commonly searched",
+    "commonlySearched": {
+      "papaya": "Papaya",
+      "paneer": "Paneer",
+      "teaCoffee": "Tea and coffee",
+      "sprouts": "Sprouts",
+      "pickles": "Pickles",
+      "fish": "Fish"
+    },
+    "status": {
+      "safe": "Safe",
+      "moderation": "In moderation",
+      "avoid": "Better to avoid"
+    },
+    "citation": "Reviewed by {productName}'s medical team",
+    "notFound": "We don't have this one yet, ask your doctor if you're unsure.",
+    "backLabel": "Back to Guide"
+  },
   "questions": {
     "title": "Questions for my doctor",
     "appointmentWith": "For my visit with {name}, on {date}",
