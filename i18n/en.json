@@ -22,10 +22,10 @@
   },
   "nav": {
     "today": "Today",
-    "baby": "My Baby",
-    "care": "My Care",
-    "reading": "Reading",
-    "profile": "Profile",
+    "baby": "Baby",
+    "care": "Care",
+    "guide": "Guide",
+    "me": "Me",
     "label": "Main navigation"
   },
   "babyName": {

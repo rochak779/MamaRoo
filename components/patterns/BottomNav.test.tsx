@@ -30,24 +30,24 @@ describe("BottomNav", () => {
       "/today",
       "/baby",
       "/care",
-      "/reading",
-      "/profile",
+      "/guide",
+      "/me",
     ]);
   });
 
   it("marks the active tab for assistive technology", () => {
     renderNav("/care");
-    expect(screen.getByRole("link", { name: /my care/i })).toHaveAttribute("aria-current", "page");
+    expect(screen.getByRole("link", { name: /^care$/i })).toHaveAttribute("aria-current", "page");
   });
 
   it("signals the active tab with a weight change as well as colour", () => {
     renderNav("/care");
-    expect(screen.getByRole("link", { name: /my care/i }).className).toContain("font-medium");
+    expect(screen.getByRole("link", { name: /^care$/i }).className).toContain("font-medium");
   });
 
   it("treats a sub-route as its parent tab", () => {
     renderNav("/care/medicines");
-    expect(screen.getByRole("link", { name: /my care/i })).toHaveAttribute("aria-current", "page");
+    expect(screen.getByRole("link", { name: /^care$/i })).toHaveAttribute("aria-current", "page");
   });
 
   it("meets the touch target on every tab", () => {
@@ -74,7 +74,7 @@ describe("BottomNav", () => {
   it("captures tab_viewed with the tapped tab", async () => {
     const user = userEvent.setup();
     renderNav("/today");
-    await user.click(screen.getByRole("link", { name: /my care/i }));
+    await user.click(screen.getByRole("link", { name: /^care$/i }));
     expect(track).toHaveBeenCalledWith(EVENTS.tab_viewed, { tab: "care" });
   });
 });

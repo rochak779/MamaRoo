@@ -53,7 +53,7 @@ export interface EventProperties {
   // originally scoped for. Bucketing four of the five into "edd" would misrepresent
   // the funnel, so the schema tracks the real domain type instead.
   onboarding_completed: { date_mode: DueDateMethod; optional_fields_filled: number };
-  tab_viewed: { tab: "today" | "baby" | "care" | "reading" | "profile" };
+  tab_viewed: { tab: "today" | "baby" | "care" | "guide" | "me" };
   // feeling is the optional quick-select chip she tapped on Today (Session
   // 18.2), never the text itself -- kept nullable because free text stays
   // the only required field.
