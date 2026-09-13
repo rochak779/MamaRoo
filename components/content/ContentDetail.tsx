@@ -118,6 +118,7 @@ export function ContentDetail({ item, isFallback, transcript, backHref, backLabe
         <h1 id="content-title" className="font-display text-h1 font-semibold text-text-primary">
           {item.title}
         </h1>
+        <p className="mt-xs text-caption italic text-accent-secondary">{item.citation}</p>
         {isFallback && <p className="mt-xs text-caption text-text-secondary">{t("common.englishOnly")}</p>}
         {item.narration_url && (
           <AudioIndicator

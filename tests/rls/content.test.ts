@@ -1,5 +1,10 @@
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { admin, asUser, resetUsers, uniqueEmail } from "./helpers";
+import { PRODUCT_NAME } from "@/lib/config";
+
+// tests/guards/product-name.test.ts forbids the literal product name outside
+// lib/config.ts, so fixtures build the real citation copy from PRODUCT_NAME.
+const CURATED_CITATION = `Reviewed by ${PRODUCT_NAME}'s medical team`;
 
 let alice: Awaited<ReturnType<typeof asUser>>;
 
@@ -22,6 +27,7 @@ describe("content tables", () => {
       kind: "article",
       title: "Draft",
       body_md: "## Draft",
+      citation: CURATED_CITATION,
       is_published: false,
     });
     const { data } = await alice.client.from("content_items").select("slug").eq("slug", "draft-only");
@@ -35,6 +41,7 @@ describe("content tables", () => {
       kind: "article",
       title: "Mine",
       body_md: "## Mine",
+      citation: CURATED_CITATION,
     });
     expect(error).not.toBeNull();
   });

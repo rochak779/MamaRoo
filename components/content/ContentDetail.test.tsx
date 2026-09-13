@@ -2,16 +2,23 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { NextIntlClientProvider } from "next-intl";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { ContentDetail } from "@/app/(app)/reading/[slug]/ContentDetail";
+import { ContentDetail } from "@/components/content/ContentDetail";
 import en from "@/i18n/en.json";
 import { EVENTS } from "@/lib/analytics/events";
 import type { ContentItemRow } from "@/lib/supabase/queries/content";
+import { PRODUCT_NAME } from "@/lib/config";
 
 const track = vi.fn();
 vi.mock("@/components/AnalyticsProvider", () => ({ track: (...args: unknown[]) => track(...args) }));
 
+// tests/guards/product-name.test.ts forbids the literal product name outside
+// lib/config.ts, so this fixture builds the real citation copy from PRODUCT_NAME.
+const CURATED_CITATION = `Reviewed by ${PRODUCT_NAME}'s medical team`;
+
 const baseItem: ContentItemRow = {
   body_md: "A full transcript for reading along.",
+  category: null,
+  citation: CURATED_CITATION,
   created_at: "2026-09-12T00:00:00Z",
   duration_seconds: 290,
   id: "content-1",
@@ -94,6 +101,11 @@ describe("ContentDetail", () => {
     expect(screen.getByRole("heading", { name: en.today.listen.notFoundTitle })).toBeInTheDocument();
     expect(screen.getByText(en.today.listen.notFoundBody)).toBeInTheDocument();
     expect(screen.getByRole("link", { name: en.today.backToToday })).toHaveAttribute("href", "/today");
+  });
+
+  it("shows the item's own citation beneath the title, for every kind", () => {
+    renderDetail({ citation: "Source: Mayo Clinic pregnancy guide" });
+    expect(screen.getByText("Source: Mayo Clinic pregnancy guide")).toBeInTheDocument();
   });
 
   it("marks fallback-locale content", () => {

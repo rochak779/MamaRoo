@@ -709,5 +709,71 @@
       "mark": "This couldn't be updated. Try again.",
       "voice": "We couldn't hear that. You can still type."
     }
+  },
+  "guide": {
+    "heading": "Your guide",
+    "subheading": "Everything you're wondering about, gathered in one place.",
+    "cards": {
+      "trimester": {
+        "label": "Trimester",
+        "body": "Know what's changing in your body and your baby, month by month."
+      },
+      "checkups": {
+        "label": "Checkups",
+        "body": "Keep track of every visit and what your doctor wants you to watch for."
+      },
+      "eatingWell": {
+        "label": "Eating well",
+        "body": "Simple meals for each trimester, and what's safe to eat right now."
+      },
+      "stayingActive": {
+        "label": "Staying active",
+        "body": "Gentle movement and rest, matched to how you're feeling."
+      },
+      "medicines": {
+        "label": "Medicines",
+        "body": "What iron, calcium and folic acid do, and when to take them."
+      },
+      "birth": {
+        "label": "Birth",
+        "body": "What to expect on the day, and how to prepare your hospital bag."
+      },
+      "afterBirth": {
+        "label": "After birth",
+        "body": "Healing, feeding and rest for the weeks right after delivery."
+      },
+      "commonQuestions": {
+        "label": "Common questions",
+        "body": "Quick answers and government schemes you may be able to use."
+      }
+    },
+    "backLabel": "Back to Guide",
+    "trimester": {
+      "heading": "By trimester",
+      "currentBadge": "Where you are now",
+      "stage1": {
+        "weeks": "Weeks 1 to 13",
+        "title": "First trimester",
+        "body": "Early changes, how you might feel, and what your first checkups look like."
+      },
+      "stage2": {
+        "weeks": "Weeks 14 to 27",
+        "title": "Second trimester",
+        "body": "Often the easier stretch. Your bump grows, and you may feel your baby move."
+      },
+      "stage3": {
+        "weeks": "Weeks 28 to 42",
+        "title": "Third trimester",
+        "body": "Getting ready for birth, what to pack, and what your body is doing to prepare."
+      }
+    },
+    "topics": {
+      "empty": "More on this is coming soon.",
+      "watchMinutes": "{minutes} min watch",
+      "listenMinutes": "{minutes} min listen",
+      "articleLabel": "Article",
+      "foodSafetyBannerTitle": "Check if a food is safe",
+      "foodSafetyBannerBody": "Search foods by name for a safe, moderate or avoid guide."
+    }
   }
 }

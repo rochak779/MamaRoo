@@ -310,6 +310,8 @@ export type Database = {
       content_items: {
         Row: {
           body_md: string | null
+          category: string | null
+          citation: string
           created_at: string
           duration_seconds: number | null
           id: string
@@ -327,6 +329,8 @@ export type Database = {
         }
         Insert: {
           body_md?: string | null
+          category?: string | null
+          citation: string
           created_at?: string
           duration_seconds?: number | null
           id?: string
@@ -344,6 +348,8 @@ export type Database = {
         }
         Update: {
           body_md?: string | null
+          category?: string | null
+          citation?: string
           created_at?: string
           duration_seconds?: number | null
           id?: string
