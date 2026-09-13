@@ -82,7 +82,7 @@ export function BottomNav({ activePath }: { activePath: string }) {
             onClick={() => track(EVENTS.tab_viewed, { tab: labelKey })}
             className={cn(
               "tap-target flex min-h-[56px] min-w-0 flex-1 flex-col items-center gap-xs rounded-sm px-[2px] py-sm hover:bg-text-primary/5",
-              isActive ? "font-medium text-text-primary" : "text-text-primary/45",
+              isActive ? "font-medium text-text-primary" : "text-text-primary/65",
             )}
           >
             <span className="flex h-[22px] items-center justify-center">
