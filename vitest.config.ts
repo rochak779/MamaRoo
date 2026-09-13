@@ -8,7 +8,14 @@ export default defineConfig({
     environment: "jsdom",
     setupFiles: ["./vitest.setup.ts"],
     include: ["**/*.test.{ts,tsx}"],
-    exclude: ["tests/e2e/**", "node_modules/**"],
+    // "node_modules/**" alone only matches the root node_modules -- it does
+    // not stop the include glob from walking into a nested one. Parallel
+    // Claude/Codex sessions leave their own checkouts (and node_modules)
+    // under .claude/worktrees/, so without "**/node_modules/**" a full run
+    // discovers and executes every dependency's own test suite from inside
+    // each worktree too (confirmed: 251 files failing there, unrelated to
+    // this project, on a run made to verify Session 30).
+    exclude: ["tests/e2e/**", "**/node_modules/**", ".claude/worktrees/**"],
     globals: true,
     // tests/rls/*.test.ts share a `resetUsers()` helper that wipes every @rls.test
     // user against one live Supabase project. Vitest's default is to run test files

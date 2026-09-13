@@ -15,7 +15,23 @@ const sql = readdirSync("supabase/migrations")
 // "Important" holds the planning and review documents, which discuss the prohibition
 // by name and ship nothing. It is excluded as a directory rather than by filename so
 // moving or adding a document cannot silently break the guard.
-const EXCLUDED_DIRS = new Set(["node_modules", ".git", ".next", "coverage", "android", "playwright-report", "Important"]);
+// "Screens" is the same category: raw designer-supplied HTML mockups, never committed
+// to git (confirmed against the repository's own history) and never built as-is --
+// their copy gets reviewed and re-authored into i18n/*.json, which this guard already
+// scans. Left included, a mockup's own casual word choice (e.g. a Guide FAQ artboard
+// discussing "gender" as a topic mothers ask about) fails this guard locally with
+// nothing to fix in shipped code, which is exactly the kind of always-red guard the
+// MATCHER_FILES comment above warns invites being weakened.
+const EXCLUDED_DIRS = new Set([
+  "node_modules",
+  ".git",
+  ".next",
+  "coverage",
+  "android",
+  "playwright-report",
+  "Important",
+  "Screens",
+]);
 const SCANNED_EXTENSIONS = [".ts", ".tsx", ".json", ".md", ".sql", ".html", ".webmanifest"];
 
 /**
