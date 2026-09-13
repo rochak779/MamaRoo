@@ -17,7 +17,7 @@
     "db:reset": "supabase db reset",
     "db:types": "supabase gen types typescript --local | node scripts/gen-db-types.mjs > lib/supabase/database.types.ts",
     "db:seed": "supabase db reset --local --sql-paths ./seed/content.reviewed.sql",
-    "db:seed:placeholder": "supabase db reset --local --sql-paths ./seed/content.placeholder.sql ./seed/food_safety.placeholder.sql"
+    "db:seed:placeholder": "supabase db reset --local --sql-paths ./seed/content.placeholder.sql ./seed/food_safety.placeholder.sql ./seed/guide_faqs.placeholder.sql"
   },
   "dependencies": {
     "@phosphor-icons/react": "^2.1.10",

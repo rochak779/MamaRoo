@@ -732,6 +732,13 @@
       "voice": "We couldn't hear that. You can still type."
     }
   },
+  "commonQuestions": {
+    "heading": "Common questions",
+    "citation": "Reviewed by {productName}'s medical team",
+    "schemesTitle": "Government schemes and support",
+    "schemesSubtitle": "Help you may be able to use, based on where you live.",
+    "backLabel": "Back to Guide"
+  },
   "guide": {
     "heading": "Your guide",
     "subheading": "Everything you're wondering about, gathered in one place.",

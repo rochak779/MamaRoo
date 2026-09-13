@@ -600,6 +600,69 @@ export type Database = {
         }
         Relationships: []
       }
+      guide_faqs: {
+        Row: {
+          answer: string
+          created_at: string
+          id: string
+          is_active: boolean
+          locale: string
+          question: string
+          sort_order: number
+        }
+        Insert: {
+          answer: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          locale: string
+          question: string
+          sort_order?: number
+        }
+        Update: {
+          answer?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          locale?: string
+          question?: string
+          sort_order?: number
+        }
+        Relationships: []
+      }
+      guide_schemes: {
+        Row: {
+          created_at: string
+          id: string
+          is_active: boolean
+          locale: string
+          long_text: string
+          name: string
+          short_text: string
+          sort_order: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          locale: string
+          long_text: string
+          name: string
+          short_text: string
+          sort_order?: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          locale?: string
+          long_text?: string
+          name?: string
+          short_text?: string
+          sort_order?: number
+        }
+        Relationships: []
+      }
       kick_events: {
         Row: {
           id: string
