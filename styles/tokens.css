@@ -88,9 +88,11 @@
   /* Font families are bound in app/layout.tsx via next/font variables.
      --font-body is Mukta app-wide per Design-updated.md §3 (replaces Hind);
      --font-hind stays loaded because styles/landing.css still needs it to
-     pin the waitlist's frozen typography. */
+     pin the waitlist's frozen typography. Patrick Hand is reserved for the
+     composing and reading surfaces in Letters to Baby. */
   --font-display: var(--font-poppins), system-ui, sans-serif;
   --font-body: var(--font-mukta), system-ui, sans-serif;
+  --font-letter: var(--font-patrick-hand), cursive;
 }
 
 :root {

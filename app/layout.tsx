@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Poppins, Hind, Mukta } from "next/font/google";
+import { Poppins, Hind, Mukta, Patrick_Hand } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
 import { PRODUCT_NAME } from "@/lib/config";
@@ -36,6 +36,13 @@ const mukta = Mukta({
   display: "swap",
 });
 
+const patrickHand = Patrick_Hand({
+  subsets: ["latin"],
+  weight: "400",
+  variable: "--font-patrick-hand",
+  display: "swap",
+});
+
 export const metadata: Metadata = {
   title: `${PRODUCT_NAME} | Coming soon`,
   description:
@@ -64,7 +71,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const consents = user ? await getCurrentConsents(supabase) : null;
 
   return (
-    <html lang={locale} className={`${poppins.variable} ${hind.variable} ${mukta.variable}`}>
+    <html lang={locale} className={`${poppins.variable} ${hind.variable} ${mukta.variable} ${patrickHand.variable}`}>
       <body className="min-h-dvh bg-bg text-text-primary font-body">
         <NextIntlClientProvider messages={messages} locale={locale}>
           <AnalyticsProvider

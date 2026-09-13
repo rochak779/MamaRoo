@@ -569,6 +569,44 @@ export type Database = {
           },
         ]
       }
+      letters: {
+        Row: {
+          body: string
+          created_at: string
+          gestational_week: number
+          id: string
+          pregnancy_id: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          gestational_week: number
+          id?: string
+          pregnancy_id?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          gestational_week?: number
+          id?: string
+          pregnancy_id?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "letters_pregnancy_owned_by_same_user"
+            columns: ["pregnancy_id", "user_id"]
+            isOneToOne: false
+            referencedRelation: "pregnancies"
+            referencedColumns: ["id", "user_id"]
+          },
+        ]
+      }
       medicine_logs: {
         Row: {
           id: string

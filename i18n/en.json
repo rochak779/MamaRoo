@@ -347,6 +347,36 @@
     "agreeAndContinue": "Agree and continue",
     "agreeRequired": "Agree to the terms to continue"
   },
+  "letters": {
+    "title": "Letters to baby",
+    "subtitle": "A quiet place for the words you want to keep.",
+    "writeLetter": "Write a letter",
+    "empty": "No letters yet. When you're ready, your first one can begin here.",
+    "weekLabel": "Week {week}",
+    "meta": "{week} · {date}",
+    "openLetter": "Read your letter from {date}",
+    "composeTitle": "Write to your baby",
+    "editTitle": "Edit your letter",
+    "readTitle": "Your letter",
+    "bodyLabel": "Your letter",
+    "placeholder": "Dear little one,\n\nToday I wanted to tell you...",
+    "characterCount": "{count} of {max}",
+    "save": "Save letter",
+    "saveChanges": "Save changes",
+    "cancel": "Cancel",
+    "edit": "Edit letter",
+    "backToBaby": "Back to My Baby",
+    "backToLetters": "Back to letters",
+    "savedToast": "Your letter is saved.",
+    "updatedToast": "Your letter is updated.",
+    "offline": "You're offline right now. Reconnect to save your letter.",
+    "errors": {
+      "empty": "Write a few words before saving your letter.",
+      "tooLong": "Keep your letter to 4,000 characters or fewer.",
+      "invalid": "Check your letter and try again.",
+      "save": "Your letter couldn't be saved. Try again."
+    }
+  },
   "baby": {
     "weekTag": "Week {week} · stage {stage} of {total}",
     "weekTagTwins": "Week {week} · stage {stage} of {total} for each baby",
