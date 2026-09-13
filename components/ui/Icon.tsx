@@ -1,3 +1,5 @@
+"use client";
+
 import * as Phosphor from "@phosphor-icons/react";
 
 const SIZES = { inline: 18, default: 24, nav: 26, hero: 40 } as const;
