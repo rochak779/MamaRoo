@@ -310,6 +310,8 @@ export type Database = {
       content_items: {
         Row: {
           body_md: string | null
+          category: string | null
+          citation: string
           created_at: string
           duration_seconds: number | null
           id: string
@@ -327,6 +329,8 @@ export type Database = {
         }
         Insert: {
           body_md?: string | null
+          category?: string | null
+          citation: string
           created_at?: string
           duration_seconds?: number | null
           id?: string
@@ -344,6 +348,8 @@ export type Database = {
         }
         Update: {
           body_md?: string | null
+          category?: string | null
+          citation?: string
           created_at?: string
           duration_seconds?: number | null
           id?: string
@@ -557,6 +563,42 @@ export type Database = {
             referencedColumns: ["id", "user_id"]
           },
         ]
+      }
+      food_safety_items: {
+        Row: {
+          created_at: string
+          id: string
+          is_active: boolean
+          locale: string
+          long_text: string
+          name: string
+          short_text: string
+          sort_order: number
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          locale: string
+          long_text: string
+          name: string
+          short_text: string
+          sort_order?: number
+          status: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          locale?: string
+          long_text?: string
+          name?: string
+          short_text?: string
+          sort_order?: number
+          status?: string
+        }
+        Relationships: []
       }
       kick_events: {
         Row: {

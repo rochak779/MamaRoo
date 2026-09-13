@@ -1,0 +1,42 @@
+-- PLACEHOLDER MEDICAL CONTENT. Replace with reviewed copy before production use.
+-- English rows reproduce the designer mock verbatim; Hindi rows are temporary translations.
+
+insert into public.food_safety_items
+  (locale, name, status, short_text, long_text, sort_order)
+values
+  ('en', 'Papaya (ripe)', 'safe',
+   'Ripe papaya is fine in normal amounts.',
+   'Raw or unripe papaya is the one to skip, since it can affect your pregnancy. Ripe, fully yellow papaya eaten in usual amounts is a different matter and is considered safe.', 10),
+  ('en', 'Papaya (raw or unripe)', 'avoid',
+   'Better to avoid raw or unripe papaya during pregnancy.',
+   'It contains a substance that can trigger contractions in larger amounts. Ripe papaya does not carry the same concern, so that stays fine to eat.', 20),
+  ('en', 'Paneer', 'safe',
+   'Paneer made at home or from pasteurised milk is safe.',
+   'It is a good source of protein and calcium through your pregnancy. If you are buying it from outside, ask whether it was made with pasteurised milk.', 30),
+  ('en', 'Papad and pickles', 'moderation',
+   'Fine occasionally, but easy to overdo on salt.',
+   'A small serving now and then is not a concern. Eating them daily adds up in sodium, which is worth watching, especially if your doctor has mentioned your blood pressure.', 40),
+  ('en', 'Tea and coffee', 'moderation',
+   'One or two cups a day is generally fine.',
+   'Caffeine crosses to your baby, so most doctors suggest keeping it moderate, around two hundred milligrams a day, roughly one or two cups.', 50),
+  ('en', 'Raw sprouts', 'avoid',
+   'Better to avoid raw sprouts, cooked ones are fine.',
+   'Raw sprouts can carry bacteria that are riskier during pregnancy. Cooking them well removes that concern, so a warm sprout salad is a good alternative.', 60),
+  ('hi', 'पपीता (पका हुआ)', 'safe',
+   'पका हुआ पपीता सामान्य मात्रा में खाना ठीक है।',
+   'कच्चा या अधपका पपीता न खाना बेहतर है, क्योंकि वह गर्भावस्था को प्रभावित कर सकता है। पूरी तरह पीला, पका हुआ पपीता सामान्य मात्रा में खाना अलग बात है और सुरक्षित माना जाता है।', 10),
+  ('hi', 'पपीता (कच्चा या अधपका)', 'avoid',
+   'गर्भावस्था में कच्चा या अधपका पपीता न खाना बेहतर है।',
+   'इसमें एक ऐसा पदार्थ होता है जो अधिक मात्रा में संकुचन शुरू कर सकता है। पके पपीते में यही चिंता नहीं होती, इसलिए उसे खाना ठीक है।', 20),
+  ('hi', 'पनीर', 'safe',
+   'घर का बना या पाश्चुरीकृत दूध से बना पनीर सुरक्षित है।',
+   'गर्भावस्था के दौरान यह प्रोटीन और कैल्शियम का अच्छा स्रोत है। बाहर से खरीदते समय पूछें कि पनीर पाश्चुरीकृत दूध से बना है या नहीं।', 30),
+  ('hi', 'पापड़ और अचार', 'moderation',
+   'कभी-कभी खाना ठीक है, लेकिन नमक अधिक हो सकता है।',
+   'कभी-कभार थोड़ी मात्रा चिंता की बात नहीं है। रोज़ खाने से सोडियम बढ़ सकता है, खासकर अगर डॉक्टर ने आपके रक्तचाप के बारे में कुछ कहा हो।', 40),
+  ('hi', 'चाय और कॉफ़ी', 'moderation',
+   'दिन में एक या दो कप आम तौर पर ठीक हैं।',
+   'कैफ़ीन आपके शिशु तक पहुँचता है, इसलिए अधिकतर डॉक्टर इसे सीमित रखने की सलाह देते हैं—दिन में लगभग दो सौ मिलीग्राम, यानी करीब एक या दो कप।', 50),
+  ('hi', 'कच्चे अंकुरित अनाज', 'avoid',
+   'कच्चे अंकुरित अनाज न खाना बेहतर है; पके हुए ठीक हैं।',
+   'कच्चे अंकुरित अनाज में ऐसे बैक्टीरिया हो सकते हैं जो गर्भावस्था में अधिक जोखिम भरे होते हैं। अच्छी तरह पकाने से यह चिंता दूर हो जाती है, इसलिए गर्म अंकुरित सलाद अच्छा विकल्प है।', 60);

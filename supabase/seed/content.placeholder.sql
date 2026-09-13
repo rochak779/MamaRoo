@@ -4,14 +4,47 @@
 -- replaced by the product owner's reviewed corpus in Session 19 and Session 29.
 -- ============================================================================
 
-insert into public.content_items (slug, locale, kind, title, summary, body_md, week_min, week_max, is_published)
+insert into public.content_items (slug, locale, kind, title, summary, body_md, week_min, week_max, citation, is_published)
 values
   ('placeholder-rest', 'en', 'article', 'Placeholder: resting well',
    'Placeholder summary. Not medical content.',
-   '## Placeholder\n\nThis text is a placeholder and carries no medical meaning.', 1, 42, true),
+   '## Placeholder\n\nThis text is a placeholder and carries no medical meaning.', 1, 42,
+   'Placeholder citation. Not medical content.', true),
   ('placeholder-food', 'en', 'article', 'Placeholder: eating well',
    'Placeholder summary. Not medical content.',
-   '## Placeholder\n\nThis text is a placeholder and carries no medical meaning.', 1, 42, true);
+   '## Placeholder\n\nThis text is a placeholder and carries no medical meaning.', 1, 42,
+   'Placeholder citation. Not medical content.', true);
+
+-- Session 28: one placeholder item per Guide topic card, so the topic list
+-- and trimester screens have something to render locally rather than
+-- exercising only the empty state. Real content replaces these at the same
+-- content gate as everything else here (Session 19 / Session 29).
+insert into public.content_items (slug, locale, kind, title, summary, body_md, media_url, duration_seconds, category, citation, is_published)
+values
+  ('placeholder-checkups', 'en', 'article', 'Placeholder: your first checkup',
+   'Placeholder summary. Not medical content.',
+   '## Placeholder\n\nThis text is a placeholder and carries no medical meaning.', null, null,
+   'checkups', 'Placeholder citation. Not medical content.', true),
+  ('placeholder-eating-well', 'en', 'article', 'Placeholder: simple meals',
+   'Placeholder summary. Not medical content.',
+   '## Placeholder\n\nThis text is a placeholder and carries no medical meaning.', null, null,
+   'eating_well', 'Placeholder citation. Not medical content.', true),
+  ('placeholder-staying-active', 'en', 'video', 'Placeholder: gentle movement',
+   'Placeholder summary. Not medical content.', null,
+   'https://example.com/placeholder.mp4', 180,
+   'staying_active', 'Placeholder citation. Not medical content.', true),
+  ('placeholder-medicines', 'en', 'article', 'Placeholder: iron and folic acid',
+   'Placeholder summary. Not medical content.',
+   '## Placeholder\n\nThis text is a placeholder and carries no medical meaning.', null, null,
+   'medicines', 'Placeholder citation. Not medical content.', true),
+  ('placeholder-birth', 'en', 'article', 'Placeholder: the day itself',
+   'Placeholder summary. Not medical content.',
+   '## Placeholder\n\nThis text is a placeholder and carries no medical meaning.', null, null,
+   'birth', 'Placeholder citation. Not medical content.', true),
+  ('placeholder-after-birth', 'en', 'article', 'Placeholder: healing and rest',
+   'Placeholder summary. Not medical content.',
+   '## Placeholder\n\nThis text is a placeholder and carries no medical meaning.', null, null,
+   'after_birth', 'Placeholder citation. Not medical content.', true);
 
 insert into public.content_passages (content_item_id, locale, heading, body)
 select id, 'en', 'Placeholder heading',
