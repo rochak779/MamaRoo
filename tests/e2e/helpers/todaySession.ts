@@ -16,7 +16,10 @@ const SUPABASE_URL = process.env.SUPABASE_URL ?? "http://127.0.0.1:54321";
 const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY!;
 const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 
-const admin = createClient<Database>(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
+// Exported so other e2e specs can seed additional rows (medicines,
+// appointments, ...) for the same user this module creates, without each
+// spec constructing its own service-role client against the same project.
+export const admin = createClient<Database>(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
   auth: { autoRefreshToken: false, persistSession: false },
 });
 
@@ -95,6 +98,9 @@ export interface OnboardedFixture {
    * (pregnancyProgress over the seeded LMP), never hardcoded against a
    * specific run date. */
   week: number;
+  /** Lets a spec seed further rows (medicines, appointments, ...) owned by
+   * this same user via the exported `admin` client. */
+  userId: string;
   /** Deletes the test user, which cascades to her profile and pregnancy row. */
   cleanup: () => Promise<void>;
 }
@@ -153,6 +159,7 @@ export async function createOnboardedSession({
   return {
     cookies,
     week,
+    userId,
     cleanup: async () => {
       await admin.auth.admin.deleteUser(userId);
     },
