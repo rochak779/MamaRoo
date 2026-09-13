@@ -847,5 +847,25 @@
       "foodSafetyBannerTitle": "Check if a food is safe",
       "foodSafetyBannerBody": "Search foods by name for a safe, moderate or avoid guide."
     }
+  },
+  "me": {
+    "contractions": {
+      "title": "Contraction timer",
+      "intro": "Time and record contractions here, whenever it feels useful.",
+      "readyLabel": "Ready when you are",
+      "timingLabel": "Timing this contraction",
+      "start": "Start",
+      "stop": "Stop",
+      "todaysContractions": "Today's contractions",
+      "emptyState": "Nothing recorded yet today",
+      "lastedMinutesSeconds": "Lasted {minutes} min {seconds} sec",
+      "lastedSeconds": "Lasted {seconds} seconds",
+      "sinceLastMinutes": "{minutes, plural, =0 {Less than a minute since the last one} one {# minute since the last one} other {# minutes since the last one}}",
+      "patternNote": "Your contractions have been close together, lasting about a minute each, for over an hour.",
+      "startError": "That contraction didn't start saving. Try again.",
+      "recordError": "That contraction didn't save. Try again.",
+      "offlineStartError": "You're offline right now, so a contraction can't start saving safely. Reconnect to keep timing.",
+      "offlineStopError": "You're offline right now, so this contraction can't save safely. Reconnect to record it."
+    }
   }
 }

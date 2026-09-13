@@ -11126,6 +11126,14 @@ git commit -m "test: add exhaustive accessibility, text-scale and touch-target s
 
 ---
 
+## P2-13 (optional): App PIN lock
+
+**Why it was out of Phase 1:** the Session 30–32 designer markup (`Screens/06-Me/Privacy And Data.dc.html`) introduced a PIN-gate card — a 4-digit local passcode, a "private entry mode" that masks digits as typed, and a "Forgot my PIN" link — with no corresponding entry anywhere in Implementation.md or Spec.md. It needs its own design (where the PIN or its hash lives, what gates app-open versus just this screen, and a real recovery flow — the mockup's "Forgot my PIN" is a bare `href="#"`) rather than being invented inline while building Session 32A. Cut from that build; see `Important/Plan-Session-30-32-Replan.md`.
+
+**First moves:** decide storage (local-only vs. synced, given the product otherwise has no client-side secret storage), the recovery flow when the PIN is forgotten, and whether it gates the whole app shell or only the Privacy screen.
+
+---
+
 # PHASE 3 — OPTIONAL
 
 **Also entirely optional and out of scope.** Extraction from report images (OCR of photographed reports) with the same mandatory-confirmation rule as P2-7; structured trend analysis across confirmed extracted values; and whatever Phase 2 usage data justifies. Phase 3 should not be planned in detail until Phase 2 has shipped and been measured.
