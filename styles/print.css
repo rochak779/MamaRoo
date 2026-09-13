@@ -1,0 +1,57 @@
+/*
+ * Print-only overrides for the Doctor Visit Summary (/care/summary). Imported
+ * only by that route -- see Session 27 in Important/Implementation.md.
+ *
+ * This file is the single sanctioned exception to the no-raw-hex rule
+ * (tests/guards/no-raw-values.test.ts): it lives under styles/, which that
+ * guard doesn't scan, but the reason still belongs here for whoever reads
+ * this file next. `@page` and print backgrounds cannot reliably reference a
+ * CSS custom property across every print engine, so the two document colours
+ * are repeated here as literal hex, matching styles/tokens.css by hand:
+ * --color-text-primary (#670035) and the neutral surfaces.
+ */
+@media print {
+  nav,
+  [data-print="hide"],
+  button {
+    display: none !important;
+  }
+
+  @page {
+    margin: 15mm;
+  }
+
+  html,
+  body {
+    background: #ffffff;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  main {
+    padding: 0 !important;
+    max-width: 100% !important;
+  }
+
+  /* A table row, a medicine entry or an appointment must never split across
+     pages -- a doctor scanning a printed page should never see a row's
+     second half orphaned onto the next one. */
+  [data-print-block],
+  tr,
+  li {
+    break-inside: avoid;
+  }
+
+  /* Repetition across pages relies on a real table header/footer, which every
+     print engine repeats natively. position: fixed is NOT a reliable way to
+     repeat a running header, especially in mobile Safari, where it typically
+     paints once. See SummaryDocument.tsx: the date and the provenance line
+     live in <thead> for exactly this reason. */
+  thead {
+    display: table-header-group;
+  }
+
+  tfoot {
+    display: table-footer-group;
+  }
+}
