@@ -1,5 +1,5 @@
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
-import { asUser, resetUsers, uniqueEmail } from "./helpers";
+import { admin, asUser, resetUsers, uniqueEmail } from "./helpers";
 
 let alice: Awaited<ReturnType<typeof asUser>>;
 let bob: Awaited<ReturnType<typeof asUser>>;
@@ -54,10 +54,27 @@ describe("RLS for checklist_progress", () => {
   });
 
   it("only ever returns active checklist items to a signed-in user", async () => {
-    const items = await alice.client.from("checklist_items").select("item_key, locale, is_active");
+    // checklist_items' real seed (supabase/seed/checklist_items.sql) is
+    // applied directly to the live project, same as food_safety.placeholder
+    // and guide content -- it's deliberately not part of config.toml's
+    // auto-run db.seed.sql_paths, so a from-scratch CI database has none of
+    // those rows. This test seeds its own active + inactive rows via the
+    // service-role client instead of assuming pre-seeded content exists.
+    const tag = `test-${Date.now()}`;
+    const seeded = await admin.from("checklist_items").insert([
+      { item_key: `${tag}-active`, locale: "en", category: "me", label: "Active test item", is_active: true },
+      { item_key: `${tag}-inactive`, locale: "en", category: "me", label: "Inactive test item", is_active: false },
+    ]);
+    expect(seeded.error).toBeNull();
+
+    const items = await alice.client
+      .from("checklist_items")
+      .select("item_key, locale, is_active")
+      .like("item_key", `${tag}-%`);
     expect(items.error).toBeNull();
-    expect(items.data!.length).toBeGreaterThan(0);
-    expect(items.data!.every((i) => i.is_active)).toBe(true);
+    expect(items.data).toEqual([{ item_key: `${tag}-active`, locale: "en", is_active: true }]);
+
+    await admin.from("checklist_items").delete().like("item_key", `${tag}-%`);
   });
 });
 
