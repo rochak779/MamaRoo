@@ -5,11 +5,18 @@ import { cn } from "@/lib/cn";
 import { Icon } from "@/components/ui/Icon";
 
 export type CardAccent = "coral" | "sage" | "gold";
+export type CardSelectedAccent = "sage" | "coral";
 
 export interface CardProps {
   children: ReactNode;
   interactive?: boolean;
   selected?: boolean;
+  /**
+   * Border colour used when `selected` is true. The existing sage treatment
+   * remains the default; screens whose approved mockups use CTA coral must
+   * opt in explicitly so unrelated cards are not silently reskinned.
+   */
+  selectedAccent?: CardSelectedAccent;
   disabled?: boolean;
   onClick?: () => void;
   className?: string;
@@ -51,10 +58,16 @@ const ACCENT_ICON_CLASSES: Record<CardAccent, string> = {
   gold: "bg-[rgba(255,197,61,0.24)] text-text-primary",
 };
 
+const SELECTED_BORDER_CLASSES: Record<CardSelectedAccent, string> = {
+  sage: "border-[1.5px] border-accent-secondary",
+  coral: "border-[1.5px] border-accent-primary",
+};
+
 export function Card({
   children,
   interactive,
   selected,
+  selectedAccent = "sage",
   disabled,
   onClick,
   className,
@@ -66,7 +79,7 @@ export function Card({
     BASE,
     SURFACE_CLASSES[surface],
     accent && ACCENT_BORDER_CLASSES[accent],
-    selected && "border-[1.5px] border-accent-primary",
+    selected && SELECTED_BORDER_CLASSES[selectedAccent],
     disabled && "opacity-50",
     interactive &&
       !disabled &&
@@ -79,7 +92,10 @@ export function Card({
       {accentIcon && (
         <span
           aria-hidden="true"
-          className={cn("flex size-[32px] shrink-0 items-center justify-center rounded-[10px]", ACCENT_ICON_CLASSES[accent])}
+          className={cn(
+            "flex size-[32px] shrink-0 items-center justify-center rounded-[10px]",
+            ACCENT_ICON_CLASSES[accent],
+          )}
         >
           <Icon name={accentIcon} size="inline" />
         </span>

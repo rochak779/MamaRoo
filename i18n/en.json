@@ -84,7 +84,7 @@
     "changeEmail": "Change email",
     "checkSpam": "We sent a code. Check your spam folder if it is not in your inbox.",
     "codeHeading": "Enter the code",
-    "codeLabel": "6-digit code",
+    "codeLabel": "6 digit code",
     "codeSentTo": "Sent to {email}.",
     "continueWithGoogle": "Continue with Google",
     "emailHeading": "What is your email?",
@@ -174,7 +174,8 @@
     },
     "journeyReady": {
       "cta": "Go to my Today screen",
-      "greeting": "Hi {name}, we are glad you are here."
+      "greeting": "Hi {name}, we are glad you are here.",
+      "subtitle": "We will show you only what matters today. Your {productName} journey is ready."
     },
     "errors": {
       "ageRange": "Age should be between 12 and 70.",

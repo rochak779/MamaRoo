@@ -12,7 +12,9 @@ vi.mock("next/navigation", () => ({
 }));
 
 const track = vi.fn();
-vi.mock("@/components/AnalyticsProvider", () => ({ track: (...args: unknown[]) => track(...args) }));
+vi.mock("@/components/AnalyticsProvider", () => ({
+  track: (...args: unknown[]) => track(...args),
+}));
 
 afterEach(() => {
   sessionStorage.clear();
@@ -56,6 +58,19 @@ describe("OnboardingForm", () => {
     renderForm();
     await passAboutYou(user);
     expect(screen.getByText(/when did your pregnancy begin/i)).toBeInTheDocument();
+  });
+
+  it("groups all five pregnancy start choices in one radio list", async () => {
+    const user = userEvent.setup();
+    renderForm();
+    await passAboutYou(user);
+
+    const choices = within(screen.getByRole("radiogroup")).getAllByRole("radio");
+    expect(choices).toHaveLength(5);
+    expect(choices[0]).toHaveAttribute("aria-checked", "false");
+
+    await user.click(choices[0]!);
+    expect(choices[0]).toHaveAttribute("aria-checked", "true");
   });
 
   it("shows a date field only once a due-date method is picked, and not at all for 'not sure yet'", async () => {
@@ -132,6 +147,8 @@ describe("OnboardingForm", () => {
     expect(onSave).toHaveBeenCalledWith(expect.objectContaining({ displayName: "Priyanka" }));
     expect(await screen.findByText(/we are glad you are here/i)).toBeInTheDocument();
     expect(screen.getByText(/priyanka/i)).toBeInTheDocument();
+    expect(screen.getByText(/we will show you only what matters today/i)).toBeInTheDocument();
+    expect(screen.getByRole("img", { name: /mamaroo logo/i })).toBeInTheDocument();
   });
 
   it("captures onboarding_step_viewed once per step, in order, starting from step 1", async () => {
@@ -178,7 +195,9 @@ describe("OnboardingForm", () => {
 
   it("shows the server-reported errors instead of advancing when saving fails", async () => {
     const user = userEvent.setup();
-    const onSave = vi.fn().mockResolvedValue({ ok: false as const, errors: { displayName: "Try again" } });
+    const onSave = vi
+      .fn()
+      .mockResolvedValue({ ok: false as const, errors: { displayName: "Try again" } });
     renderForm(onSave);
     await passAboutYou(user, "Priyanka");
     await passPregnancyStart(user);

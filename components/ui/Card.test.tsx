@@ -27,7 +27,18 @@ describe("Card", () => {
         Chosen
       </Card>,
     );
-    expect(screen.getByRole("button")).toHaveAttribute("data-selected", "true");
+    const card = screen.getByRole("button");
+    expect(card).toHaveAttribute("data-selected", "true");
+    expect(card.className).toContain("border-accent-secondary");
+  });
+
+  it("allows a screen to opt into a coral selected border", () => {
+    render(
+      <Card interactive selected selectedAccent="coral">
+        Chosen
+      </Card>,
+    );
+    expect(screen.getByRole("button").className).toContain("border-accent-primary");
   });
 
   it("dims content when disabled and blocks interaction", async () => {
@@ -65,7 +76,8 @@ describe("CardTruncatedText", () => {
   });
 
   it("truncates long text and reveals it on request, never clipping silently", async () => {
-    const long = "Iron and folic acid tablet taken after lunch with a full glass of water every day";
+    const long =
+      "Iron and folic acid tablet taken after lunch with a full glass of water every day";
     render(<CardTruncatedText text={long} maxChars={30} showMoreLabel="Show more" />);
     expect(screen.queryByText(long)).not.toBeInTheDocument();
     await userEvent.click(screen.getByRole("button", { name: "Show more" }));

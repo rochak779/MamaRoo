@@ -11,13 +11,21 @@ const verifyOtp = vi.fn();
 const startGoogle = vi.fn();
 const track = vi.fn();
 const push = vi.fn();
-vi.mock("@/components/AnalyticsProvider", () => ({ track: (...args: unknown[]) => track(...args) }));
+vi.mock("@/components/AnalyticsProvider", () => ({
+  track: (...args: unknown[]) => track(...args),
+}));
 vi.mock("next/navigation", () => ({ useRouter: () => ({ push }) }));
 
 function renderForm(mode: "signup" | "signin" = "signup", next: string | null = null) {
   return render(
     <NextIntlClientProvider locale="en" messages={en}>
-      <AuthForm mode={mode} onSendOtp={sendOtp} onVerifyOtp={verifyOtp} onGoogle={startGoogle} next={next} />
+      <AuthForm
+        mode={mode}
+        onSendOtp={sendOtp}
+        onVerifyOtp={verifyOtp}
+        onGoogle={startGoogle}
+        next={next}
+      />
     </NextIntlClientProvider>,
   );
 }
@@ -35,7 +43,9 @@ describe("AuthForm", () => {
     renderForm();
     expect(screen.getByLabelText(/email/i)).toHaveAttribute("type", "email");
     expect(screen.getByRole("heading", { name: "What is your email?" })).toBeInTheDocument();
-    expect(screen.getByText("We will send you a code to check it is really you.")).toBeInTheDocument();
+    expect(
+      screen.getByText("We will send you a code to check it is really you."),
+    ).toBeInTheDocument();
     expect(screen.getByText("Your email is never shared.")).toBeInTheDocument();
   });
 
@@ -67,7 +77,7 @@ describe("AuthForm", () => {
     expect(await screen.findByRole("heading", { name: "Enter the code" })).toBeInTheDocument();
     expect(screen.getByText("Sent to her@example.com.")).toBeInTheDocument();
     expect(screen.getAllByTestId("otp-cell")).toHaveLength(6);
-    expect(screen.getByLabelText(/6-digit code/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/6 digit code/i)).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /verify and continue/i })).toBeDisabled();
   });
 
@@ -75,7 +85,7 @@ describe("AuthForm", () => {
     renderForm();
     await userEvent.type(screen.getByLabelText(/email/i), "her@example.com");
     await userEvent.click(screen.getByRole("button", { name: /send code/i }));
-    const code = await screen.findByLabelText(/6-digit code/i);
+    const code = await screen.findByLabelText(/6 digit code/i);
     const verifyButton = screen.getByRole("button", { name: /verify and continue/i });
 
     await userEvent.type(code, "12345");
@@ -99,7 +109,7 @@ describe("AuthForm", () => {
     renderForm();
     await userEvent.type(screen.getByLabelText(/email/i), "her@example.com");
     await userEvent.click(screen.getByRole("button", { name: /send/i }));
-    await userEvent.type(await screen.findByLabelText(/6-digit code/i), "123456");
+    await userEvent.type(await screen.findByLabelText(/6 digit code/i), "123456");
     await userEvent.click(screen.getByRole("button", { name: /verify/i }));
     expect(await screen.findByText(/that code has expired/i)).toBeInTheDocument();
   });
@@ -109,7 +119,7 @@ describe("AuthForm", () => {
     renderForm();
     await userEvent.type(screen.getByLabelText(/email/i), "her@example.com");
     await userEvent.click(screen.getByRole("button", { name: /send/i }));
-    await userEvent.type(await screen.findByLabelText(/6-digit code/i), "000000");
+    await userEvent.type(await screen.findByLabelText(/6 digit code/i), "000000");
     await userEvent.click(screen.getByRole("button", { name: /verify/i }));
     expect(await screen.findByText(/that code is not right/i)).toBeInTheDocument();
   });
@@ -142,7 +152,7 @@ describe("AuthForm", () => {
       renderForm();
       await userEvent.type(screen.getByLabelText(/email/i), "her@example.com");
       await userEvent.click(screen.getByRole("button", { name: /send/i }));
-      await screen.findByLabelText(/6-digit code/i);
+      await screen.findByLabelText(/6 digit code/i);
 
       sendOtp.mockResolvedValueOnce({ ok: false, code: "rate_limited" });
       act(() => void vi.advanceTimersByTime(60_000));
@@ -166,7 +176,7 @@ describe("AuthForm", () => {
 
     expect(await screen.findByText(/could not reach the server/i)).toBeInTheDocument();
     expect(sendButton).not.toBeDisabled();
-    expect(screen.queryByLabelText(/6-digit code/i)).not.toBeInTheDocument();
+    expect(screen.queryByLabelText(/6 digit code/i)).not.toBeInTheDocument();
   });
 
   it("recovers from a network failure verifying the code, instead of hanging forever", async () => {
@@ -174,7 +184,7 @@ describe("AuthForm", () => {
     renderForm();
     await userEvent.type(screen.getByLabelText(/email/i), "her@example.com");
     await userEvent.click(screen.getByRole("button", { name: /send/i }));
-    await userEvent.type(await screen.findByLabelText(/6-digit code/i), "123456");
+    await userEvent.type(await screen.findByLabelText(/6 digit code/i), "123456");
     const verifyButton = screen.getByRole("button", { name: /verify/i });
     await userEvent.click(verifyButton);
 
@@ -186,11 +196,11 @@ describe("AuthForm", () => {
     renderForm();
     await userEvent.type(screen.getByLabelText(/email/i), "her@example.com");
     await userEvent.click(screen.getByRole("button", { name: /send/i }));
-    await userEvent.type(await screen.findByLabelText(/6-digit code/i), "123456");
+    await userEvent.type(await screen.findByLabelText(/6 digit code/i), "123456");
     await userEvent.click(screen.getByRole("button", { name: /verify/i }));
 
     expect(await screen.findByText(/you are signed in/i)).toBeInTheDocument();
-    expect(screen.queryByLabelText(/6-digit code/i)).not.toBeInTheDocument();
+    expect(screen.queryByLabelText(/6 digit code/i)).not.toBeInTheDocument();
     expect(push).toHaveBeenCalledWith("/today");
   });
 
@@ -198,7 +208,7 @@ describe("AuthForm", () => {
     renderForm("signup", "/settings/notifications");
     await userEvent.type(screen.getByLabelText(/email/i), "her@example.com");
     await userEvent.click(screen.getByRole("button", { name: /send/i }));
-    await userEvent.type(await screen.findByLabelText(/6-digit code/i), "123456");
+    await userEvent.type(await screen.findByLabelText(/6 digit code/i), "123456");
     await userEvent.click(screen.getByRole("button", { name: /verify/i }));
 
     expect(push).toHaveBeenCalledWith("/settings/notifications");
@@ -208,7 +218,7 @@ describe("AuthForm", () => {
     renderForm("signup", "//evil.example.com");
     await userEvent.type(screen.getByLabelText(/email/i), "her@example.com");
     await userEvent.click(screen.getByRole("button", { name: /send/i }));
-    await userEvent.type(await screen.findByLabelText(/6-digit code/i), "123456");
+    await userEvent.type(await screen.findByLabelText(/6 digit code/i), "123456");
     await userEvent.click(screen.getByRole("button", { name: /verify/i }));
 
     expect(push).toHaveBeenCalledWith("/today");
@@ -244,7 +254,7 @@ describe("AuthForm", () => {
     renderForm("signup");
     await userEvent.type(screen.getByLabelText(/email/i), "her@example.com");
     await userEvent.click(screen.getByRole("button", { name: /send/i }));
-    await userEvent.type(await screen.findByLabelText(/6-digit code/i), "123456");
+    await userEvent.type(await screen.findByLabelText(/6 digit code/i), "123456");
     await userEvent.click(screen.getByRole("button", { name: /verify/i }));
     expect(track).toHaveBeenCalledWith(EVENTS.signup_completed, { method: "email_otp" });
   });
@@ -253,7 +263,7 @@ describe("AuthForm", () => {
     renderForm("signin");
     await userEvent.type(screen.getByLabelText(/email/i), "her@example.com");
     await userEvent.click(screen.getByRole("button", { name: /send/i }));
-    await userEvent.type(await screen.findByLabelText(/6-digit code/i), "123456");
+    await userEvent.type(await screen.findByLabelText(/6 digit code/i), "123456");
     await userEvent.click(screen.getByRole("button", { name: /verify/i }));
     expect(track).toHaveBeenCalledWith(EVENTS.signin_completed, { method: "email_otp" });
     expect(track).not.toHaveBeenCalledWith(EVENTS.signup_completed, expect.anything());
