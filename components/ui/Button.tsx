@@ -12,25 +12,40 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   disabledReason?: string;
 }
 
+// Pill is the mockup default for every CTA (Mamaroo-Designfinal.md §5) --
+// previously rounded-sm (12px) here, relying on individual call sites to
+// remember rounded-full, which most didn't.
 const BASE =
-  "relative tap-target inline-flex items-center justify-center gap-sm rounded-sm px-lg py-sm " +
+  "relative tap-target inline-flex items-center justify-center gap-sm rounded-full px-lg py-sm " +
   "text-button font-body font-medium text-center " +
   "transition-[transform,background-color,opacity] duration-(--motion-fast) ease-standard " +
   "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-primary " +
   "disabled:cursor-not-allowed";
 
 const VARIANTS: Record<Variant, string> = {
-  primary:
-    "bg-accent-primary text-surface-raised active:scale-[0.98] active:brightness-[0.92] disabled:opacity-40",
+  primary: "bg-accent-primary text-surface-raised active:scale-[0.98] active:brightness-[0.92]",
   // Border stays accent-primary (a non-text UI component, held to the looser
   // 3:1 contrast requirement); the label text uses text-primary instead --
-  // Design-updated.md's CTA coral is specified for button fills only, and as
-  // small text on a light surface it falls short of the 4.5:1 text minimum.
-  secondary:
-    "bg-surface text-text-primary border-[1.5px] border-accent-primary active:scale-[0.98] disabled:opacity-40",
-  tertiary:
-    "bg-transparent text-text-primary underline-offset-4 hover:underline disabled:opacity-40",
+  // CTA coral is specified for button fills only, and as small text on a
+  // light surface it falls short of the 4.5:1 text minimum.
+  secondary: "bg-surface text-text-primary border-[1.5px] border-accent-primary active:scale-[0.98]",
+  tertiary: "bg-transparent text-text-primary underline-offset-4 hover:underline",
 };
+
+// A truly disabled button uses the desaturated-peach token (§5: "desaturated
+// peach, not gray") -- never applied while merely `loading`, so a busy
+// submit button (see LOADING_CLASSES below) keeps its normal fill and just
+// dims, rather than reading as switched off mid-submit.
+const DISABLED_VARIANTS: Record<Variant, string> = {
+  primary: "bg-disabled text-text-secondary active:scale-100 active:brightness-100",
+  secondary: "border-disabled text-text-secondary active:scale-100",
+  tertiary: "text-text-secondary hover:no-underline",
+};
+
+// Preserves the previous disabled:opacity-40 look for the one state that
+// used to rely on it -- a button mid-submit (loading implies disabled, but
+// isn't the "off" state DISABLED_VARIANTS represents).
+const LOADING_CLASSES = "opacity-40";
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
   { variant = "primary", loading = false, disabled, disabledReason, children, className, ...rest },
@@ -41,6 +56,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
   // resolve to whichever came first.
   const fallbackId = useId();
   const descriptionId = disabledReason ? `${rest.id ?? fallbackId}-reason` : undefined;
+  const isOff = disabled && !loading;
   return (
     <>
       <button
@@ -49,7 +65,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
         aria-busy={loading || undefined}
         aria-describedby={descriptionId}
         disabled={disabled || loading}
-        className={cn(BASE, VARIANTS[variant], className)}
+        className={cn(BASE, VARIANTS[variant], isOff && DISABLED_VARIANTS[variant], loading && LOADING_CLASSES, className)}
         {...rest}
       >
         <span className={loading ? "opacity-0" : undefined}>{children}</span>

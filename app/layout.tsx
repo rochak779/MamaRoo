@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Poppins, Hind, Mukta, Patrick_Hand } from "next/font/google";
+import { Poppins, Hind, Roboto, Baloo_2, Patrick_Hand } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
 import { PRODUCT_NAME } from "@/lib/config";
@@ -11,17 +11,22 @@ import { RouteProgressBar } from "@/components/patterns/RouteProgressBar";
 import "@/styles/tokens.css";
 import "@/styles/globals.css";
 
+// Devanagari subset dropped (Phase 0): Poppins has no Devanagari glyphs at
+// all (Mamaroo-Designfinal.md §3), so Hindi headings never render in it —
+// they resolve through the :lang(hi) override in styles/tokens.css to Baloo 2
+// instead. Loading the subset here would just ship unused glyph data.
+// 700 added: many mockup headings use it (500/600 were the only weights
+// loaded before).
 const poppins = Poppins({
-  subsets: ["latin", "devanagari"],
-  // 600 added for the splash screen's wordmark (Session 14).
-  weight: ["500", "600"],
+  subsets: ["latin"],
+  weight: ["500", "600", "700"],
   variable: "--font-poppins",
   display: "swap",
 });
 
-// Kept loaded (not just repointed to Mukta) because styles/landing.css pins
-// the waitlist to Hind so its live, public rendering doesn't shift with the
-// Design-updated.md retheme — see the Session 14 note in Implementation.md.
+// Kept loaded (not repointed) because styles/landing.css pins the waitlist to
+// Hind so its live, public rendering doesn't shift with this retheme — see
+// the §2.0 note there.
 const hind = Hind({
   subsets: ["latin", "devanagari"],
   weight: ["400", "500"],
@@ -29,11 +34,25 @@ const hind = Hind({
   display: "swap",
 });
 
-// Design-updated.md §3: Mukta is the app-wide body font, replacing Hind.
-const mukta = Mukta({
-  subsets: ["latin", "devanagari"],
+// Mamaroo-Designfinal.md §3: Roboto is the single body font app-wide, both
+// languages (reverses the prior Mukta retheme). Google's Roboto has no
+// Devanagari subset, so Hindi glyphs fall through to the system-ui fallback
+// already in --font-body's stack — the same graceful per-character font
+// fallback every browser already does, not a gap to work around here.
+const roboto = Roboto({
+  subsets: ["latin"],
   weight: ["400", "500"],
-  variable: "--font-mukta",
+  variable: "--font-roboto",
+  display: "swap",
+});
+
+// Devanagari equivalent to Poppins' rounded heading weight (§3) — the
+// heading font for Hindi, wired via the :lang(hi) override in
+// styles/tokens.css rather than a per-screen swap.
+const baloo2 = Baloo_2({
+  subsets: ["devanagari", "latin"],
+  weight: ["500", "600", "700"],
+  variable: "--font-baloo",
   display: "swap",
 });
 
@@ -72,8 +91,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const consents = user ? await getCurrentConsents(supabase) : null;
 
   return (
-    <html lang={locale} className={`${poppins.variable} ${hind.variable} ${mukta.variable} ${patrickHand.variable}`}>
-      <body className="min-h-dvh bg-bg text-text-primary font-body">
+    <html lang={locale} className={`${poppins.variable} ${hind.variable} ${roboto.variable} ${baloo2.variable} ${patrickHand.variable}`}>
+      <body className="min-h-dvh text-text-primary font-body">
         <NextIntlClientProvider messages={messages} locale={locale}>
           <RouteProgressBar />
           <AnalyticsProvider

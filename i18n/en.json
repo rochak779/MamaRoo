@@ -253,8 +253,10 @@
       "playLabel": "Play",
       "pauseLabel": "Pause",
       "playingCaption": "Playing right here, so you keep your place on Today.",
+      "playingCaptionOther": "Playing right here, so you keep your place on this topic.",
       "readAlong": "Read along",
       "switchBackNote": "You can switch back to listening any time, even on a slow connection.",
+      "switchBackNoteVideo": "You can switch back to the video any time, even on a slow connection.",
       "notFoundTitle": "We couldn't find that",
       "notFoundBody": "This may have been removed or the link may be old."
     },

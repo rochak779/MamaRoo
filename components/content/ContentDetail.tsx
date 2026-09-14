@@ -34,9 +34,16 @@ export interface ContentDetailProps {
   transcript: string | null;
   backHref: string;
   backLabelKey: string;
+  /**
+   * Which surface is rendering this item -- drives the copy that names that
+   * surface ("on Today" vs "on this topic"). Today's Quick Listen is the
+   * only "today" caller; Guide's Article Reader and Video Player both pass
+   * "guide". Doesn't affect layout, only the strings below.
+   */
+  context: "today" | "guide";
 }
 
-export function ContentDetail({ item, isFallback, transcript, backHref, backLabelKey }: ContentDetailProps) {
+export function ContentDetail({ item, isFallback, transcript, backHref, backLabelKey, context }: ContentDetailProps) {
   const t = useTranslations();
   const [mode, setMode] = useState<"listen" | "text">("listen");
   const [showTranscript, setShowTranscript] = useState(false);
@@ -111,7 +118,12 @@ export function ContentDetail({ item, isFallback, transcript, backHref, backLabe
         >
           <Icon name="ArrowLeft" size="inline" />
         </Link>
-        <span className="text-caption font-semibold text-accent-primary">{t("today.listen.eyebrow")}</span>
+        {/* "Quick listen" is Today branding -- never shown for an article (no
+            mockup gives it one) or outside the Today context (Guide's
+            Article Reader and Video Player mockups have no eyebrow line). */}
+        {context === "today" && kind !== "article" && (
+          <span className="text-caption font-semibold text-accent-primary">{t("today.listen.eyebrow")}</span>
+        )}
       </header>
 
       <div className="relative pr-14">
@@ -137,24 +149,30 @@ export function ContentDetail({ item, isFallback, transcript, backHref, backLabe
         </div>
       )}
 
-      <div className="inline-flex self-start rounded-md bg-surface-raised p-xs shadow-1" role="group">
-        <button
-          type="button"
-          aria-pressed={mode === "listen"}
-          onClick={() => setMode("listen")}
-          className={`tap-target rounded-sm px-md text-caption font-medium ${mode === "listen" ? "bg-accent-primary text-surface-raised" : "text-text-secondary"}`}
-        >
-          {t("today.listen.listenLabel")}
-        </button>
-        <button
-          type="button"
-          aria-pressed={mode === "text"}
-          onClick={() => setMode("text")}
-          className={`tap-target rounded-sm px-md text-caption font-medium ${mode === "text" ? "bg-accent-primary text-surface-raised" : "text-text-secondary"}`}
-        >
-          {t("today.listen.textLabel")}
-        </button>
-      </div>
+      {/* No toggle for an article -- it has only one content form, so a
+          listen/text switch would just show the same body twice. Video gets
+          a real video/text switch (its own label, not the audio-context
+          "Listen" wording it used to inherit). */}
+      {kind !== "article" && (
+        <div className="inline-flex self-start rounded-md bg-surface-raised p-xs shadow-1" role="group">
+          <button
+            type="button"
+            aria-pressed={mode === "listen"}
+            onClick={() => setMode("listen")}
+            className={`tap-target rounded-sm px-md text-caption font-medium ${mode === "listen" ? "bg-accent-primary text-surface-raised" : "text-text-secondary"}`}
+          >
+            {t(kind === "video" ? "today.listen.videoTab" : "today.listen.listenLabel")}
+          </button>
+          <button
+            type="button"
+            aria-pressed={mode === "text"}
+            onClick={() => setMode("text")}
+            className={`tap-target rounded-sm px-md text-caption font-medium ${mode === "text" ? "bg-accent-primary text-surface-raised" : "text-text-secondary"}`}
+          >
+            {t("today.listen.textLabel")}
+          </button>
+        </div>
+      )}
 
       {mode === "listen" ? (
         <>
@@ -169,7 +187,7 @@ export function ContentDetail({ item, isFallback, transcript, backHref, backLabe
               />
               <p className="flex items-center gap-sm text-caption text-text-secondary">
                 <Icon name="VideoCamera" size="inline" />
-                {t("today.listen.playingCaption")}
+                {t(context === "today" ? "today.listen.playingCaption" : "today.listen.playingCaptionOther")}
               </p>
             </div>
           )}
@@ -180,7 +198,7 @@ export function ContentDetail({ item, isFallback, transcript, backHref, backLabe
                 <audio controls src={item.media_url ?? undefined} onEnded={completeMedia} className="w-full" />
                 <p className="flex items-center gap-sm text-caption text-text-secondary">
                   <Icon name="SpeakerHigh" size="inline" />
-                  {t("today.listen.playingCaption")}
+                  {t(context === "today" ? "today.listen.playingCaption" : "today.listen.playingCaptionOther")}
                 </p>
               </div>
               {readAlongText && (
@@ -215,7 +233,9 @@ export function ContentDetail({ item, isFallback, transcript, backHref, backLabe
           <div className="rounded-md bg-surface-raised p-lg shadow-1">
             <RestrictedMarkdown>{textVersion}</RestrictedMarkdown>
           </div>
-          <p className="text-caption text-text-secondary">{t("today.listen.switchBackNote")}</p>
+          <p className="text-caption text-text-secondary">
+            {t(kind === "video" ? "today.listen.switchBackNoteVideo" : "today.listen.switchBackNote")}
+          </p>
         </>
       )}
     </article>

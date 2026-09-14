@@ -13,10 +13,15 @@ const REQUIRED = [
   "--color-accent-secondary: #3B723F",
   "--color-alert: #8C2F3D",
   "--color-success: #4F6E3D",
-  "--color-divider: #D8CBB2",
+  // Translucent deep plum (Phase 0, UI redesign alignment), replacing the
+  // old flat tan -- matches mockups' plum-tinted hairlines app-wide.
+  "--color-divider: rgba(103, 0, 53, 0.12)",
   "--color-blush: #F7DFD9",
   "--color-peach: #FFA48F",
   "--color-gold: #FFC53D",
+  "--color-soft-coral: #FF6D57",
+  "--color-sage-mist: #9DDDA1",
+  "--color-disabled: #DAB9B3",
   "--chart-series-1: #A8482E",
   "--chart-series-2: #3D6B58",
   "--chart-series-3: #C08A28",
@@ -32,7 +37,9 @@ const REQUIRED = [
   "--spacing-screen: 20px",
   "--radius-sm: 12px",
   "--radius-md: 20px",
-  "--radius-lg: 28px",
+  // Dropped from 28px to 20px (Phase 0): Mamaroo-Designfinal.md §5 caps card
+  // corners at 16-20px.
+  "--radius-lg: 20px",
   "--radius-full: 999px",
   "--motion-fast: 150ms",
   "--motion-base: 250ms",

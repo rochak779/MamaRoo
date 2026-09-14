@@ -45,6 +45,7 @@ function renderDetail(overrides: Partial<ContentItemRow> = {}, props: Partial<Re
         transcript={item.body_md}
         backHref="/today"
         backLabelKey="today.backToToday"
+        context="today"
         {...props}
       />
     </NextIntlClientProvider>,
@@ -74,13 +75,16 @@ describe("ContentDetail", () => {
     expect(screen.getByText(baseItem.body_md!)).toBeInTheDocument();
   });
 
-  it("switches to the text version, hides the player and shows the note", async () => {
+  it("switches to the text version, hides the player and shows the video-appropriate note", async () => {
+    // baseItem.kind is "video" -- switchBackNoteVideo ("...switch back to the
+    // video...") is correct here, not the audio-worded switchBackNote it
+    // used to show for every kind regardless.
     const user = userEvent.setup();
     const { container } = renderDetail();
     await user.click(screen.getByRole("button", { name: en.today.listen.textLabel }));
     expect(container.querySelector("video")).not.toBeInTheDocument();
     expect(screen.getByText(baseItem.body_md!)).toBeInTheDocument();
-    expect(screen.getByText(en.today.listen.switchBackNote)).toBeInTheDocument();
+    expect(screen.getByText(en.today.listen.switchBackNoteVideo)).toBeInTheDocument();
   });
 
   it("shows AudioIndicator only when a narration URL exists", () => {
@@ -95,7 +99,14 @@ describe("ContentDetail", () => {
   it("renders a null item as a not-found state with the supplied route", () => {
     render(
       <NextIntlClientProvider locale="en" messages={en}>
-        <ContentDetail item={null} isFallback={false} transcript={null} backHref="/today" backLabelKey="today.backToToday" />
+        <ContentDetail
+          item={null}
+          isFallback={false}
+          transcript={null}
+          backHref="/today"
+          backLabelKey="today.backToToday"
+          context="today"
+        />
       </NextIntlClientProvider>,
     );
     expect(screen.getByRole("heading", { name: en.today.listen.notFoundTitle })).toBeInTheDocument();
@@ -129,6 +140,28 @@ describe("ContentDetail", () => {
     expect(screen.getByRole("heading", { name: "Helpful" })).toBeInTheDocument();
     expect(document.querySelector("img")).not.toBeInTheDocument();
     expect(track).toHaveBeenCalledWith(EVENTS.content_completed, { kind: "article" });
+  });
+
+  it("shows no eyebrow and no mode toggle for an article, regardless of context", () => {
+    renderDetail({ kind: "article" });
+    expect(screen.queryByText(en.today.listen.eyebrow)).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: en.today.listen.textLabel })).not.toBeInTheDocument();
+  });
+
+  it("drops the Today eyebrow and uses topic-appropriate copy in the guide context", () => {
+    renderDetail({ kind: "audio", media_url: "https://example.com/audio.mp3" }, { context: "guide" });
+    expect(screen.queryByText(en.today.listen.eyebrow)).not.toBeInTheDocument();
+    expect(screen.getByText(en.today.listen.playingCaptionOther)).toBeInTheDocument();
+  });
+
+  it("gives a video a real video/text switch, not the audio Listen label, with video-appropriate switch-back copy", async () => {
+    const user = userEvent.setup();
+    renderDetail({ kind: "video" }, { context: "guide" });
+    expect(screen.queryByRole("button", { name: en.today.listen.listenLabel })).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: en.today.listen.videoTab })).toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: en.today.listen.textLabel }));
+    expect(screen.getByText(en.today.listen.switchBackNoteVideo)).toBeInTheDocument();
   });
 
   it("takes both back label and target from props instead of hardcoding Today", () => {

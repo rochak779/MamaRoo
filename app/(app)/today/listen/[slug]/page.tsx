@@ -18,6 +18,7 @@ export default async function QuickListenPage({ params }: { params: Promise<{ sl
       transcript={result?.item.body_md ?? null}
       backHref="/today"
       backLabelKey="today.backToToday"
+      context="today"
     />
   );
 }

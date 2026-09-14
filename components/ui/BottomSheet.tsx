@@ -57,8 +57,12 @@ export function BottomSheet({
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}
-        className="safe-bottom absolute inset-x-0 bottom-0 max-h-[85dvh] overflow-y-auto rounded-t-lg bg-surface-raised p-lg shadow-3 motion-safe:animate-[sheet-in_var(--motion-slow)_var(--ease-standard)]"
+        // Top-corner radius is 24px specifically (§13, a distinct value from
+        // the general 16-20px card scale, so it's an explicit arbitrary
+        // value rather than a reused --radius-* token).
+        className="safe-bottom absolute inset-x-0 bottom-0 max-h-[85dvh] overflow-y-auto rounded-t-[24px] bg-surface-raised p-lg shadow-3 motion-safe:animate-[sheet-in_var(--motion-slow)_var(--ease-standard)]"
       >
+        <div aria-hidden="true" className="mx-auto -mt-sm mb-sm h-1 w-9 rounded-full bg-[rgba(103,0,53,0.15)]" />
         <h2 id={titleId} className="text-h2 font-display">
           {title}
         </h2>

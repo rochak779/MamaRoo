@@ -55,7 +55,7 @@ export function MedicinesScreen({ today, items, cells, existingActiveNames, onSa
       </header>
 
       <div className="flex flex-col gap-sm">
-        <h2 className="text-h3 font-display text-text-primary">{t("adherence.title")}</h2>
+        <h2 className="text-h3 font-display font-semibold text-text-primary">{t("adherence.title")}</h2>
         <AdherenceGrid cells={cells} />
       </div>
 

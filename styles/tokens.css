@@ -1,12 +1,11 @@
 @import "tailwindcss";
 
 @theme {
-  /* Color — Design-updated.md §2 (2026-09-12 retheme). --color-alert,
-     --color-success and --color-divider are untouched: that document
-     doesn't redefine them. The waitlist (components/landing/ComingSoon.tsx)
-     pins its own pre-retheme values locally in styles/landing.css so its
-     live, public rendering doesn't change — see the Session 14 note in
-     Important/Implementation.md before touching any value below. */
+  /* Color — Mamaroo-Designfinal.md §2 (Phase 0, UI redesign alignment).
+     The waitlist (components/landing/ComingSoon.tsx) pins its own frozen
+     values locally in styles/landing.css so its live, public rendering
+     doesn't change — see the §2.0 note there before touching any value
+     below that it also pins. */
   --color-bg: #F7EEE3;
   --color-surface: #F5EEE1;
   --color-surface-raised: #FFFFFF;
@@ -16,12 +15,29 @@
   --color-accent-secondary: #3B723F;
   --color-alert: #8C2F3D;
   --color-success: #4F6E3D;
-  --color-divider: #D8CBB2;
+  /* Translucent deep plum, replacing the old flat tan (#D8CBB2) — matches
+     mockups' plum-tinted hairlines on inputs, chips, cards, OTP cells, and
+     list separators. -strong is the same hue at higher opacity for borders
+     that need to read more clearly (e.g. an active input outline). */
+  --color-divider: rgba(103, 0, 53, 0.12);
+  --color-divider-strong: rgba(103, 0, 53, 0.25);
+  /* Desaturated peach — Mamaroo-Designfinal.md §5's disabled-button rule
+     ("desaturated peach, not gray"). No mockup gives an exact hex for this
+     state, so this is peach (#FFA48F) desaturated toward neutral at the same
+     lightness, not just peach lightened toward cream. Paired with
+     --color-text-secondary for label text (see Button.tsx). */
+  --color-disabled: #DAB9B3;
 
   /* New with the retheme — used first by the splash screen (Session 14). */
   --color-blush: #F7DFD9;
   --color-peach: #FFA48F;
   --color-gold: #FFC53D;
+  /* Decorative/accent only (never text) — Mamaroo-Designfinal.md §2.1, §13.6.
+     Their absence was the most-repeated root cause in the Phase 0 audit:
+     screens fell back to CTA coral for decorative accents/borders/icons,
+     which §13.6 reserves for button fills only. */
+  --color-soft-coral: #FF6D57;
+  --color-sage-mist: #9DDDA1;
 
   /* Data visualisation — charts only, never UI */
   --chart-series-1: #A8482E;
@@ -41,16 +57,21 @@
   --spacing-xl: 32px;
   --spacing-screen: 20px;
 
-  /* Shape */
+  /* Shape. --radius-lg dropped from 28px to 20px (Phase 0): Mamaroo-Designfinal.md
+     §5 caps card corners at 16–20px, and several screens used rounded-lg for
+     cards, exceeding that ceiling. Now equal to --radius-md; both kept as
+     distinct names since call sites already use one or the other. */
   --radius-sm: 12px;
   --radius-md: 20px;
-  --radius-lg: 28px;
+  --radius-lg: 20px;
   --radius-full: 999px;
 
-  /* Elevation — warm-toned, built from --color-text-primary */
-  --shadow-1: 0 1px 3px rgba(46, 40, 34, 0.08);
-  --shadow-2: 0 2px 6px rgba(46, 40, 34, 0.12);
-  --shadow-3: 0 8px 24px rgba(46, 40, 34, 0.16);
+  /* Elevation — warm-toned, re-derived from deep plum (--color-text-primary)
+     per Mamaroo-Designfinal.md §5, replacing the old warm-brown rgba(46,40,34,…)
+     base that predated the retheme. */
+  --shadow-1: 0 1px 3px rgba(103, 0, 53, 0.08);
+  --shadow-2: 0 2px 6px rgba(103, 0, 53, 0.12);
+  --shadow-3: 0 8px 24px rgba(103, 0, 53, 0.16);
 
   /* Motion */
   --motion-fast: 150ms;
@@ -69,6 +90,12 @@
   --text-h1--line-height: 32px;
   --text-h2: 18px;
   --text-h2--line-height: 26px;
+  /* Was referenced (text-h3) in 7 files with no definition at all -- a real
+     bug, not just a gap, since those headings got zero font-size CSS. Value
+     matches the mockups' own section-heading style (Today's "For you today",
+     Appointments' "Upcoming"/"Past": Poppins 600, 15–16px). */
+  --text-h3: 16px;
+  --text-h3--line-height: 24px;
   --text-body: 16px;
   --text-body--line-height: 24px;
   --text-body-sm: 14px;
@@ -86,12 +113,18 @@
   --icon-hero: 40px;
 
   /* Font families are bound in app/layout.tsx via next/font variables.
-     --font-body is Mukta app-wide per Design-updated.md §3 (replaces Hind);
-     --font-hind stays loaded because styles/landing.css still needs it to
-     pin the waitlist's frozen typography. Patrick Hand is reserved for the
-     composing and reading surfaces in Letters to Baby. */
+     --font-body is Roboto app-wide, both languages, per Mamaroo-Designfinal.md
+     §3 (reverses the prior Mukta retheme back to Roboto). --font-hind stays
+     loaded because styles/landing.css still needs it to pin the waitlist's
+     frozen typography. Patrick Hand is reserved for the composing and
+     reading surfaces in Letters to Baby.
+
+     --font-display is Poppins by default; Poppins has no Devanagari support
+     (§3), so the :lang(hi) rule below rebinds it to Baloo 2 for any element
+     under an hi-language subtree — the same mechanism the design doc itself
+     suggests, rather than a per-screen font swap. */
   --font-display: var(--font-poppins), system-ui, sans-serif;
-  --font-body: var(--font-mukta), system-ui, sans-serif;
+  --font-body: var(--font-roboto), system-ui, sans-serif;
   --font-letter: var(--font-patrick-hand), cursive;
 }
 
@@ -99,5 +132,14 @@
   /* Decorative layers. aria-hidden wherever they are rendered. */
   --texture-grain-opacity: 0.025;
   --texture-motif-opacity: 0.05;
-  --scrim: rgba(46, 40, 34, 0.45);
+  --scrim: rgba(103, 0, 53, 0.35);
+}
+
+/* Locale-aware heading font (Mamaroo-Designfinal.md §3): Baloo 2 is the
+   Devanagari equivalent of Poppins' rounded heading weight. <html lang> is
+   set from the request locale in app/layout.tsx, and :lang() matches the
+   whole document under it, so every font-display consumer picks this up
+   without a per-screen change. */
+:lang(hi) {
+  --font-display: var(--font-baloo), system-ui, sans-serif;
 }

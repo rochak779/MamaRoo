@@ -2,6 +2,9 @@
 
 import { useState, type ReactNode } from "react";
 import { cn } from "@/lib/cn";
+import { Icon } from "@/components/ui/Icon";
+
+export type CardAccent = "coral" | "sage" | "gold";
 
 export interface CardProps {
   children: ReactNode;
@@ -10,14 +13,60 @@ export interface CardProps {
   disabled?: boolean;
   onClick?: () => void;
   className?: string;
+  /**
+   * "tint" (default) keeps the existing --color-surface fill. "raised" is
+   * pure white (--color-surface-raised) -- additive, for mockups where a
+   * card needs to stand out from the page background instead of blending
+   * into it (surface and bg sit only ~2% apart in lightness).
+   */
+  surface?: "tint" | "raised";
+  /**
+   * Category-coded left-border strip (coral = symptoms, sage = wellness,
+   * gold = milestones), always paired with `accentIcon` per the
+   * colorblind-safe rule (Mamaroo-Designfinal.md §2.2) -- color is never the
+   * only cue. Omit both for a neutral card; don't force a category onto
+   * content that isn't actually symptom/wellness/milestone-related.
+   */
+  accent?: CardAccent;
+  /** Icon name shown in a small chip next to the accent strip. Required to make visual sense of `accent` -- see the colorblind-safe note above. */
+  accentIcon?: string;
 }
 
-const BASE = "block w-full text-left bg-surface rounded-md p-md shadow-1";
+const BASE = "block w-full text-left rounded-md p-md shadow-1";
 
-export function Card({ children, interactive, selected, disabled, onClick, className }: CardProps) {
+const SURFACE_CLASSES: Record<NonNullable<CardProps["surface"]>, string> = {
+  tint: "bg-surface",
+  raised: "bg-surface-raised",
+};
+
+const ACCENT_BORDER_CLASSES: Record<CardAccent, string> = {
+  coral: "border-l-4 border-l-soft-coral",
+  sage: "border-l-4 border-l-sage-mist",
+  gold: "border-l-4 border-l-gold",
+};
+
+const ACCENT_ICON_CLASSES: Record<CardAccent, string> = {
+  coral: "bg-[rgba(255,109,87,0.16)] text-accent-primary",
+  sage: "bg-[rgba(157,221,161,0.28)] text-accent-secondary",
+  gold: "bg-[rgba(255,197,61,0.24)] text-text-primary",
+};
+
+export function Card({
+  children,
+  interactive,
+  selected,
+  disabled,
+  onClick,
+  className,
+  surface = "tint",
+  accent,
+  accentIcon,
+}: CardProps) {
   const classes = cn(
     BASE,
-    selected && "border-[1.5px] border-accent-secondary",
+    SURFACE_CLASSES[surface],
+    accent && ACCENT_BORDER_CLASSES[accent],
+    selected && "border-[1.5px] border-accent-primary",
     disabled && "opacity-50",
     interactive &&
       !disabled &&
@@ -25,7 +74,23 @@ export function Card({ children, interactive, selected, disabled, onClick, class
     className,
   );
 
-  if (!interactive) return <div className={classes}>{children}</div>;
+  const content = accent ? (
+    <div className="flex items-start gap-md">
+      {accentIcon && (
+        <span
+          aria-hidden="true"
+          className={cn("flex size-[32px] shrink-0 items-center justify-center rounded-[10px]", ACCENT_ICON_CLASSES[accent])}
+        >
+          <Icon name={accentIcon} size="inline" />
+        </span>
+      )}
+      <div className="min-w-0 flex-1">{children}</div>
+    </div>
+  ) : (
+    children
+  );
+
+  if (!interactive) return <div className={classes}>{content}</div>;
 
   return (
     <button
@@ -35,7 +100,7 @@ export function Card({ children, interactive, selected, disabled, onClick, class
       onClick={onClick}
       className={cn(classes, "tap-target")}
     >
-      {children}
+      {content}
     </button>
   );
 }

@@ -159,7 +159,7 @@ export function ContractionTimer({ session, week, onStartContraction, onStopCont
         ) : (
           <ul className="flex flex-col gap-sm">
             {entries.map((e) => (
-              <li key={e.id} className="flex items-start justify-between gap-sm border-b border-border pb-sm">
+              <li key={e.id} className="flex items-start justify-between gap-sm border-b border-divider pb-sm">
                 <div className="flex flex-col gap-[2px]">
                   <p className="text-body-sm font-medium text-text-primary">{e.durationText}</p>
                   {e.gapText && <p className="text-caption text-text-secondary">{e.gapText}</p>}

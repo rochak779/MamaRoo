@@ -89,7 +89,7 @@ export function BabyScreen({
           the same kind of honest content gap, not a missed requirement. */}
 
       <div className="flex flex-col gap-sm">
-        <h2 className="text-h3 font-display text-text-primary">{t("timelineTitle")}</h2>
+        <h2 className="text-h3 font-display font-semibold text-text-primary">{t("timelineTitle")}</h2>
         <Timeline entries={timelineEntries} onSelect={setSelected} />
         {selected && (
           <p data-testid="timeline-selected-note" className="text-body-sm text-text-secondary">
@@ -99,7 +99,7 @@ export function BabyScreen({
       </div>
 
       <div className="flex flex-col gap-md">
-        <h2 className="text-h3 font-display text-text-primary">{t("forYou")}</h2>
+        <h2 className="text-h3 font-display font-semibold text-text-primary">{t("forYou")}</h2>
         <div className="grid grid-cols-2 gap-md">
           <Link href="/baby/name" className="col-span-1">
             <Card className="flex flex-col gap-xs">

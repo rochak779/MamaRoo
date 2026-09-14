@@ -69,7 +69,7 @@ export function AppointmentList({
   return (
     <div className="flex flex-col gap-lg">
       <div className="flex flex-col gap-sm">
-        <h2 className="text-h3 font-display text-text-primary">{t("upcomingHeading")}</h2>
+        <h2 className="text-h3 font-display font-semibold text-text-primary">{t("upcomingHeading")}</h2>
         {upcoming.length === 0 && needsClosing.length === 0 && (
           <EmptyState iconName="CalendarBlank" message={t("emptyUpcoming")} />
         )}
@@ -120,7 +120,7 @@ export function AppointmentList({
       </div>
 
       <div className="flex flex-col gap-sm">
-        <h2 className="text-h3 font-display text-text-primary">{t("pastHeading")}</h2>
+        <h2 className="text-h3 font-display font-semibold text-text-primary">{t("pastHeading")}</h2>
         {past.length === 0 && <EmptyState iconName="CalendarBlank" message={t("emptyPast")} />}
         {visiblePast.map((a) => (
           <button

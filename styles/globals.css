@@ -6,6 +6,15 @@ body {
   margin: 0;
   font-size: var(--text-body);
   line-height: var(--text-body--line-height);
+  /* Global background wash — Mamaroo-Designfinal.md §5: a static,
+     top-to-bottom, 2-stop gradient ("gradient direction is fixed
+     top-to-bottom only — no diagonal, no radial, no multi-stop"). Applies
+     app-wide as the default surface (previously only on 3 pre-auth screens
+     via styles/welcome.css / start.css / splash.css, which already use this
+     same gradient locally and are unaffected by this addition). Set here
+     instead of via the bg-bg utility class so the gradient isn't overridden
+     by a flat background-color of higher specificity. */
+  background: linear-gradient(180deg, var(--color-bg) 0%, var(--color-blush) 100%);
 }
 
 /* Safe areas for the iPhone notch and home indicator. */

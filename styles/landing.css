@@ -16,6 +16,19 @@
   --color-accent-primary: #A8482E;
   --color-accent-secondary: #3D6B58;
   --font-body: var(--font-hind), system-ui, sans-serif;
+  /* Phase 0 (UI redesign alignment) repoints --radius-sm to a pill default on
+     Button, re-tints --shadow-1/2/3 toward deep plum, and re-tints
+     --color-divider toward translucent deep plum -- all three would
+     otherwise bleed into this frozen page (Button.tsx's disabled/loading
+     look is separately protected in Button.tsx itself, not here, since it
+     no longer relies on the shared token at all). Pinned to the exact
+     pre-Phase-0 values so nothing here shifts. */
+  --radius-sm: 12px;
+  --radius-full: 12px;
+  --shadow-1: 0 1px 3px rgba(46, 40, 34, 0.08);
+  --shadow-2: 0 2px 6px rgba(46, 40, 34, 0.12);
+  --shadow-3: 0 8px 24px rgba(46, 40, 34, 0.16);
+  --color-divider: #D8CBB2;
   /* Explicit, not just the custom-property redeclaration above: body itself
      paints its background/color from these same token names at the body
      element's own scope (see app/layout.tsx), which this element would

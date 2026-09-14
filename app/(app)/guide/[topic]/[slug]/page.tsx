@@ -18,6 +18,7 @@ export default async function GuideContentPage({
       transcript={result?.item.body_md ?? null}
       backHref={`/guide/${topic}`}
       backLabelKey="guide.backLabel"
+      context="guide"
     />
   );
 }

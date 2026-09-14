@@ -41,7 +41,7 @@ export function TriageResult({ severity, guidance, feeling, doctorName, clinicNa
       {severity && guidance ? (
         <>
           <SeverityBadge severity={severity} />
-          <h2 className="text-h3 font-display text-text-primary">{guidance.title}</h2>
+          <h2 className="text-h3 font-display font-semibold text-text-primary">{guidance.title}</h2>
           <p className="text-body text-text-primary">{guidance.body}</p>
           {hasClinicContext && (
             <p className="text-body-sm text-text-secondary">

@@ -80,7 +80,7 @@ export function FeelingBox({ onSubmit, transcriber }: FeelingBoxProps) {
       onSubmit={handleSubmit}
       noValidate
     >
-      <p className="text-h3 font-display text-text-primary">{t("prompt")}</p>
+      <p className="text-h3 font-display font-semibold text-text-primary">{t("prompt")}</p>
       <div className="mt-md flex flex-wrap gap-sm" role="group" aria-label={t("prompt")}>
         {FEELINGS.map((option) => (
           <button

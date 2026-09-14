@@ -94,7 +94,7 @@ export function KickCounter({ session, week, onRecordKick, onFinish }: KickCount
   if (finished) {
     return (
       <div className="flex flex-col items-center gap-md py-xl text-center">
-        <p className="text-h3 font-display text-text-primary">{t("doneTitle")}</p>
+        <p className="text-h3 font-display font-semibold text-text-primary">{t("doneTitle")}</p>
         <p className="text-body text-text-secondary">{t("doneBody", { count: state.count })}</p>
       </div>
     );

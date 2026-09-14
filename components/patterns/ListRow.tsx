@@ -17,7 +17,14 @@ export interface ListRowProps {
 export function ListRow({ title, subtitle, iconName, trailing, onClick, href }: ListRowProps) {
   const content = (
     <div data-testid="list-row" className="flex w-full items-center gap-md py-sm">
-      {iconName && <Icon name={iconName} className="shrink-0 text-accent-secondary" />}
+      {iconName && (
+        // Icons default to deep plum, inside a 32px/10px-radius chip (§13.5,
+        // §2.4) -- sage tint is reserved for icons sitting on sage-colored
+        // surfaces, which a plain list row on the page background isn't.
+        <span aria-hidden="true" className="flex size-[32px] shrink-0 items-center justify-center rounded-[10px] bg-surface text-text-primary">
+          <Icon name={iconName} size="inline" />
+        </span>
+      )}
       <div className="flex min-w-0 flex-col">
         <span className="text-body">{title}</span>
         {subtitle && <span className="text-body-sm text-text-secondary">{subtitle}</span>}

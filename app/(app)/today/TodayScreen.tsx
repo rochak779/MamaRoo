@@ -181,7 +181,7 @@ export function TodayScreen({
       </Link>
 
       <div className="flex flex-col gap-md">
-        <h2 className="text-h3 font-display text-text-primary">{t("forYouToday")}</h2>
+        <h2 className="text-h3 font-display font-semibold text-text-primary">{t("forYouToday")}</h2>
         <div className="grid grid-cols-2 gap-md">
           {reading.map((item) => (
             <Link key={item.id} href={`/today/listen/${item.slug}`} className="col-span-2">

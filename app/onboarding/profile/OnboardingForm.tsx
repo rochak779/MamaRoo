@@ -212,7 +212,7 @@ export function OnboardingForm({ onSave }: OnboardingFormProps) {
   if (step === "journeyReady" && savedName) {
     return (
       <div className="mobile-screen flex min-h-dvh flex-col items-center justify-center gap-lg bg-bg px-screen text-center">
-        <h1 className="text-display text-text-primary">{t("onboarding.journeyReady.greeting", { name: savedName })}</h1>
+        <h1 className="font-display text-display text-text-primary">{t("onboarding.journeyReady.greeting", { name: savedName })}</h1>
         <Button onClick={() => router.push("/today")}>{t("onboarding.journeyReady.cta")}</Button>
       </div>
     );
@@ -222,7 +222,7 @@ export function OnboardingForm({ onSave }: OnboardingFormProps) {
     <div className="mobile-screen flex min-h-dvh flex-col gap-lg bg-bg px-screen py-xl">
       {step === "aboutYou" && (
         <div className="flex flex-col gap-lg">
-          <h1 className="text-h1 text-text-primary">{t("onboarding.aboutYou.title")}</h1>
+          <h1 className="font-display text-h1 text-text-primary">{t("onboarding.aboutYou.title")}</h1>
           <Input
             id={nameId}
             label={t("onboarding.aboutYou.nameLabel")}
@@ -252,7 +252,7 @@ export function OnboardingForm({ onSave }: OnboardingFormProps) {
             {...(errors.weightKg ? { error: errors.weightKg } : {})}
           />
           <Card className="flex flex-col gap-md">
-            <h2 className="text-h2 text-text-primary">{t("onboarding.aboutYou.emergencyTitle")}</h2>
+            <h2 className="font-display text-h2 text-text-primary">{t("onboarding.aboutYou.emergencyTitle")}</h2>
             <Input
               id={emergencyNameId}
               label={t("onboarding.aboutYou.emergencyNameLabel")}
@@ -278,7 +278,7 @@ export function OnboardingForm({ onSave }: OnboardingFormProps) {
 
       {step === "pregnancyStart" && (
         <div className="flex flex-col gap-lg">
-          <h1 className="text-h1 text-text-primary">{t("onboarding.pregnancyStart.title")}</h1>
+          <h1 className="font-display text-h1 text-text-primary">{t("onboarding.pregnancyStart.title")}</h1>
           <p className="text-body text-text-secondary">{t("onboarding.pregnancyStart.subtitle")}</p>
           <div className="flex flex-col gap-sm">
             {DUE_DATE_METHODS.map(({ method, hasDate }) => (
@@ -318,7 +318,7 @@ export function OnboardingForm({ onSave }: OnboardingFormProps) {
 
       {step === "pregnancyDetails" && (
         <div className="flex flex-col gap-lg">
-          <h1 className="text-h1 text-text-primary">{t("onboarding.pregnancyDetails.title")}</h1>
+          <h1 className="font-display text-h1 text-text-primary">{t("onboarding.pregnancyDetails.title")}</h1>
           <p className="text-body text-text-secondary">{t("onboarding.pregnancyDetails.subtitle")}</p>
           <div className="flex flex-wrap gap-sm">
             {PREGNANCY_FLAGS.map((flag) => (
@@ -361,7 +361,7 @@ export function OnboardingForm({ onSave }: OnboardingFormProps) {
 
       {step === "notificationPrivacy" && (
         <div className="flex flex-col gap-lg">
-          <h1 className="text-h1 text-text-primary">{t("onboarding.notificationPrivacy.title")}</h1>
+          <h1 className="font-display text-h1 text-text-primary">{t("onboarding.notificationPrivacy.title")}</h1>
           <p className="text-body text-text-secondary">{t("onboarding.notificationPrivacy.intro")}</p>
           <div className="flex flex-col gap-sm">
             <Card

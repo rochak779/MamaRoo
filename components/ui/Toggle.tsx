@@ -26,7 +26,9 @@ export function Toggle({
         onClick={() => onCheckedChange(!checked)}
         className={cn(
           "tap-target relative inline-flex h-[28px] w-[48px] shrink-0 items-center rounded-full transition-colors duration-(--motion-fast) ease-standard disabled:opacity-60",
-          checked ? "bg-accent-primary" : "bg-divider",
+          // Darkened sage, not CTA coral (Mamaroo-Designfinal.md §13.6: CTA
+          // coral is reserved for button fills only, never decorative state).
+          checked ? "bg-accent-secondary" : "bg-divider",
         )}
       >
         <span
