@@ -74,7 +74,15 @@ export const EVENT_SCHEMAS = {
   [EVENTS.contraction_session_started]: z.object({ week }).strict(),
   [EVENTS.checklist_item_toggled]: z.object({
     // A closed enum, not an arbitrary string: "category" would otherwise be a free-text hole.
-    category: z.enum(["hospital_bag", "documents", "birth_prep", "home"]),
+    // Matches CHECKLIST_CATEGORY_ORDER in lib/domain/checklist.ts (Session 31's actual
+    // three mockup groups -- For me / For baby / Documents) -- not the four-category
+    // "hospital bag, documents, birth prep, home" text from Implementation.md's original
+    // plan, which this schema was scaffolded against before the real build. That mismatch
+    // meant every real checklist_item_toggled call threw inside validateEvent() (strict
+    // enum rejection), so ticking a Prep item logged a console error and never reached
+    // the server -- optimistic UI update, no actual persistence. Component tests never
+    // caught it because they mock AnalyticsProvider's track() entirely.
+    category: z.enum(["me", "baby", "docs"]),
     done: z.boolean(),
   }).strict(),
   [EVENTS.install_prompt_accepted]: z.object({

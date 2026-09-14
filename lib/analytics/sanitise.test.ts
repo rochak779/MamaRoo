@@ -67,6 +67,15 @@ describe("validateEvent", () => {
     })).toThrow(/rejected/i);
   });
 
+  // Regression: this schema's category enum was scaffolded against
+  // Implementation.md's original four-category plan (hospital_bag, documents,
+  // birth_prep, home) before Session 31 shipped the real three-category build
+  // (lib/domain/checklist.ts's CHECKLIST_CATEGORY_ORDER: me, baby, docs). The
+  // mismatch meant every real checklist_item_toggled call threw here.
+  it.each([["me"], ["baby"], ["docs"]])("accepts checklist_item_toggled's real category %s", (category) => {
+    expect(validateEvent(EVENTS.checklist_item_toggled, { category, done: true })).toEqual({ category, done: true });
+  });
+
   it("rejects a nested object", () => {
     expect(() => validateEvent(EVENTS.tab_viewed, { tab: { name: "today" } })).toThrow(/rejected/i);
   });
