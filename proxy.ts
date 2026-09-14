@@ -14,7 +14,27 @@ const HAS_FILE_EXTENSION = /\.[a-zA-Z0-9]+$/;
 // Next.js 16 renamed the root request-interception file convention from
 // `middleware.ts` to `proxy.ts` (the `middleware` export still works but is
 // deprecated and logs a warning on every build).
+// Preview deployments have no product surface of their own to protect --
+// STAGING_BASIC_AUTH exists purely so teammates can reach a real preview
+// without a Vercel account, while Vercel's own SSO wall is turned off for
+// Preview in project settings. Format is "user:pass"; only ever set on the
+// Preview environment in Vercel, never Production.
+function unauthorizedResponse() {
+  return new NextResponse("Authentication required", {
+    status: 401,
+    headers: { "WWW-Authenticate": 'Basic realm="MamaRoo preview"' },
+  });
+}
+
 export async function proxy(request: NextRequest) {
+  const stagingAuth = process.env.STAGING_BASIC_AUTH;
+  if (stagingAuth) {
+    const header = request.headers.get("authorization");
+    if (!header?.startsWith("Basic ")) return unauthorizedResponse();
+    const decoded = Buffer.from(header.slice("Basic ".length), "base64").toString("utf-8");
+    if (decoded !== stagingAuth) return unauthorizedResponse();
+  }
+
   if (process.env.APP_LAUNCHED !== "true") {
     const { pathname } = request.nextUrl;
     if (PUBLIC_ROUTES.has(pathname) || HAS_FILE_EXTENSION.test(pathname)) {

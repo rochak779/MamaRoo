@@ -3,8 +3,8 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { NextRequest } from "next/server";
 import { proxy } from "./proxy";
 
-function request(pathname: string) {
-  return new NextRequest(new URL(pathname, "http://localhost:3025"));
+function request(pathname: string, headers: Record<string, string> = {}) {
+  return new NextRequest(new URL(pathname, "http://localhost:3025"), { headers });
 }
 
 afterEach(() => {
@@ -68,4 +68,42 @@ describe("launch gate", () => {
     expect(result.headers.get("location")).toBeNull();
   });
 
+});
+
+// Preview deployments have no product surface of their own to protect --
+// STAGING_BASIC_AUTH exists purely so teammates can reach a real preview
+// without a Vercel account, while Vercel's own SSO wall is turned off for
+// Preview in project settings. It is never set in Production.
+describe("staging basic auth gate", () => {
+  it("challenges with 401 when set and no Authorization header is sent", async () => {
+    vi.stubEnv("STAGING_BASIC_AUTH", "team:letmein");
+
+    const result = await proxy(request("/"));
+
+    expect(result.status).toBe(401);
+    expect(result.headers.get("www-authenticate")).toBe('Basic realm="MamaRoo preview"');
+  });
+
+  it("challenges with 401 when the Authorization header has the wrong credentials", async () => {
+    vi.stubEnv("STAGING_BASIC_AUTH", "team:letmein");
+    const wrongAuth = `Basic ${Buffer.from("team:wrongpassword").toString("base64")}`;
+
+    const result = await proxy(request("/", { authorization: wrongAuth }));
+
+    expect(result.status).toBe(401);
+  });
+
+  it("lets the request through to the launch gate when the Authorization header has the right credentials", async () => {
+    vi.stubEnv("STAGING_BASIC_AUTH", "team:letmein");
+    const correctAuth = `Basic ${Buffer.from("team:letmein").toString("base64")}`;
+
+    const result = await proxy(request("/", { authorization: correctAuth }));
+
+    expect(result.status).toBe(200);
+  });
+
+  it("does nothing when STAGING_BASIC_AUTH is not set, matching Production where it is never configured", async () => {
+    const result = await proxy(request("/"));
+    expect(result.status).toBe(200);
+  });
 });
