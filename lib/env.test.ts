@@ -49,4 +49,15 @@ describe("parseEnv", () => {
     expect(result.NEXT_PUBLIC_POSTHOG_KEY).toBeUndefined();
     expect(result.NEXT_PUBLIC_POSTHOG_HOST).toBeUndefined();
   });
+
+  it("accepts an environment with no service-role key at all", () => {
+    expect(parseEnv(valid).SUPABASE_SERVICE_ROLE_KEY).toBeUndefined();
+  });
+
+  it("accepts a service-role key when present, and treats an empty string as unset", () => {
+    expect(parseEnv({ ...valid, SUPABASE_SERVICE_ROLE_KEY: "service-key" }).SUPABASE_SERVICE_ROLE_KEY).toBe(
+      "service-key",
+    );
+    expect(parseEnv({ ...valid, SUPABASE_SERVICE_ROLE_KEY: "" }).SUPABASE_SERVICE_ROLE_KEY).toBeUndefined();
+  });
 });

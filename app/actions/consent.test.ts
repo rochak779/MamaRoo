@@ -20,8 +20,9 @@ vi.mock("next/navigation", () => ({
     throw new Error(`REDIRECT:${path}`);
   }),
 }));
+vi.mock("next/cache", () => ({ revalidatePath: vi.fn() }));
 
-import { recordConsents } from "@/app/actions/consent";
+import { recordConsents, withdrawConsent } from "@/app/actions/consent";
 import { LEGAL_VERSION } from "@/lib/config";
 
 beforeEach(() => {
@@ -74,5 +75,70 @@ describe("recordConsents", () => {
     await expect(
       recordConsents({ baseline: true, optionalDataSharing: false, analytics: false, locale: "en" }),
     ).rejects.toThrow("insert failed");
+  });
+});
+
+describe("withdrawConsent", () => {
+  it("writes a single granted:false row for optional_data_sharing", async () => {
+    getUser.mockResolvedValue({ data: { user: { id: "user-1" } } });
+    insert.mockResolvedValue({ error: null });
+
+    const result = await withdrawConsent("optional_data_sharing", "en");
+
+    expect(result).toEqual({ ok: true });
+    expect(from).toHaveBeenCalledWith("consents");
+    expect(insert).toHaveBeenCalledWith({
+      consent_key: "optional_data_sharing",
+      granted: false,
+      user_id: "user-1",
+      version: LEGAL_VERSION,
+      locale: "en",
+    });
+  });
+
+  it("writes a single granted:false row for analytics", async () => {
+    getUser.mockResolvedValue({ data: { user: { id: "user-1" } } });
+    insert.mockResolvedValue({ error: null });
+
+    const result = await withdrawConsent("analytics", "hi");
+
+    expect(result).toEqual({ ok: true });
+    expect(insert).toHaveBeenCalledWith({
+      consent_key: "analytics",
+      granted: false,
+      user_id: "user-1",
+      version: LEGAL_VERSION,
+      locale: "hi",
+    });
+  });
+
+  // terms/privacy withdrawal is presented as account deletion, never a toggle
+  // (Spec.md §3.2) -- this rejects the value server-side too, since a forged
+  // request is not bound by what the UI happens to offer.
+  it.each(["terms", "privacy"] as const)("refuses to withdraw the required baseline consent %s", async (key) => {
+    getUser.mockResolvedValue({ data: { user: { id: "user-1" } } });
+
+    const result = await withdrawConsent(key, "en");
+
+    expect(result).toEqual({ ok: false, error: "not_withdrawable" });
+    expect(from).not.toHaveBeenCalled();
+  });
+
+  it("reports not authenticated rather than throwing when there is no session", async () => {
+    getUser.mockResolvedValue({ data: { user: null } });
+
+    const result = await withdrawConsent("analytics", "en");
+
+    expect(result).toEqual({ ok: false, error: "not_authenticated" });
+    expect(from).not.toHaveBeenCalled();
+  });
+
+  it("reports the database error rather than throwing", async () => {
+    getUser.mockResolvedValue({ data: { user: { id: "user-1" } } });
+    insert.mockResolvedValue({ error: { message: "insert failed" } });
+
+    const result = await withdrawConsent("analytics", "en");
+
+    expect(result).toEqual({ ok: false, error: "insert failed" });
   });
 });

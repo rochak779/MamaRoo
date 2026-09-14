@@ -19,6 +19,12 @@ const schema = z.object({
   // module (see that component's own comment on why it can't use `env` here).
   NEXT_PUBLIC_POSTHOG_KEY: optionalNonEmpty(z.string().min(1)),
   NEXT_PUBLIC_POSTHOG_HOST: optionalNonEmpty(z.url()),
+  // Server-only, deliberately not NEXT_PUBLIC_ -- the one credential that can
+  // bypass RLS. Optional here only so a misconfigured local/CI environment
+  // fails at lib/supabase/admin.ts's own call site with a clear error,
+  // rather than failing every request that imports this module (most of the
+  // app never touches it). See that file's own guard test.
+  SUPABASE_SERVICE_ROLE_KEY: optionalNonEmpty(z.string().min(1)),
 });
 
 export type Env = z.infer<typeof schema>;

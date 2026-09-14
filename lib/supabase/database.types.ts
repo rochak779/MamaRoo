@@ -1294,6 +1294,7 @@ export type Database = {
         }[]
       }
       tables_without_rls: { Args: never; Returns: string[] }
+      user_owned_tables: { Args: never; Returns: string[] }
       valid_baby_names: { Args: { names: string[] }; Returns: boolean }
     }
     Enums: {
