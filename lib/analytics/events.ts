@@ -34,6 +34,7 @@ export const EVENTS = {
   chat_answer_shown: "chat_answer_shown",
   contraction_session_started: "contraction_session_started",
   checklist_item_toggled: "checklist_item_toggled",
+  settings_saved: "settings_saved",
   install_prompt_accepted: "install_prompt_accepted",
   offline_write_blocked: "offline_write_blocked",
 } as const;
@@ -80,6 +81,7 @@ export interface EventProperties {
   chat_answer_shown: { answer_kind: "data" | "retrieved" | "no_match" | "refused" };
   contraction_session_started: { week: number };
   checklist_item_toggled: { category: string; done: boolean };
+  settings_saved: { section: "personal" | "pregnancy" | "notifications" };
   install_prompt_accepted: { platform: "android" | "ios" | "other" };
   offline_write_blocked: { feature: string };
 }
