@@ -266,6 +266,10 @@ const ICONS: Record<string, ReactNode> = {
       <line x1="9.5" y1="7.5" x2="16.5" y2="14.5" />
     </>
   ),
+  /* Bare triangle, no ring -- for a play control that already sits inside its
+     own filled circular button (the custom media player), where PlayCircle's
+     built-in ring would double up. */
+  Play: <polygon points="6 4 20 12 6 20 6 4" />,
   PlayCircle: (
     <>
       <circle cx="12" cy="12" r="10" />

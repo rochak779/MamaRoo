@@ -6,11 +6,16 @@ export function BottomSheet({
   open,
   onClose,
   title,
+  eyebrow,
   children,
 }: {
   open: boolean;
   onClose: () => void;
   title: string;
+  /** Optional small label above the title (e.g. "Just a gentle nudge" on the
+   * Medicine Quick Action Sheet). Additive -- existing callers that don't
+   * pass it render exactly as before. */
+  eyebrow?: string;
   children: ReactNode;
 }) {
   const titleId = useId();
@@ -63,7 +68,8 @@ export function BottomSheet({
         className="safe-bottom absolute inset-x-0 bottom-0 max-h-[85dvh] overflow-y-auto rounded-t-[24px] bg-surface-raised p-lg shadow-3 motion-safe:animate-[sheet-in_var(--motion-slow)_var(--ease-standard)]"
       >
         <div aria-hidden="true" className="mx-auto -mt-sm mb-sm h-1 w-9 rounded-full bg-[rgba(103,0,53,0.15)]" />
-        <h2 id={titleId} className="text-h2 font-display">
+        {eyebrow && <p className="text-center text-caption text-text-secondary/80">{eyebrow}</p>}
+        <h2 id={titleId} className={`text-h2 font-display${eyebrow ? " text-center" : ""}`}>
           {title}
         </h2>
         <div className="mt-md">{children}</div>

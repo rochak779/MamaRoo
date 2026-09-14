@@ -42,6 +42,23 @@ body {
   to { transform: translateX(300%); }
 }
 
+/* Today's signature ambient moment (Mamaroo-Designfinal.md §5/§6) -- the one
+   animated element the app is allowed to have outside motion-safe chrome.
+   mr-breathe is the continuous soft glow behind the week-progress hero;
+   mr-bloom is the one-shot celebratory burst on a stage-change day. Both
+   already collapse to an imperceptible flash under prefers-reduced-motion via
+   the reset above; TodayScreen.tsx also gates them with motion-safe:, same
+   convention as BottomSheet's sheet-in. */
+@keyframes mr-breathe {
+  0%, 100% { opacity: 0.04; transform: translate(-50%, -50%) scale(1); }
+  50% { opacity: 0.09; transform: translate(-50%, -50%) scale(1.12); }
+}
+
+@keyframes mr-bloom {
+  0% { opacity: 0.5; transform: translate(-50%, -50%) scale(0.4); }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(1.6); }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;

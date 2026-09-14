@@ -252,6 +252,8 @@
       "textLabel": "लेख के रूप में पढ़ें",
       "playLabel": "चलाएँ",
       "pauseLabel": "रोकें",
+      "playContentLabel": "ऑडियो चलाएँ",
+      "pauseContentLabel": "ऑडियो रोकें",
       "playingCaption": "यह यहीं चल रहा है, ताकि आपकी जगह आज के पन्ने पर बनी रहे।",
       "playingCaptionOther": "यह यहीं चल रहा है, ताकि आपकी जगह इस विषय पर बनी रहे।",
       "readAlong": "साथ साथ पढ़ें",

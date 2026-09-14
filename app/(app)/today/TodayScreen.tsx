@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { Card } from "@/components/ui/Card";
@@ -53,6 +53,50 @@ export interface TodayScreenProps {
   clinicName: string | null;
 }
 
+/** Icon shown in the "for you today" bento cards' chip -- one per content
+ * kind, so the category accent border is never the only cue (colorblind-safe
+ * rule, Mamaroo-Designfinal.md §2.2). */
+function readingIcon(kind: ReadingCard["kind"]): string {
+  if (kind === "video") return "VideoCamera";
+  if (kind === "audio") return "SpeakerHigh";
+  return "BookOpen";
+}
+
+const LAST_SEEN_WEEK_KEY = "mamaroo_today_last_seen_week";
+
+/** Fires the one-shot "bloom" burst behind the week-progress hero on a
+ * stage-change day -- i.e. the first time this session's `week` differs from
+ * whatever was last persisted client-side. Purely a presentational affordance
+ * derived from a prop TodayScreen already receives; nothing new is fetched or
+ * stored server-side. */
+function useBloomOnStageChange(week: number): boolean {
+  const [bloomActive, setBloomActive] = useState(false);
+
+  useEffect(() => {
+    // The sanctioned case the lint rule's own guidance describes
+    // ("subscribe for updates from some external system, calling setState
+    // ... when external state changes"): localStorage doesn't exist during
+    // SSR, so last-seen-week can only be read after mount -- see useDraft.ts
+    // for the same reasoning.
+    let shouldBloom = false;
+    try {
+      const stored = window.localStorage.getItem(LAST_SEEN_WEEK_KEY);
+      const storedWeek = stored ? Number.parseInt(stored, 10) : null;
+      window.localStorage.setItem(LAST_SEEN_WEEK_KEY, String(week));
+      shouldBloom = storedWeek !== week;
+    } catch {
+      // localStorage unavailable (private mode) -- skip the bloom, never crash.
+    }
+    if (!shouldBloom) return;
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setBloomActive(true);
+    const timeout = setTimeout(() => setBloomActive(false), 600);
+    return () => clearTimeout(timeout);
+  }, [week]);
+
+  return bloomActive;
+}
+
 /** "20:00" (stored, 24h) -> "8:00 PM". Reminder times never carry a date, so
  * this stays a pure string transform rather than going through Date/Intl. */
 function formatTime(time: string): string {
@@ -85,6 +129,7 @@ export function TodayScreen({
     (Pick<TriageResultProps, "severity" | "guidance"> & { feeling: Feeling | null }) | null
   >(null);
   const [sheetOpen, setSheetOpen] = useState(false);
+  const bloomActive = useBloomOnStageChange(week);
 
   if (isPostTerm) {
     return (
@@ -126,17 +171,35 @@ export function TodayScreen({
           pattern as Button.tsx and Skeleton.tsx. */}
       <h1 className="sr-only">{tNav("today")}</h1>
       <div className="flex flex-col items-center gap-sm">
-        <div className="flex justify-center gap-sm">
-          {Array.from({ length: babyCount }, (_, i) => (
-            <IllustrationContainer
-              key={i}
-              lottieUrl={stage.lottieUrl}
-              staticSrc={stage.staticSrc}
-              alt={babyCount > 1 ? t("weekTagTwins", { week }) : t("weekTag", { week })}
+        <div className="relative flex flex-col items-center py-xs">
+          {/* The signature ambient moment (Mamaroo-Designfinal.md §5/§6): a soft
+              breathing glow behind the week-progress hero, always on, plus a
+              one-shot "bloom" burst on a stage-change day. Both decorative,
+              aria-hidden, and behind the illustration in stacking order. */}
+          <div
+            aria-hidden="true"
+            className="motion-safe:animate-[mr-breathe_7s_ease-in-out_infinite] pointer-events-none absolute top-[90px] left-1/2 size-[220px] -translate-x-1/2 -translate-y-1/2 rounded-full"
+            style={{ background: "radial-gradient(circle, var(--color-soft-coral), var(--color-peach) 60%, transparent 75%)" }}
+          />
+          {bloomActive && (
+            <div
+              aria-hidden="true"
+              className="motion-safe:animate-[mr-bloom_var(--motion-bloom)_ease-out_forwards] pointer-events-none absolute top-[78px] left-1/2 size-[180px] -translate-x-1/2 -translate-y-1/2 rounded-full"
+              style={{ background: "radial-gradient(circle, rgba(255,197,61,0.55), rgba(255,197,61,0) 70%)" }}
             />
-          ))}
+          )}
+          <div className="relative flex justify-center gap-sm">
+            {Array.from({ length: babyCount }, (_, i) => (
+              <IllustrationContainer
+                key={i}
+                lottieUrl={stage.lottieUrl}
+                staticSrc={stage.staticSrc}
+                alt={babyCount > 1 ? t("weekTagTwins", { week }) : t("weekTag", { week })}
+              />
+            ))}
+          </div>
         </div>
-        <span className="rounded-full bg-surface-raised px-md py-xs text-body-sm font-medium text-text-primary shadow-1">
+        <span className="relative rounded-full bg-surface-raised px-md py-xs text-body-sm font-medium text-text-primary shadow-1">
           {babyCount > 1 ? t("weekTagTwins", { week }) : t("weekTag", { week })}
         </span>
         <p className="text-body text-text-primary">{t("greeting", { name: displayName })}</p>
@@ -184,8 +247,8 @@ export function TodayScreen({
         <h2 className="text-h3 font-display font-semibold text-text-primary">{t("forYouToday")}</h2>
         <div className="grid grid-cols-2 gap-md">
           {reading.map((item) => (
-            <Link key={item.id} href={`/today/listen/${item.slug}`} className="col-span-2">
-              <Card className="flex flex-col gap-sm">
+            <Link key={item.id} href={`/today/listen/${item.slug}`} className="block">
+              <Card accent="coral" accentIcon={readingIcon(item.kind)} className="flex h-full flex-col gap-sm">
                 <p className="text-caption font-semibold uppercase tracking-[0.04em] text-text-secondary">
                   {item.title}
                 </p>
@@ -194,8 +257,8 @@ export function TodayScreen({
             </Link>
           ))}
 
-          <Link href="/today/meal-plan" className="col-span-2">
-            <Card className="flex flex-col gap-sm">
+          <Link href="/today/meal-plan" className="block">
+            <Card accent="gold" accentIcon="ForkKnife" className="flex h-full flex-col gap-sm">
               <p className="text-caption font-semibold uppercase tracking-[0.04em] text-text-secondary">
                 {t("mealPlanCardLabel")}
               </p>

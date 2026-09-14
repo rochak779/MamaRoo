@@ -64,15 +64,41 @@ describe("ContentDetail", () => {
     expect(screen.getByText(en.today.listen.playingCaption)).toBeInTheDocument();
   });
 
-  it("renders native audio and reveals an available read-along transcript", async () => {
+  it("renders the custom audio player and reveals an available read-along transcript", async () => {
     const user = userEvent.setup();
     const { container } = renderDetail({ kind: "audio", media_url: "https://example.com/audio.mp3" });
-    expect(container.querySelector("audio[controls]")).toHaveAttribute("src", "https://example.com/audio.mp3");
+    expect(container.querySelector("audio")).toHaveAttribute("src", "https://example.com/audio.mp3");
+    expect(screen.getByRole("button", { name: en.today.listen.playContentLabel })).toBeInTheDocument();
     expect(screen.getByText(en.today.listen.playingCaption)).toBeInTheDocument();
     expect(screen.queryByText(baseItem.body_md!)).not.toBeInTheDocument();
 
     await user.click(screen.getByRole("button", { name: en.today.listen.readAlong }));
     expect(screen.getByText(baseItem.body_md!)).toBeInTheDocument();
+  });
+
+  it("toggles the custom audio player's play/pause button as the element itself plays and pauses", async () => {
+    const user = userEvent.setup();
+    const { container } = renderDetail({ kind: "audio", media_url: "https://example.com/audio.mp3" });
+    const audio = container.querySelector("audio") as HTMLAudioElement;
+    audio.play = vi.fn().mockImplementation(() => {
+      fireEvent.play(audio);
+      return Promise.resolve();
+    });
+    audio.pause = vi.fn().mockImplementation(() => {
+      fireEvent.pause(audio);
+    });
+
+    await user.click(screen.getByRole("button", { name: en.today.listen.playContentLabel }));
+    expect(screen.getByRole("button", { name: en.today.listen.pauseContentLabel })).toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: en.today.listen.pauseContentLabel }));
+    expect(screen.getByRole("button", { name: en.today.listen.playContentLabel })).toBeInTheDocument();
+  });
+
+  it("tracks completion when the custom audio player's element ends", () => {
+    const { container } = renderDetail({ kind: "audio", media_url: "https://example.com/audio.mp3" });
+    fireEvent.ended(container.querySelector("audio") as HTMLAudioElement);
+    expect(track).toHaveBeenCalledWith(EVENTS.content_completed, { kind: "audio" });
   });
 
   it("switches to the text version, hides the player and shows the video-appropriate note", async () => {

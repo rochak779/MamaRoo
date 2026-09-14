@@ -78,6 +78,9 @@
   --motion-base: 250ms;
   --motion-slow: 400ms;
   --motion-hero: 900ms;
+  /* Today's one-shot stage-change "bloom" burst (mr-bloom keyframe,
+     globals.css) -- its own value since it doesn't match any existing step. */
+  --motion-bloom: 550ms;
   --ease-standard: cubic-bezier(0.2, 0, 0, 1);
   /* The "pop" easing for a bounced-in arrival (sparkles, orbit dot on the
      splash screen). Distinct from --ease-standard's settle-in curve. */

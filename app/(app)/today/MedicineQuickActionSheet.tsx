@@ -98,9 +98,12 @@ export function MedicineQuickActionSheet({
     : null;
 
   return (
-    <BottomSheet open={open} onClose={onClose} title={`${medicineName}, ${displayedTime}`}>
-      <p className="text-center text-caption text-text-secondary">{t("heading")}</p>
-
+    <BottomSheet
+      open={open}
+      onClose={onClose}
+      title={`${medicineName}, ${displayedTime}`}
+      eyebrow={t("heading")}
+    >
       {confirmationCopy ? (
         <div className="mt-lg text-center" aria-live="polite">
           <p className="text-body text-text-primary">{confirmationCopy}</p>

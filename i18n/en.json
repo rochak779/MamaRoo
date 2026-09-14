@@ -252,6 +252,8 @@
       "textLabel": "Text version",
       "playLabel": "Play",
       "pauseLabel": "Pause",
+      "playContentLabel": "Play audio",
+      "pauseContentLabel": "Pause audio",
       "playingCaption": "Playing right here, so you keep your place on Today.",
       "playingCaptionOther": "Playing right here, so you keep your place on this topic.",
       "readAlong": "Read along",

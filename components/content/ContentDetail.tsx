@@ -18,6 +18,15 @@ function contentKind(value: string): ContentKind {
   return "article";
 }
 
+/** Seconds -> "1:42". Caps at hours only if it ever comes up; content audio
+ * here is always well under an hour. */
+function formatPlayerTime(totalSeconds: number): string {
+  const safeSeconds = Number.isFinite(totalSeconds) && totalSeconds > 0 ? Math.floor(totalSeconds) : 0;
+  const minutes = Math.floor(safeSeconds / 60);
+  const seconds = safeSeconds % 60;
+  return `${minutes}:${String(seconds).padStart(2, "0")}`;
+}
+
 function RestrictedMarkdown({ children }: { children: string }) {
   return (
     <div className="prose max-w-none text-body text-text-primary">
@@ -50,6 +59,27 @@ export function ContentDetail({ item, isFallback, transcript, backHref, backLabe
   const [narrationPlaying, setNarrationPlaying] = useState(false);
   const narrationRef = useRef<HTMLAudioElement | null>(null);
   const kind = item ? contentKind(item.kind) : null;
+
+  // Custom coral-branded audio player state (Mamaroo-Designfinal.md's Quick
+  // Listen mockup) -- replaces the bare native <audio controls> widget.
+  const [contentPlaying, setContentPlaying] = useState(false);
+  const [contentTime, setContentTime] = useState(0);
+  const [contentDuration, setContentDuration] = useState(item?.duration_seconds ?? 0);
+  const contentAudioRef = useRef<HTMLAudioElement | null>(null);
+
+  async function toggleContentAudio() {
+    const audio = contentAudioRef.current;
+    if (!audio) return;
+    if (contentPlaying) {
+      audio.pause();
+      return;
+    }
+    try {
+      await audio.play();
+    } catch {
+      // Autoplay/permission failure -- onPlay never fires, state stays paused.
+    }
+  }
 
   useEffect(() => {
     if (!item || !kind) return;
@@ -195,7 +225,38 @@ export function ContentDetail({ item, isFallback, transcript, backHref, backLabe
           {kind === "audio" && (
             <>
               <div className="flex flex-col gap-md rounded-md bg-surface-raised p-lg shadow-1">
-                <audio controls src={item.media_url ?? undefined} onEnded={completeMedia} className="w-full" />
+                <div className="flex items-center gap-md">
+                  <button
+                    type="button"
+                    onClick={() => void toggleContentAudio()}
+                    aria-label={t(contentPlaying ? "today.listen.pauseContentLabel" : "today.listen.playContentLabel")}
+                    className="tap-target flex size-[52px] shrink-0 items-center justify-center rounded-full bg-accent-primary text-surface-raised"
+                  >
+                    <Icon name={contentPlaying ? "Pause" : "Play"} size="inline" />
+                  </button>
+                  <div className="min-w-0 flex-1">
+                    <div className="relative h-1.5 overflow-hidden rounded-full bg-[rgba(103,0,53,0.1)]">
+                      <div
+                        className="absolute inset-y-0 left-0 rounded-full bg-accent-primary"
+                        style={{ width: `${contentDuration > 0 ? Math.min(100, (contentTime / contentDuration) * 100) : 0}%` }}
+                      />
+                    </div>
+                    <div className="mt-xs flex justify-between text-caption text-text-secondary">
+                      <span>{formatPlayerTime(contentTime)}</span>
+                      <span>{formatPlayerTime(contentDuration)}</span>
+                    </div>
+                  </div>
+                </div>
+                <audio
+                  ref={contentAudioRef}
+                  src={item.media_url ?? undefined}
+                  onEnded={completeMedia}
+                  onPlay={() => setContentPlaying(true)}
+                  onPause={() => setContentPlaying(false)}
+                  onTimeUpdate={(event) => setContentTime(event.currentTarget.currentTime)}
+                  onLoadedMetadata={(event) => setContentDuration(event.currentTarget.duration)}
+                  className="hidden"
+                />
                 <p className="flex items-center gap-sm text-caption text-text-secondary">
                   <Icon name="SpeakerHigh" size="inline" />
                   {t(context === "today" ? "today.listen.playingCaption" : "today.listen.playingCaptionOther")}
