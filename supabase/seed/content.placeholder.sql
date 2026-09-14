@@ -63,7 +63,10 @@ values
 insert into public.suggested_questions (locale, week_min, week_max, body)
 values ('en', 1, 42, 'Placeholder question. Not medical content.');
 
-insert into public.checklist_items (locale, category, body, sort_order)
-values
-  ('en', 'hospital_bag', 'Placeholder item one', 1),
-  ('en', 'documents', 'Placeholder item two', 2);
+-- checklist_items has its own seed (supabase/seed/checklist_items.sql, same
+-- "placeholder auto-run vs. reviewed-corpus manual apply" split as
+-- food_safety_items and guide content below) -- it's deliberately not
+-- listed in config.toml's db.seed.sql_paths, same as those. A stale insert
+-- targeting an earlier, abandoned shape of this table (a "body" column that
+-- no longer exists) used to live here; removed rather than fixed in place,
+-- since real seed content for this table already exists in its own file.
