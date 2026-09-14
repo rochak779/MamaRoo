@@ -11,11 +11,17 @@ export default defineConfig({
     // "node_modules/**" alone only matches the root node_modules -- it does
     // not stop the include glob from walking into a nested one. Parallel
     // Claude/Codex sessions leave their own checkouts (and node_modules)
-    // under .claude/worktrees/, so without "**/node_modules/**" a full run
-    // discovers and executes every dependency's own test suite from inside
-    // each worktree too (confirmed: 251 files failing there, unrelated to
-    // this project, on a run made to verify Session 30).
-    exclude: ["tests/e2e/**", "**/node_modules/**", ".claude/worktrees/**"],
+    // under .claude/worktrees/ or .worktrees/ (the latter is the convention
+    // documented for Claude+Codex parallel sessions), so without
+    // "**/node_modules/**" a full run discovers and executes every
+    // dependency's own test suite from inside each worktree too (confirmed:
+    // 251 files failing there, unrelated to this project, on a run made to
+    // verify Session 30). Excluding both worktree roots also stops a run
+    // from picking up another session's in-progress, possibly-broken files
+    // as if they were this project's own tests (confirmed again, Session
+    // 31: a live .worktrees/ Codex session was being discovered and its
+    // i18n guard failures counted against this repo's own run).
+    exclude: ["tests/e2e/**", "**/node_modules/**", ".claude/worktrees/**", ".worktrees/**"],
     globals: true,
     // tests/rls/*.test.ts share a `resetUsers()` helper that wipes every @rls.test
     // user against one live Supabase project. Vitest's default is to run test files

@@ -214,29 +214,32 @@ export type Database = {
       }
       checklist_items: {
         Row: {
-          body: string
           category: string
-          content_item_slug: string | null
+          created_at: string
           id: string
           is_active: boolean
+          item_key: string
+          label: string
           locale: string
           sort_order: number
         }
         Insert: {
-          body: string
           category: string
-          content_item_slug?: string | null
+          created_at?: string
           id?: string
           is_active?: boolean
+          item_key: string
+          label: string
           locale: string
           sort_order?: number
         }
         Update: {
-          body?: string
           category?: string
-          content_item_slug?: string | null
+          created_at?: string
           id?: string
           is_active?: boolean
+          item_key?: string
+          label?: string
           locale?: string
           sort_order?: number
         }
@@ -244,35 +247,27 @@ export type Database = {
       }
       checklist_progress: {
         Row: {
-          checklist_item_id: string
-          done_at: string | null
+          done: boolean
           id: string
-          is_done: boolean
+          item_key: string
+          updated_at: string
           user_id: string
         }
         Insert: {
-          checklist_item_id: string
-          done_at?: string | null
+          done?: boolean
           id?: string
-          is_done?: boolean
+          item_key: string
+          updated_at?: string
           user_id: string
         }
         Update: {
-          checklist_item_id?: string
-          done_at?: string | null
+          done?: boolean
           id?: string
-          is_done?: boolean
+          item_key?: string
+          updated_at?: string
           user_id?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "checklist_progress_checklist_item_id_fkey"
-            columns: ["checklist_item_id"]
-            isOneToOne: false
-            referencedRelation: "checklist_items"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       consents: {
         Row: {
@@ -563,6 +558,36 @@ export type Database = {
             referencedColumns: ["id", "user_id"]
           },
         ]
+      }
+      emergency_contacts: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          phone: string
+          sort_order: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          phone: string
+          sort_order?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          phone?: string
+          sort_order?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       food_safety_items: {
         Row: {
@@ -884,6 +909,7 @@ export type Database = {
       pregnancies: {
         Row: {
           baby_name: string[]
+          birth_notes: string | null
           created_at: string
           edd: string
           edd_source: string
@@ -899,6 +925,7 @@ export type Database = {
         }
         Insert: {
           baby_name?: string[]
+          birth_notes?: string | null
           created_at?: string
           edd: string
           edd_source: string
@@ -914,6 +941,7 @@ export type Database = {
         }
         Update: {
           baby_name?: string[]
+          birth_notes?: string | null
           created_at?: string
           edd?: string
           edd_source?: string

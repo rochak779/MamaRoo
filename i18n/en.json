@@ -866,6 +866,35 @@
       "recordError": "That contraction didn't save. Try again.",
       "offlineStartError": "You're offline right now, so a contraction can't start saving safely. Reconnect to keep timing.",
       "offlineStopError": "You're offline right now, so this contraction can't save safely. Reconnect to record it."
+    },
+    "prep": {
+      "title": "Pregnancy preparation",
+      "categoryMe": "For me",
+      "categoryBaby": "For baby",
+      "categoryDocs": "Documents",
+      "progressLabel": "{done} of {total} packed",
+      "documentsTitle": "Important documents to carry",
+      "documentIdentification": "Identification",
+      "documentInsurance": "Insurance details",
+      "documentRecords": "Medical records and reports",
+      "documentsHelper": "These are just reminders of what to carry, not stored copies, unless you attach a photo yourself in Reports",
+      "contactsTitle": "Transport and emergency contacts",
+      "contactNamePlaceholder": "Name",
+      "contactPhonePlaceholder": "10 digit phone number",
+      "addContact": "Add contact",
+      "callContact": "Call",
+      "removeContact": "Remove contact",
+      "contactSaveError": "That contact didn't save. Try again.",
+      "contactDeleteError": "That contact couldn't be removed. Try again.",
+      "contactInvalid": "Add a name and a 10-digit phone number to save this contact.",
+      "notesTitle": "Birth preference notes",
+      "notesPlaceholder": "Anything you want to note for yourself or share with your care team",
+      "saveNotes": "Save",
+      "notesSaved": "Saved",
+      "notesSaveError": "Your notes didn't save. Try again.",
+      "toggleError": "That didn't save.",
+      "toggleErrorNextStep": "Tap it again to retry.",
+      "offlineToggleError": "You're offline right now, so this can't save safely. Reconnect and try again."
     }
   }
 }

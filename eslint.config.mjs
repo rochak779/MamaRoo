@@ -16,6 +16,12 @@ const eslintConfig = defineConfig([
     // particular is the Claude Design canvas runtime, vendored as-is by the
     // design tool, not code this project authors or ships.
     "Screens/**",
+    // Parallel Claude/Codex session checkouts -- same reasoning as
+    // vitest.config.ts's exclude list: a full lint run should never grade
+    // another session's in-progress worktree as if it were this repo's own
+    // source.
+    ".claude/worktrees/**",
+    ".worktrees/**",
   ]),
 ]);
 
