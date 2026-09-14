@@ -51,7 +51,12 @@ test.describe("Me hub and everyday settings", () => {
 
     await page.goto("/me/personal");
     await expect(page.getByLabel("Name")).toHaveValue("Priya");
-    await expect(page.getByLabel("Age")).toHaveValue(String(Number(todayInAppZone().slice(0, 4)) - 1998));
+    // exact: true -- Playwright's getByLabel substring-matches by default, and
+    // "Language" (the language-switcher section's own accessible name, below on
+    // this same page) contains "age" as a literal substring.
+    await expect(page.getByLabel("Age", { exact: true })).toHaveValue(
+      String(Number(todayInAppZone().slice(0, 4)) - 1998),
+    );
     await expect(page.getByLabel("City")).toHaveValue("Lucknow");
     await page.getByLabel("Mobile number").fill("9876543210");
     await page.getByRole("button", { name: "Save" }).click();
@@ -132,9 +137,9 @@ test.describe("Me hub and everyday settings", () => {
 
     await page.goto("/me/personal");
     await page.getByRole("button", { name: "हिंदी" }).click();
-    await expect(page.getByRole("heading", { name: "व्यक्तिगत जानकारी" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "मेरी जानकारी" })).toBeVisible();
     await page.reload();
-    await expect(page.getByRole("heading", { name: "व्यक्तिगत जानकारी" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "मेरी जानकारी" })).toBeVisible();
 
     const profile = await admin.from("profiles").select("locale").eq("id", fixture.userId).single();
     expect(profile.data?.locale).toBe("hi");
