@@ -61,7 +61,7 @@ export function MedicinesScreen({ today, items, cells, existingActiveNames, onSa
 
       <MedicineList items={ownItems} today={today} />
 
-      <Button type="button" onClick={() => setAddOpen(true)}>
+      <Button type="button" sticky onClick={() => setAddOpen(true)}>
         {t("addMedicine")}
       </Button>
 

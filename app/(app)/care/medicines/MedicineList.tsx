@@ -99,7 +99,7 @@ export function MedicineList({
   return (
     <div className="flex flex-col gap-lg">
       {priority.length > 0 && (
-        <div className="flex flex-col gap-sm rounded-md bg-blush p-md">
+        <div className="flex flex-col gap-sm rounded-md bg-peach p-md shadow-2">
           <p className="text-body font-display font-semibold text-text-primary">{t("trackerTitle")}</p>
           {priority.map((item) => {
             const status = statusOf(item);
@@ -136,8 +136,17 @@ export function MedicineList({
           <p className="text-body font-display font-semibold text-text-primary">{t("otherMedicines")}</p>
           {other.map((item) => {
             const status = statusOf(item);
+            // "Soften on skip" (README): a skipped dose never reads as a warning --
+            // it settles into a quieter, translucent card instead of a red state.
+            const isSkipped = status === "skipped";
             return (
-              <div key={item.id} className="flex flex-col gap-sm rounded-md bg-surface-raised p-md shadow-1">
+              <div
+                key={item.id}
+                className={cn(
+                  "flex flex-col gap-sm rounded-md p-md",
+                  isSkipped ? "bg-surface-raised/70 shadow-none" : "bg-surface-raised shadow-1",
+                )}
+              >
                 <div className="flex flex-col">
                   <span className="text-body-sm font-medium text-text-primary">{item.name}</span>
                   <span className="text-caption text-text-secondary">

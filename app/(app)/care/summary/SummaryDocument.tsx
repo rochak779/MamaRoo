@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { PRODUCT_NAME } from "@/lib/config";
 import { SUMMARY_PROVENANCE_KEY, type SummaryModel } from "@/lib/domain/summary";
@@ -61,7 +62,7 @@ export function SummaryDocument({ model }: SummaryDocumentProps) {
 
         <tr data-print-block>
           <td className="border-b border-divider py-md">
-            <SectionHeading>{t("sectionMedicines")}</SectionHeading>
+            <SectionHeading href="/care/medicines">{t("sectionMedicines")}</SectionHeading>
             {model.medicines.length === 0 ? (
               <EmptyLine>{t("empty")}</EmptyLine>
             ) : (
@@ -83,7 +84,7 @@ export function SummaryDocument({ model }: SummaryDocumentProps) {
         {(model.lastAppointment || model.nextAppointment) && (
           <tr data-print-block>
             <td className="border-b border-divider py-md">
-              <SectionHeading>{t("sectionAppointments")}</SectionHeading>
+              <SectionHeading href="/care/appointments">{t("sectionAppointments")}</SectionHeading>
               <ul className="flex flex-col gap-xs">
                 {model.lastAppointment && (
                   <li className="text-body-sm">
@@ -122,7 +123,7 @@ export function SummaryDocument({ model }: SummaryDocumentProps) {
 
         <tr data-print-block>
           <td className="border-b border-divider py-md">
-            <SectionHeading>{t("sectionReports")}</SectionHeading>
+            <SectionHeading href="/care/reports">{t("sectionReports")}</SectionHeading>
             {model.reports.length === 0 ? (
               <EmptyLine>{t("empty")}</EmptyLine>
             ) : (
@@ -160,7 +161,7 @@ export function SummaryDocument({ model }: SummaryDocumentProps) {
             {model.advice.length > 0 && (
               <tr data-print-block>
                 <td className="border-b border-divider py-md">
-                  <SectionHeading>{t("sectionAdvice")}</SectionHeading>
+                  <SectionHeading href="/care/advice">{t("sectionAdvice")}</SectionHeading>
                   <ul className="flex flex-col gap-xs">
                     {model.advice.map((entry) => (
                       <li key={entry.id} className="text-body-sm">
@@ -180,7 +181,7 @@ export function SummaryDocument({ model }: SummaryDocumentProps) {
             {model.careTasks.length > 0 && (
               <tr data-print-block>
                 <td className="border-b border-divider py-md">
-                  <SectionHeading>{t("sectionCareTasks")}</SectionHeading>
+                  <SectionHeading href="/care/advice">{t("sectionCareTasks")}</SectionHeading>
                   <ul className="flex flex-col gap-xs">
                     {model.careTasks.map((task) => (
                       <li key={task.id} className="text-body-sm">
@@ -196,7 +197,7 @@ export function SummaryDocument({ model }: SummaryDocumentProps) {
 
         <tr data-print-block>
           <td className="py-md">
-            <SectionHeading>{t("sectionQuestions")}</SectionHeading>
+            <SectionHeading href="/care/questions">{t("sectionQuestions")}</SectionHeading>
             {model.markedQuestions.length === 0 ? (
               <EmptyLine>{t("empty")}</EmptyLine>
             ) : (
@@ -223,8 +224,22 @@ export function SummaryDocument({ model }: SummaryDocumentProps) {
   );
 }
 
-function SectionHeading({ children }: { children: React.ReactNode }) {
-  return <p className="mb-xs font-display text-body font-semibold text-text-primary">{children}</p>;
+// Linkable sections (README: medicines, appointments, reports, care tasks,
+// questions) render the *identical* heading style as an `<a>` instead of a
+// `<p>` -- no color, underline, or icon added, so the printed/two-colour
+// document (enforced above) looks exactly the same on paper, while on screen
+// it's a real link back to that section's own full screen. `data-print="hide"`
+// isn't needed: an unstyled link prints indistinguishably from plain text.
+function SectionHeading({ children, href }: { children: React.ReactNode; href?: string }) {
+  const className = "mb-xs block font-display text-body font-semibold text-text-primary";
+  if (href) {
+    return (
+      <Link href={href} className={className}>
+        {children}
+      </Link>
+    );
+  }
+  return <p className={className}>{children}</p>;
 }
 
 function EmptyLine({ children }: { children: React.ReactNode }) {

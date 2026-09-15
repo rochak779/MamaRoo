@@ -53,7 +53,7 @@ export function AdviceScreen({ initialAdvice }: AdviceScreenProps) {
 
       <AdviceList items={items} onEdit={(advice) => setSheet(advice)} onReminderToggled={handleReminderToggled} />
 
-      <Button type="button" onClick={() => setSheet("add")}>
+      <Button type="button" sticky onClick={() => setSheet("add")}>
         {t("addAdvice")}
       </Button>
 

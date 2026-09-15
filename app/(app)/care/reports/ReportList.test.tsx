@@ -19,19 +19,50 @@ function makeReport(overrides: Partial<ReportRecord> = {}): ReportRecord {
   };
 }
 
-function renderList(reports: ReportRecord[], onOpen = vi.fn()) {
+function renderList(
+  reports: ReportRecord[],
+  onOpen = vi.fn(),
+  onAdd = vi.fn(),
+  onSignedUrl = vi.fn().mockResolvedValue({ ok: false, error: "not_found" }),
+) {
   render(
     <NextIntlClientProvider locale="en" messages={en}>
-      <ReportList reports={reports} onOpen={onOpen} />
+      <ReportList reports={reports} onOpen={onOpen} onAdd={onAdd} onSignedUrl={onSignedUrl} />
     </NextIntlClientProvider>,
   );
-  return { onOpen };
+  return { onOpen, onAdd, onSignedUrl };
 }
 
 describe("ReportList", () => {
   it("shows an inviting empty state when there are no reports", () => {
     renderList([]);
     expect(screen.getByText(en.reports.empty)).toBeInTheDocument();
+  });
+
+  it("still offers an add tile in the empty state, so there's always a way in", () => {
+    const { onAdd } = renderList([]);
+    fireEvent.click(screen.getByText(en.reports.addReport));
+    expect(onAdd).toHaveBeenCalledOnce();
+  });
+
+  it("shows the add tile inside the photo grid alongside real reports", () => {
+    const { onAdd } = renderList([makeReport()]);
+    fireEvent.click(screen.getByText(en.reports.addReport));
+    expect(onAdd).toHaveBeenCalledOnce();
+  });
+
+  it("fetches and shows the report's own photo instead of a generic icon", async () => {
+    const onSignedUrl = vi.fn().mockResolvedValue({ ok: true, url: "https://example.com/signed.jpg", expiresAt: Date.now() + 60_000 });
+    renderList([makeReport()], vi.fn(), vi.fn(), onSignedUrl);
+    expect(onSignedUrl).toHaveBeenCalledWith({ reportId: "1" });
+    const img = await screen.findByTestId("report-thumbnail");
+    expect(img).toHaveAttribute("src", "https://example.com/signed.jpg");
+  });
+
+  it("keeps the file icon for a PDF report rather than fetching a photo", () => {
+    const onSignedUrl = vi.fn();
+    renderList([makeReport({ mimeType: "application/pdf" })], vi.fn(), vi.fn(), onSignedUrl);
+    expect(onSignedUrl).not.toHaveBeenCalled();
   });
 
   it("shows each report's title and date", () => {

@@ -58,4 +58,17 @@ describe("Button", () => {
     expect(cls).not.toContain("truncate");
     expect(cls).not.toContain("whitespace-nowrap");
   });
+
+  it("stays full-width and pinned above the bottom nav when sticky", () => {
+    render(<Button sticky>Add medicine</Button>);
+    const cls = screen.getByRole("button").className;
+    expect(cls).toContain("sticky");
+    expect(cls).toContain("bottom-[96px]");
+    expect(cls).toContain("w-full");
+  });
+
+  it("stays in normal flow by default", () => {
+    render(<Button>Add medicine</Button>);
+    expect(screen.getByRole("button").className).not.toContain("sticky");
+  });
 });

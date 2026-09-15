@@ -335,13 +335,6 @@ export function NotesScreen({
         </div>
       </header>
 
-      {notes.length > 0 && (
-        <Button type="button" onClick={() => openComposer(null)} className="w-full rounded-full sm:self-end sm:w-auto">
-          <Icon name="Plus" size="inline" />
-          {t("addNote")}
-        </Button>
-      )}
-
       {notes.length === 0 ? (
         <EmptyState
           iconName="NotePencil"
@@ -375,6 +368,13 @@ export function NotesScreen({
             );
           })}
         </ol>
+      )}
+
+      {notes.length > 0 && (
+        <Button type="button" sticky onClick={() => openComposer(null)}>
+          <Icon name="Plus" size="inline" />
+          {t("addNote")}
+        </Button>
       )}
     </section>
   );

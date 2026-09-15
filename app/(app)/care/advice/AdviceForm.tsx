@@ -144,7 +144,7 @@ export function AdviceForm({
               key={option}
               type="button"
               aria-pressed={type === option}
-              className="tap-target rounded-full border border-divider bg-surface px-md py-xs text-body-sm text-text-primary aria-pressed:border-accent-primary aria-pressed:bg-[rgba(255,164,143,0.28)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-primary"
+              className="tap-target rounded-full border border-divider bg-surface px-md py-xs text-body-sm text-text-primary aria-pressed:border-soft-coral aria-pressed:bg-soft-coral aria-pressed:text-surface-raised focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-primary"
               onClick={() => setType(option)}
             >
               {t(`types.${option}`)}

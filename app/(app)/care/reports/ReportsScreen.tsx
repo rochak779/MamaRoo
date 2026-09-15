@@ -6,7 +6,6 @@ import { ReportCapture } from "@/app/(app)/care/reports/ReportCapture";
 import { ReportList } from "@/app/(app)/care/reports/ReportList";
 import { ReportViewer } from "@/app/(app)/care/reports/ReportViewer";
 import { BackButton } from "@/components/patterns/BackButton";
-import { Button } from "@/components/ui/Button";
 import { BottomSheet } from "@/components/ui/BottomSheet";
 import { sortReportsByDate, type ReportRecord } from "@/lib/domain/reports";
 
@@ -47,11 +46,7 @@ export function ReportsScreen({ initialReports }: ReportsScreenProps) {
         </div>
       </header>
 
-      <ReportList reports={reports} onOpen={(report) => setSheet(report)} />
-
-      <Button type="button" onClick={() => setSheet("add")}>
-        {t("addReport")}
-      </Button>
+      <ReportList reports={reports} onOpen={(report) => setSheet(report)} onAdd={() => setSheet("add")} />
 
       <BottomSheet
         open={sheet !== null}

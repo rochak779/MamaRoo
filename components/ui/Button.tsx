@@ -10,6 +10,14 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   loading?: boolean;
   /** Shown to assistive tech and as a hint, so a disabled button is never unexplained. */
   disabledReason?: string;
+  /**
+   * Full-width, sticky to the bottom of the screen, with an elevated shadow
+   * -- the "Add X" pattern My Care's Medicines/Appointments/Doctors Advice
+   * screens all share (Mamaroo-Designfinal.md's My Care README). `96px`
+   * matches the `(app)` layout's own `pb-[96px]`, so the button always sits
+   * flush above the fixed BottomNav rather than behind it.
+   */
+  sticky?: boolean;
 }
 
 // Pill is the mockup default for every CTA (Mamaroo-Designfinal.md §5) --
@@ -47,8 +55,10 @@ const DISABLED_VARIANTS: Record<Variant, string> = {
 // isn't the "off" state DISABLED_VARIANTS represents).
 const LOADING_CLASSES = "opacity-40";
 
+const STICKY_CLASSES = "sticky bottom-[96px] z-10 w-full shadow-3";
+
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
-  { variant = "primary", loading = false, disabled, disabledReason, children, className, ...rest },
+  { variant = "primary", loading = false, disabled, disabledReason, sticky = false, children, className, ...rest },
   ref,
 ) {
   // useId rather than a literal fallback: two unlabelled buttons on one screen
@@ -65,7 +75,14 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
         aria-busy={loading || undefined}
         aria-describedby={descriptionId}
         disabled={disabled || loading}
-        className={cn(BASE, VARIANTS[variant], isOff && DISABLED_VARIANTS[variant], loading && LOADING_CLASSES, className)}
+        className={cn(
+          BASE,
+          VARIANTS[variant],
+          isOff && DISABLED_VARIANTS[variant],
+          loading && LOADING_CLASSES,
+          sticky && STICKY_CLASSES,
+          className,
+        )}
         {...rest}
       >
         <span className={loading ? "opacity-0" : undefined}>{children}</span>

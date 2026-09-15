@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { Card } from "@/components/ui/Card";
+import { Icon } from "@/components/ui/Icon";
 
 export interface CareHubProps {
   medicineText: string | null;
@@ -37,9 +38,12 @@ export function CareHub({
     <div className="flex flex-col gap-lg py-screen">
       <h1 className="font-display text-h1 text-text-primary">{t("heading")}</h1>
 
+      {/* 2x2 grid, exactly 4 cards, matching the mockup -- Vitals has no mockup of
+          its own (§3.7) and would break this into an uneven 5th tile, so it gets
+          its own full-width row below instead, same as Suggested Questions/Notes. */}
       <div className="grid grid-cols-2 gap-md">
-        <Link href="/care/medicines">
-          <Card className="flex flex-col gap-xs">
+        <Link href="/care/medicines" className="block">
+          <Card accent="coral" accentIcon="Pill" accentLayout="stacked" className="flex h-full flex-col gap-xs">
             <p className="text-caption font-semibold uppercase tracking-[0.04em] text-text-secondary">
               {t("hub.medicineLabel")}
             </p>
@@ -47,8 +51,8 @@ export function CareHub({
           </Card>
         </Link>
 
-        <Link href="/care/appointments">
-          <Card className="flex flex-col gap-xs">
+        <Link href="/care/appointments" className="block">
+          <Card accent="sage" accentIcon="CalendarBlank" accentLayout="stacked" className="flex h-full flex-col gap-xs">
             <p className="text-caption font-semibold uppercase tracking-[0.04em] text-text-secondary">
               {t("hub.appointmentLabel")}
             </p>
@@ -56,17 +60,8 @@ export function CareHub({
           </Card>
         </Link>
 
-        <Link href="/care/vitals">
-          <Card className="flex flex-col gap-xs">
-            <p className="text-caption font-semibold uppercase tracking-[0.04em] text-text-secondary">
-              {t("hub.vitalsLabel")}
-            </p>
-            <p className="text-body-sm text-text-primary">{vitalsText ?? t("hub.vitalsPrompt")}</p>
-          </Card>
-        </Link>
-
-        <Link href="/care/reports">
-          <Card className="flex flex-col gap-xs">
+        <Link href="/care/reports" className="block">
+          <Card accent="gold" accentIcon="FileText" accentLayout="stacked" className="flex h-full flex-col gap-xs">
             <p className="text-caption font-semibold uppercase tracking-[0.04em] text-text-secondary">
               {t("hub.reportLabel")}
             </p>
@@ -74,8 +69,8 @@ export function CareHub({
           </Card>
         </Link>
 
-        <Link href="/care/advice">
-          <Card className="flex flex-col gap-xs">
+        <Link href="/care/advice" className="block">
+          <Card accent="coral" accentIcon="ClipboardText" accentLayout="stacked" className="flex h-full flex-col gap-xs">
             <p className="text-caption font-semibold uppercase tracking-[0.04em] text-text-secondary">
               {t("hub.adviceLabel")}
             </p>
@@ -84,8 +79,19 @@ export function CareHub({
         </Link>
       </div>
 
+      <Link href="/care/vitals">
+        <Card accent="sage" accentIcon="ChartLine" className="flex items-center gap-md">
+          <div className="flex min-w-0 flex-1 flex-col gap-xs">
+            <p className="text-caption font-semibold uppercase tracking-[0.04em] text-text-secondary">
+              {t("hub.vitalsLabel")}
+            </p>
+            <p className="text-body-sm text-text-primary">{vitalsText ?? t("hub.vitalsPrompt")}</p>
+          </div>
+        </Card>
+      </Link>
+
       <Link href="/care/questions">
-        <Card className="flex items-center gap-md">
+        <Card accent="coral" accentIcon="Question" className="flex items-center gap-md">
           <div className="flex min-w-0 flex-1 flex-col gap-xs">
             <p className="text-caption font-semibold uppercase tracking-[0.04em] text-text-secondary">
               {t("hub.questionsLabel")}
@@ -97,6 +103,13 @@ export function CareHub({
 
       <Link href="/care/summary">
         <Card className="flex items-center gap-md bg-peach">
+          {/* The flagship's 72px illustration slot (README: "the most visually
+              prominent element on the screen"). No summary illustration asset
+              has been produced yet, so this is an icon placeholder in the same
+              circular frame rather than fabricated artwork. */}
+          <span className="flex size-[72px] shrink-0 items-center justify-center overflow-hidden rounded-full bg-surface-raised shadow-1">
+            <Icon name="ClipboardText" size="hero" className="text-text-primary" />
+          </span>
           <div className="flex min-w-0 flex-1 flex-col gap-xs">
             <p className="font-display text-body font-semibold text-text-primary">{t("hub.summaryTitle")}</p>
             <p className="text-body-sm text-text-primary">{t("hub.summaryLine")}</p>
@@ -108,7 +121,7 @@ export function CareHub({
       </Link>
 
       <Link href="/care/notes">
-        <Card className="flex items-center gap-md">
+        <Card accent="sage" accentIcon="NotePencil" className="flex items-center gap-md">
           <div className="flex min-w-0 flex-1 flex-col gap-xs">
             <p className="text-caption font-semibold uppercase tracking-[0.04em] text-text-secondary">
               {t("hub.notesLabel")}

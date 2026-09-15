@@ -62,7 +62,7 @@ export function AppointmentsScreen({
 
       <AppointmentList appointments={items} now={now} onEdit={(a) => setSheet(a)} />
 
-      <Button type="button" onClick={() => setSheet("add")}>
+      <Button type="button" sticky onClick={() => setSheet("add")}>
         {t("addAppointment")}
       </Button>
 

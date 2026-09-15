@@ -74,7 +74,9 @@ export function AppointmentList({
           <EmptyState iconName="CalendarBlank" message={t("emptyUpcoming")} />
         )}
         {needsClosing.map((a) => (
-          <div key={a.id} className="flex flex-col gap-sm rounded-md bg-peach p-lg">
+          // Pale tint, not full-saturation peach -- the README is explicit that this
+          // prompt should never read as a warning, and solid peach reads as one.
+          <div key={a.id} className="flex flex-col gap-sm rounded-md bg-blush p-lg">
             <p className="font-display text-body font-bold text-text-primary">{t("needsClosingPrompt")}</p>
             <p className="text-caption text-text-secondary">
               {cardName(a)}, {dateLabel(a.scheduled_at)}
