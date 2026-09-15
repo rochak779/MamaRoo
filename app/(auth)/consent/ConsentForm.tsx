@@ -7,6 +7,7 @@ import { Checkbox } from "@/components/ui/Checkbox";
 import { Button } from "@/components/ui/Button";
 import { LanguageSwitcher } from "@/components/patterns/LanguageSwitcher";
 import type { Locale } from "@/lib/config";
+import "@/styles/start.css";
 
 export interface ConsentInput {
   baseline: boolean;
@@ -23,10 +24,12 @@ export interface ConsentFormProps {
 const LINK_CLASS = "text-body-sm text-text-primary underline-offset-4 hover:underline";
 
 /**
- * Restrained register (design doc §6): no illustration, no motion, no
- * texture-motif, generous white space. The optional consents start unchecked
- * and stay genuinely separate from the required one -- ticking "agree" never
- * silently ticks them too.
+ * Restrained register: no illustration, no motion, no texture-motif,
+ * generous white space. Shares the same .auth-screen/.auth-title shell as
+ * the surrounding sign-in and onboarding screens (styles/start.css) so the
+ * flow doesn't visually break stride right at the legal-consent step. The
+ * optional consents start unchecked and stay genuinely separate from the
+ * required one -- ticking "agree" never silently ticks them too.
  */
 export function ConsentForm({ onSubmit, locale, onLocaleChange }: ConsentFormProps) {
   const t = useTranslations("consent");
@@ -50,42 +53,51 @@ export function ConsentForm({ onSubmit, locale, onLocaleChange }: ConsentFormPro
   }
 
   return (
-    <div className="mobile-screen flex min-h-dvh flex-col gap-lg bg-surface-raised p-lg">
-      <p data-testid="consent-summary" className="text-body">
-        {t("summary")}
-      </p>
+    <main className="auth-screen">
+      <div className="auth-form">
+        <div className="auth-heading-group">
+          <h1 className="auth-title">{t("title")}</h1>
+          <p data-testid="consent-summary" className="auth-subtitle">
+            {t("summary")}
+          </p>
+        </div>
 
-      <div className="flex flex-col gap-md">
-        <Checkbox id={baselineId} label={t("baseline")} checked={baseline} onCheckedChange={setBaseline} />
-        <Checkbox
-          id={dataSharingId}
-          label={t("optionalDataSharing")}
-          checked={optionalDataSharing}
-          onCheckedChange={setOptionalDataSharing}
-        />
-        <Checkbox id={analyticsId} label={t("analytics")} checked={analytics} onCheckedChange={setAnalytics} />
+        <div className="flex flex-col gap-md">
+          <Checkbox id={baselineId} label={t("baseline")} checked={baseline} onCheckedChange={setBaseline} />
+          <Checkbox
+            id={dataSharingId}
+            label={t("optionalDataSharing")}
+            checked={optionalDataSharing}
+            onCheckedChange={setOptionalDataSharing}
+          />
+          <Checkbox id={analyticsId} label={t("analytics")} checked={analytics} onCheckedChange={setAnalytics} />
+        </div>
+
+        <div data-testid="consent-links" className="flex gap-md" style={{ marginTop: "var(--spacing-md)" }}>
+          <Link href="/legal/privacy" className={LINK_CLASS}>
+            {t("privacyPolicy")}
+          </Link>
+          <Link href="/legal/terms" className={LINK_CLASS}>
+            {t("termsOfUse")}
+          </Link>
+        </div>
+
+        <div className="auth-spacer" />
+
+        <div className="auth-actions">
+          <LanguageSwitcher current={locale} onSelect={onLocaleChange} />
+          <Button
+            className="auth-primary"
+            type="button"
+            loading={submitting}
+            disabled={!baseline}
+            {...(!baseline ? { disabledReason: t("agreeRequired") } : {})}
+            onClick={handleSubmit}
+          >
+            {t("agreeAndContinue")}
+          </Button>
+        </div>
       </div>
-
-      <div data-testid="consent-links" className="flex gap-md">
-        <Link href="/legal/privacy" className={LINK_CLASS}>
-          {t("privacyPolicy")}
-        </Link>
-        <Link href="/legal/terms" className={LINK_CLASS}>
-          {t("termsOfUse")}
-        </Link>
-      </div>
-
-      <LanguageSwitcher current={locale} onSelect={onLocaleChange} />
-
-      <Button
-        type="button"
-        loading={submitting}
-        disabled={!baseline}
-        {...(!baseline ? { disabledReason: t("agreeRequired") } : {})}
-        onClick={handleSubmit}
-      >
-        {t("agreeAndContinue")}
-      </Button>
-    </div>
+    </main>
   );
 }

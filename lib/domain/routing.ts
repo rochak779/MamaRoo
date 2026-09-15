@@ -4,12 +4,11 @@ const CONSENT_PATH = "/consent";
 const ONBOARDING_FORM = "/onboarding/profile";
 const HOME = "/today";
 
-// Product decision, 2026-09-12: consent capture is temporarily out of the
-// funnel so she reaches onboarding right after verifying her code. /consent,
-// ConsentForm and recordConsents() are untouched and ready to go -- flip this
-// back to true to require Terms/Privacy consent again before onboarding. See
+// Consent capture was temporarily out of the funnel from 2026-09-12 to
+// 2026-09-15 (product decision) so she reached onboarding right after
+// verifying her code. Re-enabled 2026-09-15 ahead of launch -- see
 // Important/Implementation.md's Session 13 follow-up.
-const CONSENT_REQUIRED = false;
+const CONSENT_REQUIRED = true;
 
 export interface RedirectInput {
   path: string;

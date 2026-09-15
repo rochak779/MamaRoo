@@ -345,6 +345,7 @@
     "detailNoNotes": "No notes added"
   },
   "consent": {
+    "title": "Before you continue",
     "summary": "By continuing, you agree to how we collect and use your information. You can read the full details before deciding on the choices below.",
     "baseline": "I agree to the Terms of Use and Privacy Policy",
     "optionalDataSharing": "Share with my doctor, so she can see my records during a visit",

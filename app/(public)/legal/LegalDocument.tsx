@@ -1,8 +1,6 @@
 import { readFileSync } from "node:fs";
 import ReactMarkdown from "react-markdown";
 import { getLocale } from "@/i18n/locale";
-import { LanguageSwitcher } from "@/components/patterns/LanguageSwitcher";
-import { changeLocale } from "@/app/actions/locale";
 
 const ALLOWED_ELEMENTS = ["h1", "h2", "h3", "p", "ul", "ol", "li", "strong", "em", "a", "blockquote"];
 
@@ -10,6 +8,11 @@ const ALLOWED_ELEMENTS = ["h1", "h2", "h3", "p", "ul", "ol", "li", "strong", "em
  * Restrained register (design doc §6): no illustration, no motion, no
  * texture-motif, generous white space. Shared by both legal pages rather than
  * duplicated, the way AuthForm backs both the sign-up and sign-in screens.
+ *
+ * Renders in whatever locale the `mr_locale` cookie already holds (set by
+ * Welcome's language select, or the consent screen's own switcher) -- no
+ * switcher here, since it duplicated the one one step earlier in the funnel
+ * for everyone who reaches this page normally. Product decision, 2026-09-15.
  */
 export async function LegalDocument({ slug }: { slug: "privacy" | "terms" }) {
   const locale = await getLocale();
@@ -23,7 +26,6 @@ export async function LegalDocument({ slug }: { slug: "privacy" | "terms" }) {
       <div className="prose max-w-none text-body">
         <ReactMarkdown allowedElements={ALLOWED_ELEMENTS}>{markdown}</ReactMarkdown>
       </div>
-      <LanguageSwitcher current={locale} onSelect={changeLocale} />
     </div>
   );
 }
