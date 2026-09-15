@@ -3,7 +3,7 @@
 import { forwardRef, useId, type ButtonHTMLAttributes } from "react";
 import { cn } from "@/lib/cn";
 
-type Variant = "primary" | "secondary" | "tertiary";
+type Variant = "primary" | "secondary" | "tertiary" | "danger";
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: Variant;
@@ -38,6 +38,10 @@ const VARIANTS: Record<Variant, string> = {
   // light surface it falls short of the 4.5:1 text minimum.
   secondary: "bg-surface text-text-primary border-[1.5px] border-accent-primary active:scale-[0.98]",
   tertiary: "bg-transparent text-text-primary underline-offset-4 hover:underline",
+  // Deep plum, not CTA coral -- Mamaroo-Designfinal.md's Privacy And Data
+  // mockup deliberately gives irreversible account/journey deletion a more
+  // severe, distinct colour from every other (reversible) primary action.
+  danger: "bg-text-primary text-surface-raised active:scale-[0.98] active:brightness-[0.92]",
 };
 
 // A truly disabled button uses the desaturated-peach token (§5: "desaturated
@@ -48,6 +52,7 @@ const DISABLED_VARIANTS: Record<Variant, string> = {
   primary: "bg-disabled text-text-secondary active:scale-100 active:brightness-100",
   secondary: "border-disabled text-text-secondary active:scale-100",
   tertiary: "text-text-secondary hover:no-underline",
+  danger: "bg-disabled text-text-secondary active:scale-100 active:brightness-100",
 };
 
 // Preserves the previous disabled:opacity-40 look for the one state that

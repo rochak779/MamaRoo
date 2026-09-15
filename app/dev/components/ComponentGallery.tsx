@@ -58,6 +58,7 @@ function LocaleSection({ locale }: { locale: Locale }) {
           <Button>Primary</Button>
           <Button variant="secondary">Secondary</Button>
           <Button variant="tertiary">Tertiary</Button>
+          <Button variant="danger">Danger</Button>
           <Button loading>Loading</Button>
           <Button disabled disabledReason="Add a due date first">
             Disabled

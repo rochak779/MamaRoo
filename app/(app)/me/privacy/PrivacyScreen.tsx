@@ -187,7 +187,7 @@ export function PrivacyScreen({
         <div className="flex flex-col gap-sm rounded-lg bg-surface-raised p-md shadow-1">
           <SectionHeader>{t("deleteJourneyTitle")}</SectionHeader>
           <p className="text-body-sm text-text-secondary">{t("deleteJourneyBody", { productName: PRODUCT_NAME })}</p>
-          <Button variant="secondary" onClick={() => setJourneySheetOpen(true)}>
+          <Button variant="danger" onClick={() => setJourneySheetOpen(true)}>
             {t("deleteJourneyButton")}
           </Button>
           {journeyError && <p role="alert" className="text-body-sm text-alert">{t("deleteJourneyError")}</p>}
@@ -197,7 +197,7 @@ export function PrivacyScreen({
       <div className="flex flex-col gap-sm rounded-lg bg-surface-raised p-md shadow-1">
         <SectionHeader>{t("deleteAccountTitle")}</SectionHeader>
         <p className="text-body-sm text-text-secondary">{t("deleteAccountBody", { productName: PRODUCT_NAME })}</p>
-        <Button variant="secondary" onClick={() => setAccountStep("reauth")}>
+        <Button variant="danger" onClick={() => setAccountStep("reauth")}>
           {t("deleteAccountButton")}
         </Button>
       </div>
@@ -208,7 +208,7 @@ export function PrivacyScreen({
           <Button variant="secondary" onClick={() => setJourneySheetOpen(false)}>
             {t("cancel")}
           </Button>
-          <Button onClick={() => void handleDeleteJourney()}>{t("deleteJourneyConfirm")}</Button>
+          <Button variant="danger" onClick={() => void handleDeleteJourney()}>{t("deleteJourneyConfirm")}</Button>
         </div>
       </BottomSheet>
 
@@ -253,6 +253,7 @@ export function PrivacyScreen({
             onChange={(e) => setConfirmWord(e.target.value)}
           />
           <Button
+            variant="danger"
             onClick={() => void handleConfirmDelete()}
             disabled={!confirmationWordMatches(confirmWord, locale) || accountStep === "deleting"}
           >

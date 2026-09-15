@@ -1,7 +1,7 @@
 "use client";
 
-import { useId, useState } from "react";
-import { useTranslations } from "next-intl";
+import { useId, useRef, useState } from "react";
+import { useLocale, useTranslations } from "next-intl";
 import { track } from "@/components/AnalyticsProvider";
 import { Button } from "@/components/ui/Button";
 import { Icon } from "@/components/ui/Icon";
@@ -12,6 +12,9 @@ import { SectionHeader } from "@/components/patterns/SectionHeader";
 import { EVENTS } from "@/lib/analytics/events";
 import { checklistProgress, type ChecklistItem, type ChecklistProgressRow } from "@/lib/domain/checklist";
 import { useOnline } from "@/lib/pwa/useOnline";
+import { webSpeechTranscriber } from "@/lib/speech/webspeech";
+import type { Transcriber } from "@/lib/speech/transcribe";
+import type { Locale } from "@/lib/config";
 
 export interface EmergencyContact {
   id: string;
@@ -42,6 +45,7 @@ export interface PrepChecklistProps {
   // reference (not a wrapping closure) is allowed to cross the Server-to-
   // Client boundary.
   onSaveBirthNotes: (pregnancyId: string, notes: string) => Promise<SaveBirthNotesResult>;
+  transcriber?: Transcriber;
 }
 
 const PHONE_PATTERN = /^[0-9]{10}$/;
@@ -63,10 +67,14 @@ export function PrepChecklist({
   onUpdateContact,
   onDeleteContact,
   onSaveBirthNotes,
+  transcriber = webSpeechTranscriber,
 }: PrepChecklistProps) {
   const t = useTranslations("me.prep");
+  const locale = useLocale() as Locale;
   const isOnline = useOnline();
   const notesId = useId();
+  const stopListeningRef = useRef<(() => void) | null>(null);
+  const [listening, setListening] = useState(false);
 
   const [progress, setProgress] = useState<ChecklistProgressRow[]>(initialProgress);
   const [toggleError, setToggleError] = useState<string | null>(null);
@@ -151,6 +159,32 @@ export function PrepChecklist({
     }
   }
 
+  function stopListening() {
+    stopListeningRef.current?.();
+    stopListeningRef.current = null;
+    setListening(false);
+  }
+
+  function toggleVoice() {
+    if (listening) {
+      stopListening();
+      return;
+    }
+    setNotesError(null);
+    stopListeningRef.current = transcriber.start({
+      locale,
+      onResult: (result, isFinal) => {
+        setBirthNotes(result);
+        if (isFinal) stopListening();
+      },
+      onError: () => {
+        setNotesError(t("voiceError"));
+        stopListening();
+      },
+    });
+    setListening(true);
+  }
+
   async function saveNotes() {
     if (!pregnancyId) return;
     setNotesError(null);
@@ -194,7 +228,9 @@ export function PrepChecklist({
                       data-testid="checklist-mark"
                       data-checked={item.done}
                       className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-[1.5px] ${
-                        item.done ? "border-accent-primary bg-accent-primary" : "border-divider bg-transparent"
+                        // Darkened sage, not CTA coral -- Mamaroo-Designfinal.md
+                        // §13.6 reserves CTA coral for button fills only.
+                        item.done ? "border-accent-secondary bg-accent-secondary" : "border-divider bg-transparent"
                       }`}
                     >
                       {item.done && <Icon name="Check" size="inline" className="text-surface-raised" />}
@@ -247,7 +283,9 @@ export function PrepChecklist({
               <a
                 href={`tel:${c.phone}`}
                 aria-label={`${t("callContact")} ${c.phone}`}
-                className="tap-target flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-alert text-surface-raised"
+                // CTA coral, not the alert/error colour -- calling a saved
+                // contact is a routine action here, not a warning state.
+                className="tap-target flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-accent-primary text-surface-raised"
               >
                 <Icon name="Phone" size="inline" />
               </a>
@@ -288,13 +326,29 @@ export function PrepChecklist({
 
       <div className="flex flex-col gap-sm">
         <SectionHeader>{t("notesTitle")}</SectionHeader>
-        <textarea
-          id={notesId}
-          className="min-h-[120px] w-full rounded-lg border border-divider bg-surface-raised p-md text-body-sm text-text-primary outline-none"
-          value={birthNotes}
-          placeholder={t("notesPlaceholder")}
-          onChange={(e) => setBirthNotes(e.target.value)}
-        />
+        <div className="relative">
+          <textarea
+            id={notesId}
+            className="min-h-[120px] w-full rounded-lg border border-divider bg-surface-raised p-md pr-[56px] text-body-sm text-text-primary outline-none"
+            value={birthNotes}
+            placeholder={t("notesPlaceholder")}
+            onChange={(e) => setBirthNotes(e.target.value)}
+          />
+          {transcriber.isAvailable() && (
+            <button
+              type="button"
+              onClick={toggleVoice}
+              aria-pressed={listening}
+              aria-label={listening ? t("listening") : t("voiceButton")}
+              className={`tap-target absolute bottom-sm right-sm flex size-[32px] shrink-0 items-center justify-center rounded-full ${
+                listening ? "bg-accent-secondary/40" : "bg-accent-secondary/20"
+              }`}
+            >
+              <Icon name="Microphone" size="inline" className="text-accent-secondary" />
+            </button>
+          )}
+        </div>
+        {listening && <p className="text-body-sm text-accent-secondary">{t("listening")}</p>}
         {notesError && <p role="alert" className="text-body-sm text-alert">{notesError}</p>}
         <Button onClick={() => void saveNotes()}>{t("saveNotes")}</Button>
         {notesSaved && <p className="text-body-sm text-accent-primary">{t("notesSaved")}</p>}

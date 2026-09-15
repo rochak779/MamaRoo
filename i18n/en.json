@@ -950,6 +950,9 @@
       "saveNotes": "Save",
       "notesSaved": "Saved",
       "notesSaveError": "Your notes didn't save. Try again.",
+      "voiceButton": "Use voice input",
+      "listening": "Listening",
+      "voiceError": "We couldn't hear that. You can still type.",
       "toggleError": "That didn't save.",
       "toggleErrorNextStep": "Tap it again to retry.",
       "offlineToggleError": "You're offline right now, so this can't save safely. Reconnect and try again."
