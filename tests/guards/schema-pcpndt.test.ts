@@ -22,6 +22,10 @@ const sql = readdirSync("supabase/migrations")
 // discussing "gender" as a topic mothers ask about) fails this guard locally with
 // nothing to fix in shipped code, which is exactly the kind of always-red guard the
 // MATCHER_FILES comment above warns invites being weakened.
+// "Final Screens & Design MD" is the same exclusion, for the newer mockup bundle the
+// UI Redesign Alignment plan uses (Phase 0 onward) -- confirmed hitting exactly the
+// predicted case above: Common Questions.dc.html discusses "gender" as a FAQ topic,
+// with nothing to fix in shipped code (found running Phase 4's suite).
 const EXCLUDED_DIRS = new Set([
   "node_modules",
   ".git",
@@ -31,6 +35,7 @@ const EXCLUDED_DIRS = new Set([
   "playwright-report",
   "Important",
   "Screens",
+  "Final Screens & Design MD",
 ]);
 const SCANNED_EXTENSIONS = [".ts", ".tsx", ".json", ".md", ".sql", ".html", ".webmanifest"];
 
