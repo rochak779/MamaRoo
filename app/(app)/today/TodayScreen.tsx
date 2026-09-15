@@ -245,10 +245,10 @@ export function TodayScreen({
 
       <div className="flex flex-col gap-md">
         <h2 className="text-h3 font-display font-semibold text-text-primary">{t("forYouToday")}</h2>
-        <div className="grid grid-cols-2 gap-md">
+        <div className="flex flex-col gap-md">
           {reading.map((item) => (
             <Link key={item.id} href={`/today/listen/${item.slug}`} className="block">
-              <Card accent="coral" accentIcon={readingIcon(item.kind)} className="flex h-full flex-col gap-sm">
+              <Card accent="coral" accentIcon={readingIcon(item.kind)} className="flex flex-col gap-sm">
                 <p className="text-caption font-semibold uppercase tracking-[0.04em] text-text-secondary">
                   {item.title}
                 </p>
@@ -258,11 +258,12 @@ export function TodayScreen({
           ))}
 
           <Link href="/today/meal-plan" className="block">
-            <Card accent="gold" accentIcon="ForkKnife" className="flex h-full flex-col gap-sm">
+            <Card accent="gold" accentIcon="ForkKnife" className="flex flex-col gap-sm">
               <p className="text-caption font-semibold uppercase tracking-[0.04em] text-text-secondary">
                 {t("mealPlanCardLabel")}
               </p>
               <p className="text-body-sm text-text-primary">{t("mealPlanCardBody")}</p>
+              <p className="text-body-sm text-text-secondary">{t("mealPlanCardPreview")}</p>
             </Card>
           </Link>
         </div>
