@@ -23,6 +23,7 @@ const baseProps: TodayScreenProps = {
   showCheckupNudge: false,
   transcriber: unavailableTranscriber,
   onSubmitCheckin: vi.fn().mockResolvedValue({ ok: true, severity: null, guidance: null }),
+  mealPreviewKey: "weeklyMealPlan.monday.breakfast",
   doctorName: null,
   clinicName: null,
 };
