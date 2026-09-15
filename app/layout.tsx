@@ -64,9 +64,9 @@ const patrickHand = Patrick_Hand({
 });
 
 export const metadata: Metadata = {
-  title: `${PRODUCT_NAME} | Coming soon`,
+  title: PRODUCT_NAME,
   description:
-    "A calm companion through pregnancy. Join the waitlist for your baby's little milestones, your daily care, and a little more peace of mind.",
+    "A calm companion through pregnancy: your baby's little milestones, your daily care, and a little more peace of mind.",
 };
 
 export const viewport = {
