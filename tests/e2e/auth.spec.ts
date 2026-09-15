@@ -35,7 +35,7 @@ test("submitting an email on the auth form shows the code step", async ({ page }
   // attempted, which would make this a test of the wrong thing.
   await page.getByLabel(/email/i).fill(`e2e-${Date.now()}@rls.test`);
   await page.getByRole("button", { name: /send code/i }).click();
-  await expect(page.getByLabel(/6-digit code/i)).toBeVisible();
+  await expect(page.getByLabel(/6 digit code/i)).toBeVisible();
 });
 
 test("a signed-out deep link to /today redirects to language select with a next query param preserving the original path", async ({
