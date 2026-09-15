@@ -9,7 +9,9 @@ import type { ContentItemRow } from "@/lib/supabase/queries/content";
 import { PRODUCT_NAME } from "@/lib/config";
 
 const track = vi.fn();
-vi.mock("@/components/AnalyticsProvider", () => ({ track: (...args: unknown[]) => track(...args) }));
+vi.mock("@/components/AnalyticsProvider", () => ({
+  track: (...args: unknown[]) => track(...args),
+}));
 
 // tests/guards/product-name.test.ts forbids the literal product name outside
 // lib/config.ts, so this fixture builds the real citation copy from PRODUCT_NAME.
@@ -35,7 +37,10 @@ const baseItem: ContentItemRow = {
   week_min: 20,
 };
 
-function renderDetail(overrides: Partial<ContentItemRow> = {}, props: Partial<React.ComponentProps<typeof ContentDetail>> = {}) {
+function renderDetail(
+  overrides: Partial<ContentItemRow> = {},
+  props: Partial<React.ComponentProps<typeof ContentDetail>> = {},
+) {
   const item = { ...baseItem, ...overrides };
   return render(
     <NextIntlClientProvider locale="en" messages={en}>
@@ -66,9 +71,17 @@ describe("ContentDetail", () => {
 
   it("renders the custom audio player and reveals an available read-along transcript", async () => {
     const user = userEvent.setup();
-    const { container } = renderDetail({ kind: "audio", media_url: "https://example.com/audio.mp3" });
-    expect(container.querySelector("audio")).toHaveAttribute("src", "https://example.com/audio.mp3");
-    expect(screen.getByRole("button", { name: en.today.listen.playContentLabel })).toBeInTheDocument();
+    const { container } = renderDetail({
+      kind: "audio",
+      media_url: "https://example.com/audio.mp3",
+    });
+    expect(container.querySelector("audio")).toHaveAttribute(
+      "src",
+      "https://example.com/audio.mp3",
+    );
+    expect(
+      screen.getByRole("button", { name: en.today.listen.playContentLabel }),
+    ).toBeInTheDocument();
     expect(screen.getByText(en.today.listen.playingCaption)).toBeInTheDocument();
     expect(screen.queryByText(baseItem.body_md!)).not.toBeInTheDocument();
 
@@ -78,7 +91,10 @@ describe("ContentDetail", () => {
 
   it("toggles the custom audio player's play/pause button as the element itself plays and pauses", async () => {
     const user = userEvent.setup();
-    const { container } = renderDetail({ kind: "audio", media_url: "https://example.com/audio.mp3" });
+    const { container } = renderDetail({
+      kind: "audio",
+      media_url: "https://example.com/audio.mp3",
+    });
     const audio = container.querySelector("audio") as HTMLAudioElement;
     audio.play = vi.fn().mockImplementation(() => {
       fireEvent.play(audio);
@@ -89,14 +105,21 @@ describe("ContentDetail", () => {
     });
 
     await user.click(screen.getByRole("button", { name: en.today.listen.playContentLabel }));
-    expect(screen.getByRole("button", { name: en.today.listen.pauseContentLabel })).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: en.today.listen.pauseContentLabel }),
+    ).toBeInTheDocument();
 
     await user.click(screen.getByRole("button", { name: en.today.listen.pauseContentLabel }));
-    expect(screen.getByRole("button", { name: en.today.listen.playContentLabel })).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: en.today.listen.playContentLabel }),
+    ).toBeInTheDocument();
   });
 
   it("tracks completion when the custom audio player's element ends", () => {
-    const { container } = renderDetail({ kind: "audio", media_url: "https://example.com/audio.mp3" });
+    const { container } = renderDetail({
+      kind: "audio",
+      media_url: "https://example.com/audio.mp3",
+    });
     fireEvent.ended(container.querySelector("audio") as HTMLAudioElement);
     expect(track).toHaveBeenCalledWith(EVENTS.content_completed, { kind: "audio" });
   });
@@ -115,7 +138,9 @@ describe("ContentDetail", () => {
 
   it("shows AudioIndicator only when a narration URL exists", () => {
     const withoutNarration = renderDetail();
-    expect(screen.queryByRole("button", { name: en.today.listen.playLabel })).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", { name: en.today.listen.playLabel }),
+    ).not.toBeInTheDocument();
     withoutNarration.unmount();
 
     renderDetail({ narration_url: "https://example.com/narration.mp3" });
@@ -135,9 +160,14 @@ describe("ContentDetail", () => {
         />
       </NextIntlClientProvider>,
     );
-    expect(screen.getByRole("heading", { name: en.today.listen.notFoundTitle })).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: en.today.listen.notFoundTitle }),
+    ).toBeInTheDocument();
     expect(screen.getByText(en.today.listen.notFoundBody)).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: en.today.backToToday })).toHaveAttribute("href", "/today");
+    expect(screen.getByRole("link", { name: en.today.backToToday })).toHaveAttribute(
+      "href",
+      "/today",
+    );
   });
 
   it("shows the item's own citation beneath the title, for every kind", () => {
@@ -152,7 +182,10 @@ describe("ContentDetail", () => {
 
   it("tracks opening with kind and fallback status", () => {
     renderDetail({ kind: "audio" }, { isFallback: true });
-    expect(track).toHaveBeenCalledWith(EVENTS.content_opened, { kind: "audio", is_fallback_locale: true });
+    expect(track).toHaveBeenCalledWith(EVENTS.content_opened, {
+      kind: "audio",
+      is_fallback_locale: true,
+    });
   });
 
   it("tracks completion when the native video ends", () => {
@@ -162,7 +195,10 @@ describe("ContentDetail", () => {
   });
 
   it("tracks an article as completed immediately and restricts rendered markdown", () => {
-    renderDetail({ kind: "article", body_md: "## Helpful\n\n**Safe emphasis**\n\n<img src=x onerror=alert(1)>" });
+    renderDetail({
+      kind: "article",
+      body_md: "## Helpful\n\n**Safe emphasis**\n\n<img src=x onerror=alert(1)>",
+    });
     expect(screen.getByRole("heading", { name: "Helpful" })).toBeInTheDocument();
     expect(document.querySelector("img")).not.toBeInTheDocument();
     expect(track).toHaveBeenCalledWith(EVENTS.content_completed, { kind: "article" });
@@ -171,11 +207,16 @@ describe("ContentDetail", () => {
   it("shows no eyebrow and no mode toggle for an article, regardless of context", () => {
     renderDetail({ kind: "article" });
     expect(screen.queryByText(en.today.listen.eyebrow)).not.toBeInTheDocument();
-    expect(screen.queryByRole("button", { name: en.today.listen.textLabel })).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", { name: en.today.listen.textLabel }),
+    ).not.toBeInTheDocument();
   });
 
   it("drops the Today eyebrow and uses topic-appropriate copy in the guide context", () => {
-    renderDetail({ kind: "audio", media_url: "https://example.com/audio.mp3" }, { context: "guide" });
+    renderDetail(
+      { kind: "audio", media_url: "https://example.com/audio.mp3" },
+      { context: "guide" },
+    );
     expect(screen.queryByText(en.today.listen.eyebrow)).not.toBeInTheDocument();
     expect(screen.getByText(en.today.listen.playingCaptionOther)).toBeInTheDocument();
   });
@@ -183,16 +224,38 @@ describe("ContentDetail", () => {
   it("gives a video a real video/text switch, not the audio Listen label, with video-appropriate switch-back copy", async () => {
     const user = userEvent.setup();
     renderDetail({ kind: "video" }, { context: "guide" });
-    expect(screen.queryByRole("button", { name: en.today.listen.listenLabel })).not.toBeInTheDocument();
-    expect(screen.getByRole("button", { name: en.today.listen.videoTab })).toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", { name: en.today.listen.listenLabel }),
+    ).not.toBeInTheDocument();
+    const modeSwitch = screen.getByRole("switch", { name: en.today.listen.textLabel });
+    expect(modeSwitch).toHaveAttribute("aria-checked", "false");
 
-    await user.click(screen.getByRole("button", { name: en.today.listen.textLabel }));
+    await user.click(modeSwitch);
+    expect(modeSwitch).toHaveAttribute("aria-checked", "true");
     expect(screen.getByText(en.today.listen.switchBackNoteVideo)).toBeInTheDocument();
+  });
+
+  it("keeps the Guide video's expandable text version available independently of the mode switch", async () => {
+    const user = userEvent.setup();
+    renderDetail({ kind: "video" }, { context: "guide" });
+    const readText = screen.getByRole("button", { name: en.guideContent.readTextVersion });
+    expect(readText).toHaveAttribute("aria-expanded", "false");
+
+    await user.click(readText);
+    expect(readText).toHaveAttribute("aria-expanded", "true");
+    expect(screen.getByText(baseItem.body_md!)).toBeInTheDocument();
+    expect(screen.getByRole("switch", { name: en.today.listen.textLabel })).toHaveAttribute(
+      "aria-checked",
+      "false",
+    );
   });
 
   it("takes both back label and target from props instead of hardcoding Today", () => {
     const today = renderDetail();
-    expect(screen.getByRole("link", { name: en.today.backToToday })).toHaveAttribute("href", "/today");
+    expect(screen.getByRole("link", { name: en.today.backToToday })).toHaveAttribute(
+      "href",
+      "/today",
+    );
     today.unmount();
 
     renderDetail({}, { backHref: "/reading", backLabelKey: "common.back" });

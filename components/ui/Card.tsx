@@ -1,10 +1,11 @@
 "use client";
 
 import { useState, type ReactNode } from "react";
+import Link from "next/link";
 import { cn } from "@/lib/cn";
 import { Icon } from "@/components/ui/Icon";
 
-export type CardAccent = "coral" | "sage" | "gold";
+export type CardAccent = "coral" | "sage" | "gold" | "peach" | "plum";
 export type CardSelectedAccent = "sage" | "coral";
 
 export interface CardProps {
@@ -19,6 +20,8 @@ export interface CardProps {
   selectedAccent?: CardSelectedAccent;
   disabled?: boolean;
   onClick?: () => void;
+  /** Optional navigation target. Additive link form for tappable cards. */
+  href?: string;
   className?: string;
   /**
    * "tint" (default) keeps the existing --color-surface fill. "raised" is
@@ -37,6 +40,8 @@ export interface CardProps {
   accent?: CardAccent;
   /** Icon name shown in a small chip next to the accent strip. Required to make visual sense of `accent` -- see the colorblind-safe note above. */
   accentIcon?: string;
+  /** Optional icon-chip tint override for a screen-specific approved pairing. */
+  accentIconClassName?: string;
   /**
    * Keeps the established horizontal accent treatment by default. Compact
    * bento cards can opt into the mockup's icon-above-copy composition without
@@ -56,12 +61,16 @@ const ACCENT_BORDER_CLASSES: Record<CardAccent, string> = {
   coral: "border-l-4 border-l-soft-coral",
   sage: "border-l-4 border-l-sage-mist",
   gold: "border-l-4 border-l-gold",
+  peach: "border-l-4 border-l-peach",
+  plum: "border-l-4 border-l-divider-strong",
 };
 
 const ACCENT_ICON_CLASSES: Record<CardAccent, string> = {
   coral: "bg-[rgba(255,109,87,0.16)] text-accent-primary",
   sage: "bg-[rgba(157,221,161,0.28)] text-accent-secondary",
   gold: "bg-[rgba(255,197,61,0.24)] text-text-primary",
+  peach: "bg-peach text-text-primary",
+  plum: "bg-[rgba(103,0,53,0.14)] text-text-primary",
 };
 
 const SELECTED_BORDER_CLASSES: Record<CardSelectedAccent, string> = {
@@ -76,19 +85,22 @@ export function Card({
   selectedAccent = "sage",
   disabled,
   onClick,
+  href,
   className,
   surface = "tint",
   accent,
   accentIcon,
+  accentIconClassName,
   accentLayout = "row",
 }: CardProps) {
+  const isInteractive = interactive || Boolean(href);
   const classes = cn(
     BASE,
     SURFACE_CLASSES[surface],
     accent && ACCENT_BORDER_CLASSES[accent],
     selected && SELECTED_BORDER_CLASSES[selectedAccent],
     disabled && "opacity-50",
-    interactive &&
+    isInteractive &&
       !disabled &&
       "active:shadow-2 active:scale-[0.99] transition-[transform,box-shadow] duration-(--motion-fast) ease-standard",
     className,
@@ -102,6 +114,7 @@ export function Card({
           className={cn(
             "flex size-[32px] shrink-0 items-center justify-center rounded-[10px]",
             ACCENT_ICON_CLASSES[accent],
+            accentIconClassName,
           )}
         >
           <Icon name={accentIcon} size="inline" />
@@ -113,7 +126,15 @@ export function Card({
     children
   );
 
-  if (!interactive) return <div className={classes}>{content}</div>;
+  if (!isInteractive) return <div className={classes}>{content}</div>;
+
+  if (href) {
+    return (
+      <Link href={href} aria-disabled={disabled || undefined} className={cn(classes, "tap-target")}>
+        {content}
+      </Link>
+    );
+  }
 
   return (
     <button

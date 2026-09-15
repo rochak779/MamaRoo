@@ -21,6 +21,15 @@ describe("Card", () => {
     expect(onClick).toHaveBeenCalledOnce();
   });
 
+  it("becomes a link when given a navigation target", () => {
+    render(
+      <Card href="/guide" surface="raised">
+        Guide
+      </Card>,
+    );
+    expect(screen.getByRole("link", { name: "Guide" })).toHaveAttribute("href", "/guide");
+  });
+
   it("marks the selected state with a border, not only a colour", () => {
     render(
       <Card interactive selected>

@@ -792,6 +792,9 @@
     "schemesSubtitle": "आप जहाँ रहती हैं, उसके आधार पर उपलब्ध मदद।",
     "backLabel": "गाइड पर वापस जाएँ"
   },
+  "guideContent": {
+    "readTextVersion": "लेख के रूप में पढ़ें"
+  },
   "summary": {
     "title": "डॉक्टर विज़िट सारांश",
     "backToCare": "मेरी देखभाल पर वापस जाएँ",

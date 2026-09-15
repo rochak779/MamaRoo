@@ -792,6 +792,9 @@
     "schemesSubtitle": "Help you may be able to use, based on where you live.",
     "backLabel": "Back to Guide"
   },
+  "guideContent": {
+    "readTextVersion": "Read the text version"
+  },
   "summary": {
     "title": "Doctor visit summary",
     "backToCare": "Back to My Care",

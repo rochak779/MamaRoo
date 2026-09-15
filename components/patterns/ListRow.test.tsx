@@ -18,6 +18,19 @@ describe("ListRow", () => {
     await userEvent.click(row);
     expect(onClick).toHaveBeenCalledOnce();
   });
+
+  it("supports a raised content-card row with a thumbnail", () => {
+    render(
+      <ListRow
+        title="A guide article"
+        href="/guide/checkups/article"
+        variant="card"
+        thumbnail={<span data-testid="thumbnail" />}
+      />,
+    );
+    expect(screen.getByTestId("thumbnail")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "A guide article" })).toHaveClass("bg-surface-raised");
+  });
 });
 
 describe("ListRowGroup", () => {

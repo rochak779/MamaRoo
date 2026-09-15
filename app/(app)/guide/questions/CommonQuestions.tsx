@@ -1,8 +1,8 @@
 "use client";
 
-import Link from "next/link";
 import { useState } from "react";
 import { useTranslations } from "next-intl";
+import { BackButton } from "@/components/patterns/BackButton";
 import { Icon } from "@/components/ui/Icon";
 import { PRODUCT_NAME } from "@/lib/config";
 import type { GuideFaq, GuideScheme } from "@/lib/supabase/queries/guideFaqs";
@@ -22,20 +22,12 @@ export function CommonQuestions({ faqs, schemes }: CommonQuestionsProps) {
       className="relative isolate mx-auto flex min-h-[calc(100dvh-96px)] w-full max-w-[680px] flex-col gap-lg py-screen selection:bg-blush selection:text-text-primary"
       aria-labelledby="common-questions-title"
     >
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-x-[-20px] inset-y-0 -z-10 bg-[linear-gradient(135deg,rgba(220,240,217,0.8)_0%,rgba(247,238,227,0.35)_50%,rgba(251,213,196,0.7)_100%)]"
-      />
-
       <header className="flex items-center gap-md">
-        <Link
-          href="/guide"
-          aria-label={t("backLabel")}
-          className="tap-target inline-flex shrink-0 items-center justify-center rounded-full bg-surface-raised text-text-primary shadow-1 transition-colors duration-(--motion-fast) hover:bg-surface focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-primary"
+        <BackButton href="/guide" label={t("backLabel")} />
+        <h1
+          id="common-questions-title"
+          className="font-display text-h1 font-semibold text-text-primary"
         >
-          <Icon name="ArrowLeft" size="inline" />
-        </Link>
-        <h1 id="common-questions-title" className="font-display text-h1 font-semibold text-text-primary">
           {t("heading")}
         </h1>
       </header>
@@ -44,7 +36,10 @@ export function CommonQuestions({ faqs, schemes }: CommonQuestionsProps) {
         {faqs.map((faq) => {
           const expanded = expandedFaqId === faq.id;
           return (
-            <article key={faq.id} className="overflow-hidden rounded-[18px] bg-surface-raised shadow-2">
+            <article
+              key={faq.id}
+              className="overflow-hidden rounded-[18px] bg-surface-raised shadow-2"
+            >
               <button
                 type="button"
                 aria-expanded={expanded}
@@ -63,7 +58,9 @@ export function CommonQuestions({ faqs, schemes }: CommonQuestionsProps) {
                 </span>
                 {expanded && (
                   <>
-                    <span className="text-body-sm leading-[21px] text-text-primary">{faq.answer}</span>
+                    <span className="text-body-sm leading-[21px] text-text-primary">
+                      {faq.answer}
+                    </span>
                     <span className="text-[11px] leading-[15px] italic text-accent-secondary">
                       {t("citation", { productName: PRODUCT_NAME })}
                     </span>
@@ -76,7 +73,7 @@ export function CommonQuestions({ faqs, schemes }: CommonQuestionsProps) {
       </div>
 
       <section
-        className="flex flex-col gap-md rounded-[22px] bg-surface-raised/50 p-[18px]"
+        className="flex flex-col gap-md rounded-[22px] border border-divider bg-surface-raised/50 p-[18px]"
         aria-labelledby="schemes-title"
       >
         <header className="flex items-start gap-md">
@@ -100,12 +97,14 @@ export function CommonQuestions({ faqs, schemes }: CommonQuestionsProps) {
             return (
               <article
                 key={scheme.id}
-                className="overflow-hidden rounded-[18px] border-l-[5px] border-accent-primary bg-surface-raised shadow-2"
+                className="overflow-hidden rounded-[18px] border-l-[5px] border-soft-coral bg-surface-raised shadow-2"
               >
                 <button
                   type="button"
                   aria-expanded={expanded}
-                  onClick={() => setExpandedSchemeId((current) => (current === scheme.id ? null : scheme.id))}
+                  onClick={() =>
+                    setExpandedSchemeId((current) => (current === scheme.id ? null : scheme.id))
+                  }
                   className="tap-target flex w-full flex-col gap-sm p-md text-left transition-shadow duration-(--motion-fast) hover:shadow-3 focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-accent-primary"
                 >
                   <span className="flex w-full items-center justify-between gap-sm">
@@ -119,7 +118,9 @@ export function CommonQuestions({ faqs, schemes }: CommonQuestionsProps) {
                     />
                   </span>
                   <span className="text-caption text-text-primary">{scheme.short_text}</span>
-                  {expanded && <span className="text-caption text-text-primary">{scheme.long_text}</span>}
+                  {expanded && (
+                    <span className="text-caption text-text-primary">{scheme.long_text}</span>
+                  )}
                 </button>
               </article>
             );

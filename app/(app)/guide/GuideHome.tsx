@@ -1,12 +1,11 @@
-import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { Icon } from "@/components/ui/Icon";
+import { Card, type CardAccent } from "@/components/ui/Card";
 
 interface GuideCard {
   href: string;
   key: string;
   icon: string;
-  accentClassName: string;
+  accent: CardAccent;
 }
 
 /**
@@ -19,12 +18,12 @@ interface GuideCard {
  * Decision 5).
  */
 const CATEGORY_CARDS: GuideCard[] = [
-  { href: "/guide/checkups", key: "checkups", icon: "ClipboardText", accentClassName: "border-accent-secondary" },
-  { href: "/guide/eating-well", key: "eatingWell", icon: "ForkKnife", accentClassName: "border-accent-primary" },
-  { href: "/guide/staying-active", key: "stayingActive", icon: "PersonSimpleRun", accentClassName: "border-gold" },
-  { href: "/guide/medicines", key: "medicines", icon: "Pill", accentClassName: "border-peach" },
-  { href: "/guide/birth", key: "birth", icon: "Rainbow", accentClassName: "border-accent-primary" },
-  { href: "/guide/after-birth", key: "afterBirth", icon: "Heart", accentClassName: "border-accent-secondary" },
+  { href: "/guide/checkups", key: "checkups", icon: "ClipboardText", accent: "sage" },
+  { href: "/guide/eating-well", key: "eatingWell", icon: "ForkKnife", accent: "coral" },
+  { href: "/guide/staying-active", key: "stayingActive", icon: "PersonSimpleRun", accent: "gold" },
+  { href: "/guide/medicines", key: "medicines", icon: "Pill", accent: "peach" },
+  { href: "/guide/birth", key: "birth", icon: "Rainbow", accent: "coral" },
+  { href: "/guide/after-birth", key: "afterBirth", icon: "Heart", accent: "sage" },
 ];
 
 export function GuideHome() {
@@ -37,51 +36,58 @@ export function GuideHome() {
         <p className="mt-xs text-body-sm text-text-secondary">{t("subheading")}</p>
       </div>
 
-      <Link
+      <Card
         href="/guide/trimester"
-        className="tap-target flex items-center gap-md rounded-lg border-l-[5px] border-peach bg-surface-raised p-lg shadow-1 active:shadow-2"
+        interactive
+        surface="raised"
+        accent="peach"
+        accentIcon="ChartBar"
+        accentIconClassName="text-text-primary"
+        className="border-l-[5px] p-lg"
       >
-        <span className="flex size-14 shrink-0 items-center justify-center rounded-[14px] bg-peach">
-          <Icon name="ChartBar" weight="duotone" className="text-text-primary" />
-        </span>
-        <div className="min-w-0 flex-1">
-          <p className="font-display text-h2 font-semibold text-text-primary">{t("cards.trimester.label")}</p>
-          <p className="mt-xs text-body-sm text-text-primary">{t("cards.trimester.body")}</p>
-        </div>
-      </Link>
+        <p className="font-display text-h2 font-semibold text-text-primary">
+          {t("cards.trimester.label")}
+        </p>
+        <p className="mt-xs text-body-sm text-text-primary">{t("cards.trimester.body")}</p>
+      </Card>
 
       <div className="grid grid-cols-2 gap-md">
         {CATEGORY_CARDS.map((card) => (
-          <Link
+          <Card
             key={card.href}
             href={card.href}
-            className={`tap-target flex flex-col gap-sm rounded-lg border-l-[5px] ${card.accentClassName} bg-surface-raised p-md shadow-1 active:shadow-2`}
+            interactive
+            surface="raised"
+            accent={card.accent}
+            accentIcon={card.icon}
+            accentIconClassName={
+              card.accent === "sage" ? "text-accent-secondary" : "text-text-primary"
+            }
+            accentLayout="stacked"
+            className="h-full border-l-[5px]"
           >
-            <span className="flex size-10 shrink-0 items-center justify-center rounded-[14px] bg-blush">
-              <Icon name={card.icon} size="inline" className="text-text-primary" />
-            </span>
             <p className="text-caption font-semibold uppercase tracking-[0.04em] text-text-secondary">
               {t(`cards.${card.key}.label`)}
             </p>
             <p className="text-body-sm text-text-primary">{t(`cards.${card.key}.body`)}</p>
-          </Link>
+          </Card>
         ))}
       </div>
 
-      <Link
+      <Card
         href="/guide/questions"
-        className="tap-target flex items-center gap-md rounded-lg bg-blush p-lg shadow-1 active:shadow-2"
+        interactive
+        surface="raised"
+        accent="plum"
+        accentIcon="Question"
+        accentIconClassName="text-text-primary"
+        className="border-l-[5px] p-lg"
       >
-        <span className="flex size-12 shrink-0 items-center justify-center rounded-[14px] bg-surface-raised">
-          <Icon name="Question" className="text-text-primary" />
-        </span>
-        <div className="min-w-0 flex-1">
-          <p className="text-caption font-semibold uppercase tracking-[0.04em] text-text-secondary">
-            {t("cards.commonQuestions.label")}
-          </p>
-          <p className="text-body-sm text-text-primary">{t("cards.commonQuestions.body")}</p>
-        </div>
-      </Link>
+        <p className="text-caption font-semibold uppercase tracking-[0.04em] text-text-secondary">
+          {t("cards.commonQuestions.label")}
+        </p>
+        <p className="text-body-sm text-text-primary">{t("cards.commonQuestions.body")}</p>
+      </Card>
     </div>
   );
 }

@@ -1,8 +1,8 @@
 "use client";
 
-import Link from "next/link";
 import { useState } from "react";
 import { useTranslations } from "next-intl";
+import { BackButton } from "@/components/patterns/BackButton";
 import { Icon } from "@/components/ui/Icon";
 import { PRODUCT_NAME } from "@/lib/config";
 import {
@@ -18,9 +18,9 @@ export interface FoodSafetyLookupProps {
 const COMMON_FOOD_KEYS = ["papaya", "paneer", "teaCoffee", "sprouts", "pickles", "fish"] as const;
 
 const STATUS_CLASSES: Record<FoodSafetyStatus, string> = {
-  safe: "bg-accent-secondary/15 text-accent-secondary",
+  safe: "bg-sage-mist/35 text-accent-secondary",
   moderation: "bg-gold/25 text-text-primary",
-  avoid: "bg-blush text-text-primary",
+  avoid: "bg-[rgba(103,0,53,0.08)] text-text-primary",
 };
 
 export function FoodSafetyLookup({ items }: FoodSafetyLookupProps) {
@@ -41,19 +41,8 @@ export function FoodSafetyLookup({ items }: FoodSafetyLookupProps) {
       className="relative isolate mx-auto flex min-h-[calc(100dvh-96px)] w-full max-w-[680px] flex-col gap-lg py-screen selection:bg-blush selection:text-text-primary"
       aria-labelledby="food-safety-title"
     >
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-x-[-20px] inset-y-0 -z-10 bg-[linear-gradient(145deg,rgba(220,240,217,0.8)_0%,rgba(247,238,227,0.35)_55%,rgba(251,213,196,0.7)_100%)]"
-      />
-
       <header className="flex items-center gap-md">
-        <Link
-          href="/guide"
-          aria-label={t("backLabel")}
-          className="tap-target inline-flex shrink-0 items-center justify-center rounded-full bg-surface-raised text-text-primary shadow-1 transition-colors duration-(--motion-fast) hover:bg-surface focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-primary"
-        >
-          <Icon name="ArrowLeft" size="inline" />
-        </Link>
+        <BackButton href="/guide" label={t("backLabel")} />
         <h1 id="food-safety-title" className="font-display text-h1 font-semibold text-text-primary">
           {t("heading")}
         </h1>
@@ -69,12 +58,9 @@ export function FoodSafetyLookup({ items }: FoodSafetyLookupProps) {
           onChange={(event) => updateQuery(event.target.value)}
           className="min-w-0 flex-1 bg-transparent text-body-sm text-text-primary caret-accent-primary outline-none placeholder:text-text-secondary"
         />
-        <Icon
-          name="Microphone"
-          size="inline"
-          label={t("micAriaLabel")}
-          className="mr-sm shrink-0 text-accent-secondary"
-        />
+        <span className="mr-sm flex size-8 shrink-0 items-center justify-center rounded-full bg-sage-mist/20 text-accent-secondary">
+          <Icon name="Microphone" size="inline" label={t("micAriaLabel")} />
+        </span>
       </div>
 
       {emptyQuery && (
@@ -105,15 +91,22 @@ export function FoodSafetyLookup({ items }: FoodSafetyLookupProps) {
           {results.map((item) => {
             const expanded = expandedName === item.name;
             return (
-              <article key={item.id} className="overflow-hidden rounded-[16px] bg-surface-raised shadow-2">
+              <article
+                key={item.id}
+                className="overflow-hidden rounded-[16px] bg-surface-raised shadow-2"
+              >
                 <button
                   type="button"
                   aria-expanded={expanded}
-                  onClick={() => setExpandedName((current) => (current === item.name ? null : item.name))}
+                  onClick={() =>
+                    setExpandedName((current) => (current === item.name ? null : item.name))
+                  }
                   className="tap-target flex w-full flex-col gap-sm p-md text-left transition-[background-color] duration-(--motion-fast) hover:bg-surface/50 focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-accent-primary"
                 >
                   <span className="flex w-full items-start justify-between gap-sm">
-                    <span className="font-display text-body font-semibold text-text-primary">{item.name}</span>
+                    <span className="font-display text-body font-semibold text-text-primary">
+                      {item.name}
+                    </span>
                     <span
                       data-status={item.status}
                       className={`shrink-0 rounded-full px-md py-xs text-caption font-semibold ${STATUS_CLASSES[item.status]}`}
@@ -121,8 +114,14 @@ export function FoodSafetyLookup({ items }: FoodSafetyLookupProps) {
                       {t(`status.${item.status}`)}
                     </span>
                   </span>
-                  <span className="text-body-sm leading-5 text-text-primary">{item.short_text}</span>
-                  {expanded && <span className="text-body-sm leading-5 text-text-primary">{item.long_text}</span>}
+                  <span className="text-body-sm leading-5 text-text-primary">
+                    {item.short_text}
+                  </span>
+                  {expanded && (
+                    <span className="text-body-sm leading-5 text-text-primary">
+                      {item.long_text}
+                    </span>
+                  )}
                   <span className="flex w-full items-end justify-between gap-sm pt-xs">
                     <span className="text-caption italic text-accent-secondary">
                       {t("citation", { productName: PRODUCT_NAME })}
@@ -141,7 +140,10 @@ export function FoodSafetyLookup({ items }: FoodSafetyLookupProps) {
       )}
 
       {!emptyQuery && results.length === 0 && (
-        <div className="rounded-[16px] bg-surface-raised px-lg py-xl text-center shadow-2" role="status">
+        <div
+          className="rounded-[16px] bg-surface-raised px-lg py-xl text-center shadow-2"
+          role="status"
+        >
           <p className="m-0 text-body-sm text-text-secondary">{t("notFound")}</p>
         </div>
       )}

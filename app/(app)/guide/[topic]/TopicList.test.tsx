@@ -24,9 +24,15 @@ function item(overrides: Partial<TopicListItem> = {}): TopicListItem {
 }
 
 function renderList(props: Partial<React.ComponentProps<typeof TopicList>> = {}) {
-  render(
+  return render(
     <NextIntlClientProvider locale="en" messages={en}>
-      <TopicList topicSlug="checkups" topicTitle="Checkups" items={[]} showFoodSafetyBanner={false} {...props} />
+      <TopicList
+        topicSlug="checkups"
+        topicTitle="Checkups"
+        items={[]}
+        showFoodSafetyBanner={false}
+        {...props}
+      />
     </NextIntlClientProvider>,
   );
 }
@@ -51,6 +57,20 @@ describe("TopicList", () => {
     });
     expect(screen.getByText("Source: Mayo Clinic pregnancy guide")).toBeInTheDocument();
     expect(screen.getByText(CURATED_CITATION)).toBeInTheDocument();
+  });
+
+  it("renders every content item as a horizontal thumbnail row", () => {
+    renderList({
+      items: [item(), item({ id: "2", kind: "video" }), item({ id: "3", kind: "audio" })],
+    });
+    expect(screen.getAllByTestId("topic-thumbnail")).toHaveLength(3);
+    expect(screen.getAllByTestId("list-row")).toHaveLength(3);
+  });
+
+  it("uses the roomy sparse layout for one or two items", () => {
+    const { container } = renderList({ items: [item(), item({ id: "2" })] });
+    expect(container.querySelector('[data-layout="sparse"]')).toBeInTheDocument();
+    expect(screen.getAllByTestId("topic-thumbnail")[0]).toHaveClass("size-[84px]");
   });
 
   it("marks an English-fallback item rather than hiding it", () => {
@@ -79,14 +99,15 @@ describe("TopicList", () => {
 
   it("shows the Food Safety banner only when the topic asks for it", () => {
     renderList({ showFoodSafetyBanner: true });
-    expect(screen.getByRole("link", { name: new RegExp(en.guide.topics.foodSafetyBannerTitle) })).toHaveAttribute(
-      "href",
-      "/guide/food-safety",
-    );
+    expect(
+      screen.getByRole("link", { name: new RegExp(en.guide.topics.foodSafetyBannerTitle) }),
+    ).toHaveAttribute("href", "/guide/food-safety");
   });
 
   it("never shows the Food Safety banner for a topic that doesn't ask for it", () => {
     renderList({ showFoodSafetyBanner: false });
-    expect(screen.queryByRole("link", { name: new RegExp(en.guide.topics.foodSafetyBannerTitle) })).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("link", { name: new RegExp(en.guide.topics.foodSafetyBannerTitle) }),
+    ).not.toBeInTheDocument();
   });
 });

@@ -7,6 +7,7 @@ import { useTranslations } from "next-intl";
 import { track } from "@/components/AnalyticsProvider";
 import { AudioIndicator } from "@/components/patterns/AudioIndicator";
 import { Icon } from "@/components/ui/Icon";
+import { Toggle } from "@/components/ui/Toggle";
 import { EVENTS } from "@/lib/analytics/events";
 import type { ContentItemRow } from "@/lib/supabase/queries/content";
 
@@ -21,7 +22,8 @@ function contentKind(value: string): ContentKind {
 /** Seconds -> "1:42". Caps at hours only if it ever comes up; content audio
  * here is always well under an hour. */
 function formatPlayerTime(totalSeconds: number): string {
-  const safeSeconds = Number.isFinite(totalSeconds) && totalSeconds > 0 ? Math.floor(totalSeconds) : 0;
+  const safeSeconds =
+    Number.isFinite(totalSeconds) && totalSeconds > 0 ? Math.floor(totalSeconds) : 0;
   const minutes = Math.floor(safeSeconds / 60);
   const seconds = safeSeconds % 60;
   return `${minutes}:${String(seconds).padStart(2, "0")}`;
@@ -52,7 +54,14 @@ export interface ContentDetailProps {
   context: "today" | "guide";
 }
 
-export function ContentDetail({ item, isFallback, transcript, backHref, backLabelKey, context }: ContentDetailProps) {
+export function ContentDetail({
+  item,
+  isFallback,
+  transcript,
+  backHref,
+  backLabelKey,
+  context,
+}: ContentDetailProps) {
   const t = useTranslations();
   const [mode, setMode] = useState<"listen" | "text">("listen");
   const [showTranscript, setShowTranscript] = useState(false);
@@ -102,7 +111,9 @@ export function ContentDetail({ item, isFallback, transcript, backHref, backLabe
     return (
       <section className="mx-auto flex min-h-[60dvh] w-full max-w-[680px] flex-col justify-center gap-md py-screen text-center">
         <Icon name="FileX" size="hero" className="mx-auto text-accent-primary" />
-        <h1 className="font-display text-h1 font-semibold text-text-primary">{t("today.listen.notFoundTitle")}</h1>
+        <h1 className="font-display text-h1 font-semibold text-text-primary">
+          {t("today.listen.notFoundTitle")}
+        </h1>
         <p className="text-body text-text-secondary">{t("today.listen.notFoundBody")}</p>
         <Link
           href={backHref}
@@ -139,7 +150,10 @@ export function ContentDetail({ item, isFallback, transcript, backHref, backLabe
   }
 
   return (
-    <article className="relative mx-auto flex w-full max-w-[680px] flex-col gap-lg py-screen" aria-labelledby="content-title">
+    <article
+      className="relative mx-auto flex w-full max-w-[680px] flex-col gap-lg py-screen"
+      aria-labelledby="content-title"
+    >
       <header className="flex items-center gap-md">
         <Link
           href={backHref}
@@ -152,7 +166,9 @@ export function ContentDetail({ item, isFallback, transcript, backHref, backLabe
             mockup gives it one) or outside the Today context (Guide's
             Article Reader and Video Player mockups have no eyebrow line). */}
         {context === "today" && kind !== "article" && (
-          <span className="text-caption font-semibold text-accent-primary">{t("today.listen.eyebrow")}</span>
+          <span className="text-caption font-semibold text-accent-primary">
+            {t("today.listen.eyebrow")}
+          </span>
         )}
       </header>
 
@@ -160,8 +176,16 @@ export function ContentDetail({ item, isFallback, transcript, backHref, backLabe
         <h1 id="content-title" className="font-display text-h1 font-semibold text-text-primary">
           {item.title}
         </h1>
+        {context === "guide" && kind === "article" && (
+          <p className="mt-sm flex items-center gap-[7px] text-caption text-text-secondary">
+            <Icon name="FileText" size="inline" className="text-text-primary" />
+            {t("guide.topics.articleLabel")}
+          </p>
+        )}
         <p className="mt-xs text-caption italic text-accent-secondary">{item.citation}</p>
-        {isFallback && <p className="mt-xs text-caption text-text-secondary">{t("common.englishOnly")}</p>}
+        {isFallback && (
+          <p className="mt-xs text-caption text-text-secondary">{t("common.englishOnly")}</p>
+        )}
         {item.narration_url && (
           <AudioIndicator
             playing={narrationPlaying}
@@ -171,8 +195,10 @@ export function ContentDetail({ item, isFallback, transcript, backHref, backLabe
         )}
       </div>
 
-      {(kind === "video" || kind === "audio") && (
-        <div aria-label={kind === "video" ? t("today.listen.videoTab") : t("today.listen.audioTab")}>
+      {context === "today" && (kind === "video" || kind === "audio") && (
+        <div
+          aria-label={kind === "video" ? t("today.listen.videoTab") : t("today.listen.audioTab")}
+        >
           <span className="inline-flex min-h-12 items-center rounded-full bg-accent-primary px-md text-caption font-semibold text-surface-raised">
             {t(kind === "video" ? "today.listen.videoTab" : "today.listen.audioTab")}
           </span>
@@ -183,8 +209,29 @@ export function ContentDetail({ item, isFallback, transcript, backHref, backLabe
           listen/text switch would just show the same body twice. Video gets
           a real video/text switch (its own label, not the audio-context
           "Listen" wording it used to inherit). */}
-      {kind !== "article" && (
-        <div className="inline-flex self-start rounded-md bg-surface-raised p-xs shadow-1" role="group">
+      {context === "guide" && kind === "video" ? (
+        <div className="inline-flex min-h-12 self-start items-center gap-sm rounded-md bg-surface-raised px-md shadow-1">
+          <span
+            className={
+              mode === "listen"
+                ? "text-caption font-medium text-text-primary"
+                : "text-caption font-medium text-text-secondary"
+            }
+          >
+            {t("today.listen.videoTab")}
+          </span>
+          <Toggle
+            id="guide-video-mode"
+            label={t("today.listen.textLabel")}
+            checked={mode === "text"}
+            onCheckedChange={(textMode) => setMode(textMode ? "text" : "listen")}
+          />
+        </div>
+      ) : kind !== "article" ? (
+        <div
+          className="inline-flex self-start rounded-md bg-surface-raised p-xs shadow-1"
+          role="group"
+        >
           <button
             type="button"
             aria-pressed={mode === "listen"}
@@ -202,24 +249,48 @@ export function ContentDetail({ item, isFallback, transcript, backHref, backLabe
             {t("today.listen.textLabel")}
           </button>
         </div>
-      )}
+      ) : null}
 
       {mode === "listen" ? (
         <>
           {kind === "video" && (
-            <div className="flex flex-col gap-md rounded-md bg-surface-raised p-md shadow-1">
-              <video
-                controls
-                playsInline
-                src={item.media_url ?? undefined}
-                onEnded={completeMedia}
-                className="aspect-video w-full rounded-sm bg-text-primary"
-              />
-              <p className="flex items-center gap-sm text-caption text-text-secondary">
-                <Icon name="VideoCamera" size="inline" />
-                {t(context === "today" ? "today.listen.playingCaption" : "today.listen.playingCaptionOther")}
-              </p>
-            </div>
+            <>
+              <div className="flex flex-col gap-md rounded-md bg-surface-raised p-md shadow-1">
+                <video
+                  controls
+                  playsInline
+                  src={item.media_url ?? undefined}
+                  onEnded={completeMedia}
+                  className="aspect-video w-full rounded-sm bg-text-primary"
+                />
+                <p className="flex items-center gap-sm text-caption text-text-secondary">
+                  <Icon name="VideoCamera" size="inline" />
+                  {t(
+                    context === "today"
+                      ? "today.listen.playingCaption"
+                      : "today.listen.playingCaptionOther",
+                  )}
+                </p>
+              </div>
+              {context === "guide" && readAlongText && (
+                <div>
+                  <button
+                    type="button"
+                    aria-expanded={showTranscript}
+                    onClick={() => setShowTranscript((current) => !current)}
+                    className="tap-target flex w-full items-center justify-between rounded-sm px-xs text-left text-body-sm font-medium text-text-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-primary"
+                  >
+                    {t("guideContent.readTextVersion")}
+                    <Icon name={showTranscript ? "CaretUp" : "CaretDown"} size="inline" />
+                  </button>
+                  {showTranscript && (
+                    <div className="mt-sm rounded-[18px] bg-surface-raised p-lg shadow-1">
+                      <RestrictedMarkdown>{readAlongText}</RestrictedMarkdown>
+                    </div>
+                  )}
+                </div>
+              )}
+            </>
           )}
 
           {kind === "audio" && (
@@ -229,7 +300,11 @@ export function ContentDetail({ item, isFallback, transcript, backHref, backLabe
                   <button
                     type="button"
                     onClick={() => void toggleContentAudio()}
-                    aria-label={t(contentPlaying ? "today.listen.pauseContentLabel" : "today.listen.playContentLabel")}
+                    aria-label={t(
+                      contentPlaying
+                        ? "today.listen.pauseContentLabel"
+                        : "today.listen.playContentLabel",
+                    )}
                     className="tap-target flex size-[52px] shrink-0 items-center justify-center rounded-full bg-accent-primary text-surface-raised"
                   >
                     <Icon name={contentPlaying ? "Pause" : "Play"} size="inline" />
@@ -238,7 +313,9 @@ export function ContentDetail({ item, isFallback, transcript, backHref, backLabe
                     <div className="relative h-1.5 overflow-hidden rounded-full bg-[rgba(103,0,53,0.1)]">
                       <div
                         className="absolute inset-y-0 left-0 rounded-full bg-accent-primary"
-                        style={{ width: `${contentDuration > 0 ? Math.min(100, (contentTime / contentDuration) * 100) : 0}%` }}
+                        style={{
+                          width: `${contentDuration > 0 ? Math.min(100, (contentTime / contentDuration) * 100) : 0}%`,
+                        }}
                       />
                     </div>
                     <div className="mt-xs flex justify-between text-caption text-text-secondary">
@@ -259,7 +336,11 @@ export function ContentDetail({ item, isFallback, transcript, backHref, backLabe
                 />
                 <p className="flex items-center gap-sm text-caption text-text-secondary">
                   <Icon name="SpeakerHigh" size="inline" />
-                  {t(context === "today" ? "today.listen.playingCaption" : "today.listen.playingCaptionOther")}
+                  {t(
+                    context === "today"
+                      ? "today.listen.playingCaption"
+                      : "today.listen.playingCaptionOther",
+                  )}
                 </p>
               </div>
               {readAlongText && (
@@ -284,7 +365,11 @@ export function ContentDetail({ item, isFallback, transcript, backHref, backLabe
           )}
 
           {kind === "article" && (
-            <div className="rounded-md bg-surface-raised p-lg shadow-1">
+            <div
+              className={
+                context === "guide" ? "py-xs" : "rounded-md bg-surface-raised p-lg shadow-1"
+              }
+            >
               <RestrictedMarkdown>{item.body_md ?? item.summary ?? ""}</RestrictedMarkdown>
             </div>
           )}
@@ -295,7 +380,9 @@ export function ContentDetail({ item, isFallback, transcript, backHref, backLabe
             <RestrictedMarkdown>{textVersion}</RestrictedMarkdown>
           </div>
           <p className="text-caption text-text-secondary">
-            {t(kind === "video" ? "today.listen.switchBackNoteVideo" : "today.listen.switchBackNote")}
+            {t(
+              kind === "video" ? "today.listen.switchBackNoteVideo" : "today.listen.switchBackNote",
+            )}
           </p>
         </>
       )}
