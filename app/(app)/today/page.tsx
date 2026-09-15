@@ -5,6 +5,7 @@ import { buildReminders, type ReminderAppointment, type ReminderLog } from "@/li
 import { todayInAppZone } from "@/lib/domain/dates";
 import { pregnancyProgress } from "@/lib/domain/pregnancy";
 import { weekIllustrationSrc } from "@/lib/domain/illustrations";
+import { weekdayFromDate, weeklyMealPlanFor } from "@/lib/domain/weeklyMealPlan";
 import { getTodayData } from "@/lib/supabase/queries/today";
 import { createServerSupabase } from "@/lib/supabase/server";
 
@@ -57,6 +58,12 @@ export default async function TodayPage() {
     .map((a) => Math.floor((new Date(a.scheduled_at).getTime() - now) / (24 * 60 * 60 * 1000)))
     .filter((days) => days >= 0);
 
+  // Today's breakfast line from the real weekly plan (lib/domain/weeklyMealPlan.ts),
+  // used as the "For you today" Meal Plan card's preview -- same source the
+  // /today/meal-plan page itself reads, so the two never disagree.
+  const mealPreviewKey = weeklyMealPlanFor(weekdayFromDate(today)).find((slot) => slot.slot === "breakfast")!
+    .itemsKey;
+
   return (
     <TodayScreen
       displayName={data.profile?.display_name ?? ""}
@@ -91,6 +98,7 @@ export default async function TodayPage() {
       // this fix ("Functions cannot be passed directly to Client Components", "Event
       // handlers cannot be passed to Client Component props").
       onSubmitCheckin={saveCheckin}
+      mealPreviewKey={mealPreviewKey}
       doctorName={data.profile?.doctor_name ?? null}
       clinicName={data.profile?.clinic_name ?? null}
     />
