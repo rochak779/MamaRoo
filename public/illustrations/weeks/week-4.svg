@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1200" viewBox="0 0 1200 1200">
+<defs>
+  <radialGradient id="outer"><stop stop-color="#ffd2ca"/><stop offset="1" stop-color="#ff9c93"/></radialGradient>
+  <radialGradient id="cavity"><stop stop-color="#9b1d20"/><stop offset=".7" stop-color="#7b1418"/><stop offset="1" stop-color="#5f1014"/></radialGradient>
+  <radialGradient id="tissue"><stop stop-color="#ff9c90"/><stop offset="1" stop-color="#e7655d"/></radialGradient>
+  <radialGradient id="sac"><stop stop-color="#fff2ec"/><stop offset=".7" stop-color="#ffd0c6"/><stop offset="1" stop-color="#f49a8e"/></radialGradient>
+  <radialGradient id="embryo"><stop stop-color="#ffe9df"/><stop offset=".5" stop-color="#ffb4a6"/><stop offset="1" stop-color="#df625a"/></radialGradient>
+  <radialGradient id="placenta"><stop stop-color="#ffb0a3"/><stop offset="1" stop-color="#d95650"/></radialGradient>
+  <filter id="blur"><feGaussianBlur stdDeviation="12"/></filter>
+</defs>
+
+<rect width="1200" height="1200" fill="#ffffff"/>
+<ellipse cx="600" cy="1080" rx="315" ry="28" fill="#e9aaa2" opacity=".25" filter="url(#blur)"/>
+
+<!-- uterine cross-section -->
+<circle cx="600" cy="600" r="500" fill="url(#outer)"/>
+<circle cx="600" cy="600" r="468" fill="#ff766d"/>
+<circle cx="600" cy="600" r="445" fill="#ffb0a7"/>
+<circle cx="600" cy="600" r="425" fill="url(#cavity)"/>
+<circle cx="600" cy="600" r="398" fill="#721216" opacity=".75"/>
+
+<!-- developing uterine lining -->
+<path d="M125 700 C220 575 330 555 420 650 C505 740 550 850 690 875 C835 900 980 815 1080 690 L1100 1100 L100 1100Z"
+      fill="url(#tissue)"/>
+<path d="M130 690 C225 575 330 565 415 655 C505 750 560 850 695 875 C835 900 975 815 1070 685"
+      fill="none" stroke="#ffb0a3" stroke-width="26" opacity=".72"/>
+
+<!-- tissue cells -->
+<g fill="#f98d82" stroke="#df625a" stroke-width="4">
+<circle cx="175" cy="735" r="43"/><circle cx="235" cy="675" r="44"/><circle cx="300" cy="650" r="42"/>
+<circle cx="365" cy="690" r="44"/><circle cx="420" cy="745" r="42"/><circle cx="470" cy="800" r="43"/>
+<circle cx="530" cy="840" r="44"/><circle cx="600" cy="860" r="45"/><circle cx="675" cy="870" r="44"/>
+<circle cx="750" cy="860" r="43"/><circle cx="825" cy="840" r="42"/><circle cx="900" cy="805" r="40"/>
+<circle cx="965" cy="755" r="39"/><circle cx="1020" cy="700" r="37"/>
+<circle cx="205" cy="805" r="42"/><circle cx="275" cy="760" r="42"/><circle cx="345" cy="785" r="42"/>
+<circle cx="415" cy="835" r="43"/><circle cx="490" cy="875" r="43"/><circle cx="570" cy="900" r="43"/>
+<circle cx="650" cy="910" r="43"/><circle cx="730" cy="900" r="42"/><circle cx="810" cy="875" r="41"/>
+<circle cx="885" cy="845" r="40"/>
+</g>
+
+<!-- implantation halo -->
+<ellipse cx="650" cy="575" rx="285" ry="285" fill="#ffb8ad" opacity=".12"/>
+
+<!-- gestational / amniotic sac -->
+<path d="M525 390
+ C590 340 705 345 770 405
+ C835 465 845 570 820 650
+ C795 735 720 800 630 795
+ C540 790 475 720 460 630
+ C445 540 460 445 525 390Z"
+ fill="url(#sac)" stroke="#ffd9d0" stroke-width="12"/>
+
+<!-- inner fluid -->
+<ellipse cx="650" cy="575" rx="155" ry="185" fill="#fff7f2" opacity=".35"/>
+
+<!-- early placenta / chorionic tissue -->
+<path d="M700 405 C770 415 815 455 835 520 C850 565 840 615 815 650
+ C780 625 748 600 720 565 C700 535 690 470 700 405Z"
+ fill="url(#placenta)" opacity=".9"/>
+
+<g fill="#ef756b" stroke="#d95a54" stroke-width="3">
+<circle cx="745" cy="440" r="24"/><circle cx="785" cy="475" r="25"/>
+<circle cx="805" cy="520" r="24"/><circle cx="810" cy="565" r="23"/>
+<circle cx="795" cy="610" r="22"/><circle cx="770" cy="645" r="22"/>
+</g>
+
+<!-- embryonic disc -->
+<ellipse cx="610" cy="550" rx="78" ry="52" fill="#ffb7aa" opacity=".35"/>
+<path d="M545 552 C555 500 610 470 670 488 C715 502 735 545 720 585
+ C705 625 660 648 615 635 C565 622 535 592 545 552Z"
+ fill="url(#embryo)" stroke="#ffd8ce" stroke-width="8"/>
+
+<!-- embryonic layers -->
+<path d="M560 548 C585 525 610 520 640 525 C670 530 690 545 705 568"
+ fill="none" stroke="#f38a7e" stroke-width="13" opacity=".7"/>
+<path d="M570 580 C600 600 640 605 690 580"
+ fill="none" stroke="#e66e65" stroke-width="11" opacity=".65"/>
+
+<!-- primitive neural groove -->
+<path d="M590 515 Q625 490 662 515 Q645 535 625 545 Q605 538 590 515Z"
+ fill="#d95e58" opacity=".75"/>
+
+<!-- tiny embryo projection / early body axis -->
+<path d="M635 610 Q670 650 705 670" fill="none" stroke="#f39a8e" stroke-width="20" stroke-linecap="round"/>
+<path d="M625 610 Q645 648 680 675" fill="none" stroke="#ffd0c7" stroke-width="7" stroke-linecap="round"/>
+
+<!-- chorionic / villous edge -->
+<g fill="#ff9d91" stroke="#e86b62" stroke-width="3">
+<circle cx="515" cy="415" r="19"/><circle cx="480" cy="455" r="17"/><circle cx="465" cy="500" r="16"/>
+<circle cx="462" cy="550" r="15"/><circle cx="470" cy="600" r="15"/><circle cx="485" cy="650" r="17"/>
+<circle cx="510" cy="695" r="18"/><circle cx="545" cy="730" r="18"/>
+</g>
+
+<!-- fluid particles -->
+<g fill="#ffaaa0" stroke="#ffdcd5" stroke-width="3">
+<circle cx="530" cy="450" r="8"/><circle cx="750" cy="430" r="8"/><circle cx="790" cy="585" r="9"/>
+<circle cx="550" cy="690" r="7"/><circle cx="720" cy="710" r="8"/>
+</g>
+</svg>

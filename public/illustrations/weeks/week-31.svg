@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1200" viewBox="0 0 1200 1200">
+<defs>
+  <radialGradient id="u" cx="48%" cy="42%"><stop stop-color="#ffe9e3"/><stop offset=".72" stop-color="#f7a096"/><stop offset="1" stop-color="#e97670"/></radialGradient>
+  <radialGradient id="w"><stop stop-color="#f18c86"/><stop offset=".7" stop-color="#c95758"/><stop offset="1" stop-color="#9e3b42"/></radialGradient>
+  <radialGradient id="f" cx="42%" cy="30%"><stop stop-color="#ead3d7" stop-opacity=".92"/><stop offset=".72" stop-color="#b88e9b" stop-opacity=".8"/><stop offset="1" stop-color="#7d4d5d" stop-opacity=".84"/></radialGradient>
+  <radialGradient id="b" cx="32%" cy="18%"><stop stop-color="#ffe9d9"/><stop offset=".55" stop-color="#f4b193"/><stop offset="1" stop-color="#d47761"/></radialGradient>
+  <linearGradient id="p" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ee8078"/><stop offset="1" stop-color="#c75255"/></linearGradient>
+  <linearGradient id="cord" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff6ef"/><stop offset=".45" stop-color="#e6b3af"/><stop offset="1" stop-color="#c86c72"/></linearGradient>
+  <filter id="soft"><feGaussianBlur stdDeviation="10"/></filter>
+</defs>
+
+<rect width="1200" height="1200" fill="#fff"/>
+
+<!-- maternal body context -->
+<path d="M840 65 L1090 0 L1090 1115 Q1000 1080 920 1025 Q870 990 824 910 Q780 835 770 745 Q760 650 780 560 Q800 470 824 370Z" fill="#f6d5bd" opacity=".42"/>
+<g fill="#d8ad88" opacity=".35">
+<rect x="913" y="103" width="112" height="70" rx="18"/><rect x="922" y="190" width="106" height="70" rx="18"/>
+<rect x="926" y="278" width="100" height="70" rx="18"/><rect x="923" y="366" width="103" height="70" rx="18"/><rect x="911" y="454" width="108" height="70" rx="18"/>
+</g>
+
+<!-- uterus -->
+<path d="M186 545 C178 333 315 156 526 104 C751 48 949 178 1013 381 C1064 543 1019 755 900 903
+C815 1008 693 1060 566 1042 C408 1019 267 899 213 735 C194 677 185 609 186 545Z" fill="url(#u)"/>
+<path d="M220 544 C213 355 338 204 527 157 C723 108 892 218 956 400 C1014 564 966 744 856 864
+C775 953 668 994 564 980 C421 961 315 851 260 708 C236 645 224 590 220 544Z" fill="url(#w)"/>
+<path d="M253 547 C248 382 361 246 532 201 C704 157 863 254 919 418 C971 570 924 721 829 824
+C757 902 661 937 570 925 C442 908 346 813 300 690 C276 628 260 584 253 547Z" fill="#8f4652"/>
+
+<!-- placenta -->
+<path d="M270 343 C330 267 430 226 531 208 C601 196 658 205 705 232 C676 302 642 364 592 423
+C524 505 434 571 340 620 C296 548 264 451 270 343Z" fill="url(#p)"/>
+<g fill="#e99b92" opacity=".8">
+<circle cx="323" cy="342" r="22"/><circle cx="360" cy="306" r="25"/><circle cx="404" cy="279" r="22"/><circle cx="451" cy="258" r="24"/>
+<circle cx="500" cy="247" r="23"/><circle cx="548" cy="242" r="22"/><circle cx="590" cy="256" r="23"/><circle cx="335" cy="389" r="24"/>
+<circle cx="372" cy="359" r="22"/><circle cx="418" cy="330" r="25"/><circle cx="465" cy="307" r="23"/><circle cx="515" cy="294" r="24"/><circle cx="562" cy="286" r="22"/>
+</g>
+<g fill="none" stroke-linecap="round">
+<path d="M300 468 Q420 380 525 315 Q590 276 640 238" stroke="#5d82ad" stroke-width="8"/>
+<path d="M352 425 Q378 358 402 292" stroke="#5d82ad" stroke-width="5"/>
+<path d="M416 383 Q462 349 482 276" stroke="#6d91b5" stroke-width="5"/>
+<path d="M465 350 Q545 345 588 268" stroke="#5d82ad" stroke-width="6"/>
+<path d="M385 405 Q332 390 304 350" stroke="#6d91b5" stroke-width="4"/>
+<path d="M503 320 Q565 316 635 286" stroke="#6d91b5" stroke-width="4"/>
+</g>
+
+<!-- amniotic sac -->
+<path d="M405 205 C520 150 696 154 810 236 C907 306 946 432 926 570 C905 706 833 827 716 889
+C603 949 466 917 382 842 C301 770 271 652 285 524 C297 382 330 249 405 205Z"
+fill="url(#f)" stroke="#f9e8ea" stroke-width="10"/>
+<path d="M423 221 C522 178 679 180 783 248 C862 300 902 405 890 523" fill="none" stroke="#fff7f5" stroke-width="12" opacity=".75"/>
+
+<!-- umbilical cord -->
+<path d="M612 331 C654 350 681 387 662 425 C638 469 596 486 609 528 C623 570 681 581 715 612 C744 638 753 678 730 712"
+fill="none" stroke="url(#cord)" stroke-width="28" stroke-linecap="round"/>
+<path d="M612 331 C654 350 681 387 662 425 C638 469 596 486 609 528 C623 570 681 581 715 612 C744 638 753 678 730 712"
+fill="none" stroke="#fffaf7" stroke-width="9" stroke-linecap="round" opacity=".75"/>
+
+<!-- 31-week baby: fuller body, rounded cheeks, mature but still preterm -->
+<g>
+  <!-- torso -->
+  <path d="M650 394 C720 376 792 408 829 465 C863 518 868 581 849 640
+C831 695 805 734 798 775 C791 818 760 849 711 858
+C659 867 609 843 581 802 C555 765 541 720 524 680
+C499 629 487 576 497 526 C508 468 553 421 612 405Z"
+  fill="url(#b)" stroke="#f5bdab" stroke-width="8"/>
+
+  <!-- head -->
+  <path d="M612 245 C559 235 511 253 478 292 C446 332 440 384 458 428
+C477 470 515 496 560 499 C606 502 647 482 670 445 C695 405 700 354 686 315
+C674 281 643 252 612 245Z"
+  fill="url(#b)" stroke="#f5bdab" stroke-width="8"/>
+
+  <!-- fuller cheeks -->
+  <ellipse cx="426" cy="399" rx="41" ry="33" fill="#f2a896" opacity=".6"/>
+  <ellipse cx="514" cy="391" rx="35" ry="31" fill="#ee9f90" opacity=".56"/>
+
+  <!-- fine hair -->
+  <path d="M470 310 Q485 266 535 245 Q590 222 640 256 Q665 273 681 306
+Q649 292 618 297 Q588 269 547 284 Q513 296 491 326Z" fill="#bd715c"/>
+  <path d="M491 289 Q522 258 557 251 M520 283 Q550 246 590 249 M556 272 Q591 237 625 263
+M594 267 Q625 246 655 279" fill="none" stroke="#dfa089" stroke-width="7" stroke-linecap="round"/>
+
+  <!-- recognizable face -->
+  <path d="M488 326 Q472 349 466 377 Q462 401 477 424 Q493 450 523 465 Q550 478 580 472"
+  fill="none" stroke="#c66858" stroke-width="8" stroke-linecap="round"/>
+  <path d="M466 374 Q455 389 465 402 L482 406" fill="none" stroke="#c66858" stroke-width="7" stroke-linecap="round"/>
+  <path d="M482 424 Q498 431 513 425" fill="none" stroke="#b7504b" stroke-width="6" stroke-linecap="round"/>
+
+  <!-- eye -->
+  <path d="M510 357 Q533 343 556 358" fill="none" stroke="#68282c" stroke-width="8" stroke-linecap="round"/>
+  <ellipse cx="534" cy="355" rx="4" ry="3" fill="#713031"/>
+  <path d="M509 337 Q536 324 560 337" fill="none" stroke="#b66758" stroke-width="6" stroke-linecap="round"/>
+
+  <!-- ear -->
+  <ellipse cx="648" cy="383" rx="21" ry="29" fill="#d67360"/>
+  <path d="M645 368 Q661 383 645 404" fill="none" stroke="#ffd4c3" stroke-width="7" stroke-linecap="round"/>
+
+  <!-- mouth -->
+  <path d="M522 400 Q539 407 554 398" fill="none" stroke="#b64b47" stroke-width="6" stroke-linecap="round"/>
+  <path d="M525 409 Q539 414 552 405" fill="none" stroke="#e3847b" stroke-width="4" stroke-linecap="round"/>
+
+  <!-- neck -->
+  <path d="M601 471 Q627 493 659 503" fill="none" stroke="#dc866f" stroke-width="29" stroke-linecap="round"/>
+
+  <!-- rounded chest and abdomen -->
+  <path d="M623 503 Q688 477 742 511 Q784 538 802 592 C815 635 810 680 793 717"
+  fill="none" stroke="#e69a82" stroke-width="67" stroke-linecap="round"/>
+
+  <!-- heart -->
+  <path d="M666 522 C649 502 624 516 630 540 C636 562 657 577 672 588
+C688 572 708 550 702 529 C698 510 679 507 666 522Z" fill="#b94b4b"/>
+
+  <!-- arms -->
+  <path d="M613 530 Q586 519 571 494 Q558 473 552 448" fill="none" stroke="#e59980" stroke-width="30" stroke-linecap="round"/>
+  <path d="M552 449 Q544 436 548 422" fill="none" stroke="#d17462" stroke-width="18" stroke-linecap="round"/>
+  <path d="M548 426 l-14 -10 M548 426 l-6 -16 M548 426 l3 -17 M548 426 l13 -11"
+  fill="none" stroke="#c76558" stroke-width="6" stroke-linecap="round"/>
+
+  <path d="M740 539 Q770 557 780 585 Q788 609 778 635" fill="none" stroke="#e59980" stroke-width="30" stroke-linecap="round"/>
+  <path d="M778 635 l16 13 M778 635 l7 18 M778 635 l-1 19 M778 635 l-14 15"
+  fill="none" stroke="#c76558" stroke-width="6" stroke-linecap="round"/>
+
+  <!-- fuller curled legs -->
+  <path d="M592 659 Q553 675 539 706 Q528 731 544 758 Q561 785 599 792"
+  fill="none" stroke="#e39179" stroke-width="53" stroke-linecap="round"/>
+  <path d="M682 669 Q723 683 743 712 Q760 738 750 763 Q739 789 704 798"
+  fill="none" stroke="#e39179" stroke-width="53" stroke-linecap="round"/>
+
+  <!-- feet -->
+  <path d="M599 792 Q623 805 648 795" fill="none" stroke="#d27360" stroke-width="22" stroke-linecap="round"/>
+  <path d="M704 798 Q680 808 656 798" fill="none" stroke="#d27360" stroke-width="22" stroke-linecap="round"/>
+  <path d="M608 796 l9 14 M619 796 l10 11 M630 796 l8 8
+M695 800 l-9 13 M685 800 l-10 10 M675 799 l-8 8"
+  fill="none" stroke="#bd6255" stroke-width="5" stroke-linecap="round"/>
+
+  <!-- belly and subtle vernix -->
+  <path d="M614 596 Q674 608 712 645 Q735 669 741 699" fill="none" stroke="#c96a5b" stroke-width="11" opacity=".55"/>
+  <path d="M615 625 Q645 638 675 641 M625 651 Q654 664 684 666
+M659 682 Q685 691 711 707" fill="none" stroke="#fff4ec" stroke-width="5" opacity=".65" stroke-linecap="round"/>
+
+  <path d="M399 297 Q428 261 473 251" fill="none" stroke="#fffaf5" stroke-width="12" stroke-linecap="round" opacity=".65"/>
+</g>
+
+<g fill="#f3b2a9" opacity=".8">
+  <circle cx="354" cy="272" r="7"/><circle cx="392" cy="220" r="6"/><circle cx="844" cy="330" r="7"/>
+  <circle cx="881" cy="462" r="6"/><circle cx="875" cy="621" r="7"/><circle cx="824" cy="756" r="6"/>
+  <circle cx="438" cy="835" r="7"/>
+</g>
+</svg>

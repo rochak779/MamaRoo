@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1200" viewBox="0 0 1200 1200">
+<defs>
+  <radialGradient id="outer" cx="48%" cy="42%">
+    <stop offset="0" stop-color="#ffd1ca"/>
+    <stop offset="1" stop-color="#ff9d95"/>
+  </radialGradient>
+  <radialGradient id="cavity" cx="50%" cy="42%">
+    <stop offset="0" stop-color="#8b171b"/>
+    <stop offset=".62" stop-color="#a71e21"/>
+    <stop offset="1" stop-color="#c53a38"/>
+  </radialGradient>
+  <radialGradient id="embryo" cx="35%" cy="25%">
+    <stop offset="0" stop-color="#fff0e9"/>
+    <stop offset=".38" stop-color="#ffc3b8"/>
+    <stop offset="1" stop-color="#e9786c"/>
+  </radialGradient>
+  <radialGradient id="yolk" cx="35%" cy="30%">
+    <stop offset="0" stop-color="#ffd7ca"/>
+    <stop offset=".55" stop-color="#ff9b8c"/>
+    <stop offset="1" stop-color="#e76b61"/>
+  </radialGradient>
+  <filter id="blur"><feGaussianBlur stdDeviation="14"/></filter>
+  <filter id="soft"><feGaussianBlur stdDeviation="3"/></filter>
+  <clipPath id="inside"><circle cx="600" cy="600" r="414"/></clipPath>
+</defs>
+
+<rect width="1200" height="1200" fill="#fff"/>
+
+<!-- uterus / gestational environment -->
+<ellipse cx="600" cy="1080" rx="300" ry="28" fill="#e9aaa3" opacity=".25" filter="url(#blur)"/>
+<circle cx="600" cy="600" r="500" fill="url(#outer)"/>
+<circle cx="600" cy="600" r="468" fill="#ff746c"/>
+<circle cx="600" cy="600" r="446" fill="#ffb0a7"/>
+<circle cx="600" cy="600" r="426" fill="url(#cavity)"/>
+<circle cx="600" cy="600" r="400" fill="#7b1418" opacity=".72"/>
+
+<!-- subtle cavity contours -->
+<g fill="none" stroke="#d34a45" opacity=".2">
+  <ellipse cx="600" cy="595" rx="365" ry="340" stroke-width="18"/>
+  <ellipse cx="600" cy="595" rx="330" ry="305" stroke-width="13"/>
+</g>
+
+<!-- endometrial / decidual tissue -->
+<g clip-path="url(#inside)">
+  <path d="M105 565 C220 420 345 430 410 555 C465 660 520 760 665 810 C815 860 965 805 1100 650 L1100 1100 L100 1100 Z"
+        fill="#e8665e"/>
+  <path d="M120 550 C230 430 345 445 405 560 C470 685 525 760 670 810 C810 855 955 805 1080 645"
+        fill="none" stroke="#ff9e92" stroke-width="26" opacity=".78"/>
+
+  <!-- decidual cell texture -->
+  <g fill="url(#yolk)" stroke="#df5d55" stroke-width="4">
+    <circle cx="170" cy="530" r="38"/><circle cx="225" cy="475" r="41"/>
+    <circle cx="285" cy="470" r="40"/><circle cx="345" cy="515" r="42"/>
+    <circle cx="205" cy="585" r="40"/><circle cx="270" cy="555" r="42"/>
+    <circle cx="335" cy="585" r="42"/><circle cx="380" cy="635" r="40"/>
+    <circle cx="425" cy="685" r="39"/><circle cx="480" cy="730" r="41"/>
+    <circle cx="545" cy="770" r="43"/><circle cx="615" cy="800" r="42"/>
+    <circle cx="690" cy="815" r="42"/><circle cx="765" cy="815" r="40"/>
+    <circle cx="840" cy="800" r="39"/><circle cx="910" cy="770" r="38"/>
+    <circle cx="970" cy="720" r="36"/>
+  </g>
+  <g fill="#ffe4dc" opacity=".4">
+    <ellipse cx="215" cy="460" rx="8" ry="13"/><ellipse cx="280" cy="450" rx="8" ry="13"/>
+    <ellipse cx="335" cy="500" rx="8" ry="13"/><ellipse cx="275" cy="540" rx="8" ry="13"/>
+    <ellipse cx="425" cy="670" rx="8" ry="13"/><ellipse cx="550" cy="755" rx="8" ry="13"/>
+    <ellipse cx="690" cy="800" rx="8" ry="13"/><ellipse cx="840" cy="785" rx="8" ry="13"/>
+  </g>
+</g>
+
+<!-- microscopic fluid particles -->
+<g fill="#f89a90" stroke="#ffd9d2" stroke-width="3">
+  <circle cx="445" cy="350" r="9"/><circle cx="520" cy="395" r="11"/>
+  <circle cx="585" cy="325" r="7"/><circle cx="700" cy="390" r="9"/>
+  <circle cx="760" cy="450" r="8"/><circle cx="545" cy="680" r="8"/>
+  <circle cx="475" cy="735" r="7"/><circle cx="710" cy="690" r="8"/>
+</g>
+
+<!-- yolk sac: rounded vesicle attached near embryo -->
+<g>
+  <circle cx="430" cy="565" r="112" fill="#ffb09f" opacity=".3" filter="url(#soft)"/>
+  <circle cx="430" cy="565" r="92" fill="url(#yolk)" stroke="#ffc7bc" stroke-width="7"/>
+  <circle cx="430" cy="565" r="67" fill="#ef786c" opacity=".22"/>
+  <g fill="#ffc9be" opacity=".35">
+    <circle cx="390" cy="530" r="12"/><circle cx="425" cy="510" r="10"/>
+    <circle cx="465" cy="530" r="11"/><circle cx="475" cy="570" r="12"/>
+    <circle cx="435" cy="605" r="10"/><circle cx="395" cy="590" r="11"/>
+  </g>
+</g>
+
+<!-- connecting stalk -->
+<path d="M490 620 C525 625 555 640 585 655 C615 670 635 684 655 695"
+      fill="none" stroke="#f7a59a" stroke-width="42" stroke-linecap="round"/>
+<path d="M492 616 C525 622 556 638 586 652 C615 667 635 681 655 692"
+      fill="none" stroke="#ffd0c7" stroke-width="16" stroke-linecap="round" opacity=".75"/>
+
+<!-- embryo -->
+<g>
+  <!-- soft halo -->
+  <ellipse cx="665" cy="555" rx="150" ry="190" fill="#ffb7ac" opacity=".18" filter="url(#soft)"/>
+
+  <!-- curved embryonic body -->
+  <path d="M665 420
+           C600 425 565 475 575 530
+           C582 568 610 575 620 600
+           C628 622 615 648 625 675
+           C640 716 690 735 732 708
+           C775 681 794 625 783 575
+           C773 528 758 480 725 447
+           C707 429 686 420 665 420 Z"
+        fill="url(#embryo)" stroke="#ffd8d0" stroke-width="8"/>
+
+  <!-- head -->
+  <ellipse cx="641" cy="477" rx="69" ry="72" fill="url(#embryo)" stroke="#ffd8d0" stroke-width="7"/>
+
+  <!-- primitive body segmentation -->
+  <g fill="#dc675f" opacity=".48">
+    <circle cx="754" cy="505" r="8"/><circle cx="763" cy="532" r="8"/>
+    <circle cx="768" cy="560" r="8"/><circle cx="770" cy="588" r="8"/>
+    <circle cx="766" cy="616" r="8"/><circle cx="758" cy="644" r="8"/>
+    <circle cx="746" cy="670" r="8"/>
+  </g>
+
+  <!-- primitive brain bulge -->
+  <path d="M602 466 C620 430 665 422 693 447 C708 460 708 485 694 501
+           C675 520 637 520 615 505 C600 494 595 479 602 466Z"
+        fill="#ffe2d9" opacity=".62"/>
+
+  <!-- eye -->
+  <circle cx="658" cy="486" r="12" fill="#7d171a"/>
+  <circle cx="662" cy="482" r="4" fill="#fff"/>
+
+  <!-- face / primitive mouth -->
+  <path d="M685 525 Q702 534 714 526" fill="none" stroke="#d85f58" stroke-width="7" stroke-linecap="round"/>
+
+  <!-- tiny limb buds -->
+  <path d="M615 565 Q590 582 586 610 Q587 624 600 618 L627 590"
+        fill="none" stroke="#f9a79c" stroke-width="24" stroke-linecap="round"/>
+  <path d="M735 620 Q765 635 770 660 Q768 675 755 668 L725 642"
+        fill="none" stroke="#f9a79c" stroke-width="23" stroke-linecap="round"/>
+
+  <!-- inner highlight -->
+  <path d="M612 445 Q630 425 655 423" fill="none" stroke="#fff4ef" stroke-width="12" stroke-linecap="round" opacity=".7"/>
+</g>
+</svg>

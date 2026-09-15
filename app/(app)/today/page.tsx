@@ -4,7 +4,7 @@ import { TodayScreen } from "@/app/(app)/today/TodayScreen";
 import { buildReminders, type ReminderAppointment, type ReminderLog } from "@/lib/domain/reminders";
 import { todayInAppZone } from "@/lib/domain/dates";
 import { pregnancyProgress } from "@/lib/domain/pregnancy";
-import { illustrationStage, TOTAL_STAGES } from "@/lib/domain/stages";
+import { weekIllustrationSrc } from "@/lib/domain/illustrations";
 import { getTodayData } from "@/lib/supabase/queries/today";
 import { createServerSupabase } from "@/lib/supabase/server";
 
@@ -43,7 +43,6 @@ export default async function TodayPage() {
   const data = await getTodayData({ today, currentWeek: week, locale });
 
   const progress = data.pregnancy ? pregnancyProgress({ edd: data.pregnancy.edd, today }) : null;
-  const stageNumber = Math.min(progress ? illustrationStage(progress.week) : 1, TOTAL_STAGES);
   const babyCount = data.pregnancy?.pregnancy_flags?.includes("twins") ? 2 : 1;
 
   const reminders = buildReminders({
@@ -64,10 +63,7 @@ export default async function TodayPage() {
       week={progress?.week ?? 0}
       babyCount={babyCount}
       isPostTerm={progress?.isPostTerm ?? false}
-      stage={{
-        lottieUrl: `/illustrations/stage-${stageNumber}-placeholder.json`,
-        staticSrc: `/illustrations/stage-${stageNumber}-placeholder.svg`,
-      }}
+      stage={weekIllustrationSrc(progress?.week ?? 0)}
       reminders={reminders}
       reading={data.contentItems.map((item) => ({
         id: item.id,

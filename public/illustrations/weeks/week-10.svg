@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1200" viewBox="0 0 1200 1200">
+<defs>
+ <radialGradient id="outer"><stop stop-color="#ffd9d2"/><stop offset="1" stop-color="#ff9c93"/></radialGradient>
+ <radialGradient id="cavity"><stop stop-color="#ab2528"/><stop offset=".65" stop-color="#821619"/><stop offset="1" stop-color="#5b1014"/></radialGradient>
+ <radialGradient id="sac"><stop stop-color="#fff8f3"/><stop offset=".55" stop-color="#ffddd4"/><stop offset="1" stop-color="#ef988b"/></radialGradient>
+ <radialGradient id="emb"><stop stop-color="#fff4ec"/><stop offset=".42" stop-color="#ffc8b7"/><stop offset="1" stop-color="#db655b"/></radialGradient>
+ <radialGradient id="yolk"><stop stop-color="#fff2bb"/><stop offset=".55" stop-color="#ffca6d"/><stop offset="1" stop-color="#e99a42"/></radialGradient>
+ <linearGradient id="tissue" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ffb0a5"/><stop offset="1" stop-color="#d85650"/></linearGradient>
+ <filter id="blur"><feGaussianBlur stdDeviation="13"/></filter>
+ <filter id="soft"><feGaussianBlur stdDeviation="5"/></filter>
+</defs>
+
+<rect width="1200" height="1200" fill="#fff"/>
+<ellipse cx="600" cy="1080" rx="320" ry="28" fill="#e8aaa3" opacity=".24" filter="url(#blur)"/>
+
+<!-- uterus -->
+<circle cx="600" cy="600" r="500" fill="url(#outer)"/>
+<circle cx="600" cy="600" r="468" fill="#ff756d"/>
+<circle cx="600" cy="600" r="446" fill="#ffb3aa"/>
+<circle cx="600" cy="600" r="426" fill="url(#cavity)"/>
+<circle cx="600" cy="600" r="399" fill="#711316" opacity=".72"/>
+
+<!-- decidual / endometrial lining -->
+<path d="M105 320 C205 245 335 260 410 365 C485 470 455 650 530 810
+ C595 935 750 955 885 875 C975 820 1040 740 1100 645 L1100 1100 L100 1100Z"
+ fill="url(#tissue)"/>
+<path d="M125 320 C220 265 330 280 400 380 C475 485 460 650 535 805
+ C600 915 745 935 880 865 C970 815 1035 735 1080 640"
+ fill="none" stroke="#ffbaad" stroke-width="28" opacity=".72"/>
+
+<!-- tissue cells -->
+<g fill="#ed7369" stroke="#d65a53" stroke-width="4">
+<circle cx="165" cy="355" r="39"/><circle cx="225" cy="310" r="42"/><circle cx="290" cy="325" r="40"/>
+<circle cx="345" cy="375" r="42"/><circle cx="380" cy="435" r="40"/><circle cx="395" cy="500" r="41"/>
+<circle cx="395" cy="565" r="40"/><circle cx="405" cy="630" r="41"/><circle cx="438" cy="695" r="42"/>
+<circle cx="485" cy="760" r="43"/><circle cx="545" cy="810" r="44"/><circle cx="615" cy="840" r="44"/>
+<circle cx="690" cy="850" r="43"/><circle cx="765" cy="835" r="42"/><circle cx="835" cy="805" r="41"/>
+<circle cx="900" cy="765" r="40"/><circle cx="960" cy="710" r="39"/>
+<circle cx="205" cy="410" r="40"/><circle cx="270" cy="390" r="41"/><circle cx="330" cy="440" r="40"/>
+<circle cx="350" cy="510" r="40"/><circle cx="350" cy="580" r="40"/><circle cx="375" cy="650" r="41"/>
+<circle cx="420" cy="720" r="42"/><circle cx="475" cy="785" r="42"/><circle cx="545" cy="835" r="42"/>
+<circle cx="625" cy="870" r="43"/><circle cx="705" cy="870" r="42"/><circle cx="785" cy="850" r="41"/>
+</g>
+
+<!-- gestational sac -->
+<path d="M405 265 C500 180 700 180 825 275 C935 360 960 510 905 665
+ C860 795 750 890 610 895 C465 900 355 795 330 650
+ C305 500 335 350 405 265Z"
+ fill="url(#sac)" stroke="#ffe3da" stroke-width="12"/>
+<ellipse cx="625" cy="555" rx="255" ry="315" fill="#fffaf7" opacity=".28"/>
+
+<!-- yolk sac -->
+<ellipse cx="450" cy="700" rx="68" ry="63" fill="#ffd58a" opacity=".25" filter="url(#soft)"/>
+<ellipse cx="450" cy="700" rx="57" ry="53" fill="url(#yolk)" stroke="#ffe4ad" stroke-width="7"/>
+<ellipse cx="435" cy="682" rx="17" ry="12" fill="#fff5cf" opacity=".7"/>
+
+<!-- placenta -->
+<path d="M770 260 C865 310 925 415 930 535 C935 640 895 735 830 795
+ C795 735 765 685 735 625 C705 570 715 390 770 260Z" fill="#e5665e" opacity=".92"/>
+<g fill="none" stroke="#ffaaa0" stroke-width="18" stroke-linecap="round">
+<path d="M810 325 Q875 280 905 240"/><path d="M845 380 Q910 345 945 305"/>
+<path d="M865 440 Q930 420 960 385"/><path d="M875 505 Q940 510 970 480"/>
+<path d="M870 580 Q930 595 960 590"/><path d="M845 650 Q895 685 925 695"/>
+<path d="M815 715 Q855 750 875 775"/>
+</g>
+
+<!-- umbilical cord -->
+<path d="M660 735 C710 760 745 795 775 835 C800 865 820 885 840 900"
+ fill="none" stroke="#f09a8b" stroke-width="22" stroke-linecap="round"/>
+<path d="M660 732 C707 757 742 792 772 832 C797 862 817 882 837 897"
+ fill="none" stroke="#ffd6cc" stroke-width="7" stroke-linecap="round"/>
+
+<!-- week 10 embryo / early fetus -->
+<g>
+<ellipse cx="615" cy="545" rx="235" ry="290" fill="#ffb9ad" opacity=".14" filter="url(#soft)"/>
+
+<!-- body, less curled and more upright -->
+<path d="M610 310
+ C550 310 505 345 475 395
+ C445 445 438 505 450 560
+ C460 610 485 655 505 700
+ C525 745 520 795 545 835
+ C575 885 650 905 710 875
+ C770 845 805 785 805 720
+ C805 665 785 610 775 555
+ C765 490 750 425 705 365
+ C680 332 645 314 610 310Z"
+ fill="url(#emb)" stroke="#ffe4d9" stroke-width="10"/>
+
+<!-- distinct head -->
+<path d="M545 315 C490 322 452 360 447 410 C442 465 468 508 510 520
+ C552 532 592 505 604 465 C616 425 604 365 580 335 C570 322 558 316 545 315Z"
+ fill="#ffebe1" opacity=".97"/>
+
+<!-- facial profile -->
+<path d="M500 390 Q525 350 558 350 Q592 355 602 385
+ Q612 415 600 440 Q588 462 568 475"
+ fill="none" stroke="#df655d" stroke-width="12" stroke-linecap="round"/>
+
+<!-- eye -->
+<circle cx="535" cy="420" r="16" fill="#701418"/>
+<circle cx="540" cy="415" r="5" fill="#fff"/>
+
+<!-- nose and mouth -->
+<path d="M558 448 Q570 456 580 448" fill="none" stroke="#d65b54" stroke-width="7" stroke-linecap="round"/>
+
+<!-- brain/head highlight -->
+<path d="M470 355 Q500 320 540 318" fill="none" stroke="#fffaf5" stroke-width="14" stroke-linecap="round" opacity=".8"/>
+
+<!-- neck -->
+<path d="M585 480 Q610 505 635 525" fill="none" stroke="#ef9789" stroke-width="23" stroke-linecap="round"/>
+
+<!-- heart -->
+<path d="M640 520 C624 495 594 513 603 542 C612 568 638 584 651 596
+ C668 581 691 560 685 535 C680 512 654 508 640 520Z" fill="#d9534f"/>
+
+<!-- developing torso -->
+<path d="M650 450 C710 470 748 520 758 585 C770 650 768 715 735 780"
+ fill="none" stroke="#dd6860" stroke-width="14" opacity=".7"/>
+
+<!-- early fingers/toes -->
+<g fill="#dc6a61">
+ <path d="M635 575 l-32 10 l-10 9 l12 6 l38 -12Z"/>
+ <path d="M704 625 l42 12 l12 8 l-9 9 l-46 -14Z"/>
+ <path d="M650 760 l-22 48 l7 14 l10 -4 l20 -48Z"/>
+ <path d="M700 758 l18 45 l-3 14 l-11 -2 l-20 -45Z"/>
+</g>
+
+<!-- small separated limb buds -->
+<path d="M650 575 Q615 585 600 615" fill="none" stroke="#ee9587" stroke-width="24" stroke-linecap="round"/>
+<path d="M705 625 Q745 640 770 665" fill="none" stroke="#ee9587" stroke-width="23" stroke-linecap="round"/>
+<path d="M655 760 Q650 800 640 825" fill="none" stroke="#ed9285" stroke-width="21" stroke-linecap="round"/>
+<path d="M700 758 Q720 795 725 820" fill="none" stroke="#ed9285" stroke-width="20" stroke-linecap="round"/>
+
+<!-- subtle spinal segmentation -->
+<g fill="#d25b54" opacity=".5">
+ <ellipse cx="728" cy="500" rx="13" ry="18"/><ellipse cx="742" cy="532" rx="13" ry="18"/>
+ <ellipse cx="750" cy="565" rx="13" ry="18"/><ellipse cx="755" cy="598" rx="13" ry="18"/>
+ <ellipse cx="757" cy="632" rx="13" ry="18"/><ellipse cx="754" cy="666" rx="13" ry="18"/>
+ <ellipse cx="746" cy="700" rx="13" ry="17"/>
+</g>
+
+<!-- body highlight -->
+<path d="M555 830 Q600 870 650 875" fill="none" stroke="#ffddd2" stroke-width="9" stroke-linecap="round" opacity=".65"/>
+</g>
+
+<!-- floating particles -->
+<g fill="#f99d92" stroke="#ffded7" stroke-width="3">
+<circle cx="410" cy="350" r="9"/><circle cx="475" cy="285" r="8"/><circle cx="770" cy="290" r="9"/>
+<circle cx="855" cy="390" r="10"/><circle cx="890" cy="550" r="8"/><circle cx="845" cy="775" r="8"/>
+<circle cx="430" cy="790" r="7"/>
+</g>
+</svg>

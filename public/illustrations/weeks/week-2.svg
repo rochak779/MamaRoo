@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1200" viewBox="0 0 1200 1200">
+<defs>
+<radialGradient id="u"><stop stop-color="#c93435"/><stop offset="1" stop-color="#701014"/></radialGradient>
+<radialGradient id="b"><stop stop-color="#ffd8d0"/><stop offset="1" stop-color="#ee756b"/></radialGradient>
+<radialGradient id="c"><stop stop-color="#ffe9e4"/><stop offset="1" stop-color="#e9655d"/></radialGradient>
+</defs>
+<rect width="1200" height="1200" fill="white"/>
+<circle cx="600" cy="600" r="500" fill="#ffb0a8"/>
+<circle cx="600" cy="600" r="468" fill="#ff746b"/>
+<circle cx="600" cy="600" r="445" fill="#ffaaa2"/>
+<circle cx="600" cy="600" r="425" fill="url(#u)"/>
+<circle cx="600" cy="600" r="395" fill="#8d171a" opacity=".7"/>
+
+<!-- endometrial tissue -->
+<path d="M115 730 Q260 570 405 735 Q550 900 735 895 Q930 890 1085 720 L1100 1100 L100 1100Z" fill="#ed6b63"/>
+<path d="M120 720 Q265 575 410 735 Q560 900 740 890 Q925 875 1080 710" fill="none" stroke="#ff9d91" stroke-width="30"/>
+
+<!-- tissue cells -->
+<g fill="url(#c)" stroke="#df5b54" stroke-width="5">
+<circle cx="180" cy="760" r="45"/><circle cx="245" cy="705" r="43"/><circle cx="315" cy="735" r="45"/>
+<circle cx="380" cy="790" r="46"/><circle cx="450" cy="835" r="45"/><circle cx="520" cy="865" r="47"/>
+<circle cx="595" cy="885" r="47"/><circle cx="670" cy="890" r="46"/><circle cx="745" cy="880" r="45"/>
+<circle cx="820" cy="850" r="44"/><circle cx="895" cy="815" r="43"/><circle cx="965" cy="765" r="41"/>
+<circle cx="1020" cy="710" r="39"/>
+<circle cx="220" cy="825" r="43"/><circle cx="290" cy="800" r="43"/><circle cx="360" cy="845" r="44"/>
+<circle cx="430" cy="885" r="44"/><circle cx="505" cy="915" r="43"/><circle cx="580" cy="930" r="44"/>
+<circle cx="655" cy="935" r="43"/><circle cx="730" cy="920" r="43"/><circle cx="805" cy="895" r="42"/>
+<circle cx="880" cy="865" r="41"/><circle cx="945" cy="825" r="40"/>
+</g>
+
+<!-- blastocyst -->
+<g transform="translate(600 555)">
+<circle r="150" fill="#ffb4aa" opacity=".25"/>
+<circle r="132" fill="url(#b)" stroke="#ffd7d0" stroke-width="7"/>
+<g fill="url(#c)" stroke="#e96d65" stroke-width="4">
+<circle cx="0" cy="-88" r="38"/><circle cx="-50" cy="-72" r="38"/><circle cx="50" cy="-72" r="38"/>
+<circle cx="-85" cy="-22" r="37"/><circle cx="-27" cy="-30" r="39"/><circle cx="32" cy="-27" r="39"/><circle cx="85" cy="-18" r="36"/>
+<circle cx="-70" cy="30" r="38"/><circle cx="-10" cy="32" r="40"/><circle cx="50" cy="35" r="39"/>
+<circle cx="-42" cy="78" r="36"/><circle cx="18" cy="78" r="38"/><circle cx="70" cy="68" r="32"/><circle cx="0" cy="0" r="40"/>
+</g>
+<g fill="#fff" opacity=".38"><ellipse cx="-55" cy="-85" rx="9" ry="14"/><ellipse cx="42" cy="-83" rx="9" ry="14"/><ellipse cx="-18" cy="-40" rx="10" ry="15"/><ellipse cx="52" cy="-38" rx="9" ry="14"/><ellipse cx="5" cy="15" rx="10" ry="15"/></g>
+</g>
+
+<!-- floating droplets -->
+<g fill="#f99b91" stroke="#ffd6cf" stroke-width="3">
+<circle cx="390" cy="330" r="10"/><circle cx="450" cy="275" r="13"/><circle cx="520" cy="350" r="8"/>
+<circle cx="770" cy="370" r="11"/><circle cx="850" cy="455" r="12"/><circle cx="900" cy="610" r="9"/>
+<circle cx="320" cy="475" r="9"/><circle cx="750" cy="770" r="8"/>
+</g>
+</svg>

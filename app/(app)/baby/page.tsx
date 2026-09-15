@@ -2,6 +2,7 @@ import { BabyScreen } from "@/app/(app)/baby/BabyScreen";
 import { getLocale } from "@/i18n/locale";
 import { buildTimeline, type TimelineEventInput, type TimelineMilestoneInput } from "@/lib/domain/timeline";
 import { todayInAppZone } from "@/lib/domain/dates";
+import { weekIllustrationSrc } from "@/lib/domain/illustrations";
 import { pregnancyProgress } from "@/lib/domain/pregnancy";
 import { illustrationStage, STAGE_BOUNDARIES, TOTAL_STAGES } from "@/lib/domain/stages";
 import { getBabyData } from "@/lib/supabase/queries/baby";
@@ -63,10 +64,7 @@ export default async function BabyPage() {
       week={week}
       stageNumber={stageNumber}
       babyCount={babyCount}
-      stage={{
-        lottieUrl: `/illustrations/stage-${stageNumber}-placeholder.json`,
-        staticSrc: `/illustrations/stage-${stageNumber}-placeholder.svg`,
-      }}
+      stage={weekIllustrationSrc(week)}
       stageChangedToday={stageChangedToday}
       sensitiveMode={sensitiveMode}
       timelineEntries={timelineEntries}
