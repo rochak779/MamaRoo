@@ -1,8 +1,11 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { EmptyState } from "@/components/patterns/EmptyState";
+import { BottomSheet } from "@/components/ui/BottomSheet";
+import { Button } from "@/components/ui/Button";
+import { APP_TIMEZONE } from "@/lib/config";
 import { cn } from "@/lib/cn";
 import type { TimelineEntry } from "@/lib/domain/timeline";
 
@@ -29,11 +32,14 @@ const LOOKBACK_DAYS: Record<View, number> = { day: 30, week: 90, month: 400 };
 export function Timeline({
   entries,
   onSelect,
+  sensitiveMode = false,
 }: {
   entries: TimelineEntry[];
   onSelect?: (entry: TimelineEntry | null) => void;
+  sensitiveMode?: boolean;
 }) {
   const t = useTranslations("baby");
+  const locale = useLocale();
   const [view, setView] = useState<View>("week");
   const [expanded, setExpanded] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -53,6 +59,18 @@ export function Timeline({
   const visible = expanded ? windowed : windowed.slice(0, COLLAPSED_COUNT);
   const hasMore = windowed.length > COLLAPSED_COUNT && !expanded;
 
+  function dateLabel(occurredAt: string): string {
+    const date = new Date(occurredAt);
+    if (Number.isNaN(date.getTime())) return "";
+    const language = locale === "hi" ? "hi-IN" : "en-IN";
+    return new Intl.DateTimeFormat(language, {
+      ...(view === "month"
+        ? { month: "short", year: "numeric" }
+        : { day: "numeric", month: "short" }),
+      timeZone: APP_TIMEZONE,
+    }).format(date);
+  }
+
   function select(entry: TimelineEntry) {
     const next = selectedId === entry.id ? null : entry;
     setSelectedId(next?.id ?? null);
@@ -64,11 +82,15 @@ export function Timeline({
     return <EmptyState iconName="Sparkle" message={t("timeline.empty")} />;
   }
 
-  const openMilestone = visible.find((e) => e.id === openMilestoneId && e.kind === "milestone");
+  const openMilestone = entries.find((e) => e.id === openMilestoneId && e.kind === "milestone");
 
   return (
-    <div className="flex flex-col gap-sm">
-      <div role="tablist" aria-label={t("timeline.viewLabel")} className="flex gap-xs">
+    <div className="flex flex-col gap-[14px]">
+      <div
+        role="tablist"
+        aria-label={t("timeline.viewLabel")}
+        className="flex rounded-full bg-surface-raised p-xs shadow-1"
+      >
         {VIEWS.map((v) => (
           <button
             key={v}
@@ -77,8 +99,8 @@ export function Timeline({
             aria-selected={view === v}
             onClick={() => setView(v)}
             className={cn(
-              "tap-target rounded-full px-md py-xs text-body-sm font-medium",
-              view === v ? "bg-accent-primary text-on-accent" : "text-text-secondary",
+              "tap-target flex-1 rounded-full px-md py-xs text-body-sm font-medium transition-colors duration-(--motion-fast) ease-standard",
+              view === v ? "bg-accent-secondary text-surface-raised" : "text-text-primary",
             )}
           >
             {t(`timeline.view.${v}`)}
@@ -86,27 +108,47 @@ export function Timeline({
         ))}
       </div>
 
-      <div className="flex gap-sm overflow-x-auto pb-xs" data-testid="timeline-strip">
-        {visible.map((entry) => {
-          const isMilestone = entry.kind === "milestone";
-          const isSelected = selectedId === entry.id;
-          return (
-            <button
-              key={entry.id}
-              type="button"
-              data-testid="timeline-dot"
-              data-kind={entry.kind}
-              aria-label={isMilestone ? t(entry.titleKey) : entry.title}
-              aria-pressed={isSelected}
-              onClick={() => select(entry)}
-              className={cn(
-                "tap-target h-[14px] w-[14px] shrink-0 rounded-full",
-                isSelected ? "ring-2 ring-accent-primary" : isMilestone ? "ring-2 ring-gold" : "ring-1 ring-divider",
-                entry.kind === "event" ? "bg-surface-raised" : "bg-accent-secondary",
-              )}
-            />
-          );
-        })}
+      <div
+        className="overflow-x-auto pb-sm [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        data-testid="timeline-strip"
+      >
+        <div className="relative flex w-max min-w-full px-xs">
+          <span
+            aria-hidden="true"
+            className="absolute top-[19px] right-[56px] left-[56px] h-0.5 bg-divider"
+          />
+          {visible.map((entry) => {
+            const isMilestone = entry.kind === "milestone";
+            const isSelected = selectedId === entry.id;
+            return (
+              <button
+                key={entry.id}
+                type="button"
+                data-testid="timeline-dot"
+                data-kind={entry.kind}
+                aria-label={isMilestone ? t(entry.titleKey) : entry.title}
+                aria-pressed={isSelected}
+                onClick={() => select(entry)}
+                className="tap-target relative z-10 flex w-[112px] shrink-0 flex-col items-center gap-xs rounded-sm px-xs py-0 text-center focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-secondary"
+              >
+                <span aria-hidden="true" className="flex h-[38px] items-center justify-center">
+                  <span
+                    className={cn(
+                      "block rounded-full border-[3px] border-bg",
+                      isMilestone && !sensitiveMode
+                        ? "size-4 bg-gold ring-2 ring-gold"
+                        : "size-2.5 bg-peach ring-1 ring-divider-strong",
+                      isSelected && "ring-2 ring-accent-secondary ring-offset-2 ring-offset-bg",
+                    )}
+                  />
+                </span>
+                <span className="text-[11px] font-semibold tracking-[0.04em] text-text-secondary uppercase">
+                  {dateLabel(entry.occurredAt)}
+                </span>
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       {hasMore && (
@@ -114,25 +156,31 @@ export function Timeline({
           type="button"
           data-testid="timeline-show-more"
           onClick={() => setExpanded(true)}
-          className="self-start text-body-sm font-medium text-accent-primary"
+          className="tap-target self-start text-body-sm font-medium text-accent-secondary underline-offset-4 hover:underline"
         >
           {t("timeline.showAll", { count: windowed.length })}
         </button>
       )}
 
-      {openMilestone && openMilestone.kind === "milestone" && (
-        <div role="dialog" aria-label={t(openMilestone.titleKey)} className="rounded-lg bg-surface-raised p-md shadow-1">
-          <p className="text-body font-semibold text-text-primary">{t(openMilestone.titleKey)}</p>
-          <p className="text-body-sm text-text-secondary">{t(`${openMilestone.titleKey}Body`)}</p>
-          <button
-            type="button"
-            onClick={() => setOpenMilestoneId(null)}
-            className="mt-sm text-body-sm font-medium text-accent-primary"
-          >
-            {t("timeline.close")}
-          </button>
-        </div>
-      )}
+      <BottomSheet
+        open={Boolean(openMilestone && openMilestone.kind === "milestone")}
+        onClose={() => setOpenMilestoneId(null)}
+        title={openMilestone && openMilestone.kind === "milestone" ? t(openMilestone.titleKey) : ""}
+      >
+        {openMilestone && openMilestone.kind === "milestone" && (
+          <div className="flex flex-col gap-lg">
+            <p className="text-body text-text-primary">{t(`${openMilestone.titleKey}Body`)}</p>
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={() => setOpenMilestoneId(null)}
+              className="w-full [border-color:var(--color-divider-strong)]"
+            >
+              {t("timeline.close")}
+            </Button>
+          </div>
+        )}
+      </BottomSheet>
     </div>
   );
 }

@@ -73,6 +73,7 @@ describe("BabyNameScreen", () => {
     expect(onSetFavorite).toHaveBeenCalledTimes(1);
     expect(onSetFavorite).toHaveBeenCalledWith({ babyNameId: catalog[0]!.id, favorite: true });
     expect(toggle).toHaveAttribute("aria-pressed", "true");
+    expect(toggle.className).toContain("[&_svg]:fill-current");
   });
 
   it("opens a detail view with the localized meaning and favorite control", async () => {
@@ -80,7 +81,9 @@ describe("BabyNameScreen", () => {
     await userEvent.click(screen.getByRole("button", { name: en.babyName.openDetail.replace("{name}", "Aditi") }));
     expect(screen.getByRole("heading", { name: "Aditi" })).toBeInTheDocument();
     expect(screen.getByText("Boundless")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: en.babyName.favoriteRemove.replace("{name}", "Aditi") })).toHaveAttribute("aria-pressed", "true");
+    const favorite = screen.getByRole("button", { name: en.babyName.favoriteRemove.replace("{name}", "Aditi") });
+    expect(favorite).toHaveAttribute("aria-pressed", "true");
+    expect(favorite).toHaveAttribute("data-variant", "primary");
   });
 
   it("saves one trimmed custom name exactly once even if the button receives two clicks", async () => {

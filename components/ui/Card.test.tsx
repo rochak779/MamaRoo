@@ -41,6 +41,15 @@ describe("Card", () => {
     expect(screen.getByRole("button").className).toContain("border-accent-primary");
   });
 
+  it("supports an opt-in stacked accent layout for compact bento cards", () => {
+    render(
+      <Card accent="gold" accentIcon="Heart" accentLayout="stacked">
+        A letter
+      </Card>,
+    );
+    expect(screen.getByText("A letter").parentElement?.className).toContain("flex-col");
+  });
+
   it("dims content when disabled and blocks interaction", async () => {
     const onClick = vi.fn();
     render(

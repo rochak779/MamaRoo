@@ -48,7 +48,10 @@ describe("LettersScreen", () => {
     renderScreen();
     expect(screen.getByRole("heading", { name: en.letters.title })).toBeInTheDocument();
     expect(screen.getByText("Week 26 · 12 September 2026")).toBeInTheDocument();
-    expect(screen.getByText("Dear little one,")).toBeInTheDocument();
+    const preview = screen.getByText("Dear little one,");
+    expect(preview).toBeInTheDocument();
+    expect(preview.className).toContain("font-letter");
+    expect(preview.closest("button")?.querySelector('[data-testid="icon"]')).toBeNull();
     expect(screen.queryByText(/Today I felt you move/)).not.toBeInTheDocument();
   });
 

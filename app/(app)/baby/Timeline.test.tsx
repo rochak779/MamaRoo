@@ -48,6 +48,9 @@ describe("Timeline", () => {
     fireEvent.click(screen.getByTestId("timeline-dot"));
     expect(onSelect).toHaveBeenCalledWith(expect.objectContaining({ id: "e1" }));
     expect(screen.getByTestId("timeline-dot")).toHaveAttribute("aria-pressed", "true");
+    expect(screen.getByTestId("timeline-dot").querySelector("span > span")?.className).toContain(
+      "ring-accent-secondary",
+    );
   });
 
   it("deselects on a second tap of the same dot", () => {
@@ -82,6 +85,7 @@ describe("Timeline", () => {
 
   it("switches the look-back window when Day/Week/Month is tapped", () => {
     renderTimeline([event("recent", daysAgo(2)), event("old", daysAgo(60))]);
+    expect(screen.getByRole("tab", { name: /week/i }).className).toContain("bg-accent-secondary");
     expect(screen.getAllByTestId("timeline-dot")).toHaveLength(2);
     fireEvent.click(screen.getByRole("tab", { name: /day/i }));
     expect(screen.getAllByTestId("timeline-dot")).toHaveLength(1);

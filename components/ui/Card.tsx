@@ -37,6 +37,12 @@ export interface CardProps {
   accent?: CardAccent;
   /** Icon name shown in a small chip next to the accent strip. Required to make visual sense of `accent` -- see the colorblind-safe note above. */
   accentIcon?: string;
+  /**
+   * Keeps the established horizontal accent treatment by default. Compact
+   * bento cards can opt into the mockup's icon-above-copy composition without
+   * rebuilding the category accent and icon chip by hand.
+   */
+  accentLayout?: "row" | "stacked";
 }
 
 const BASE = "block w-full text-left rounded-md p-md shadow-1";
@@ -74,6 +80,7 @@ export function Card({
   surface = "tint",
   accent,
   accentIcon,
+  accentLayout = "row",
 }: CardProps) {
   const classes = cn(
     BASE,
@@ -88,7 +95,7 @@ export function Card({
   );
 
   const content = accent ? (
-    <div className="flex items-start gap-md">
+    <div className={cn("flex items-start gap-md", accentLayout === "stacked" && "flex-col gap-sm")}>
       {accentIcon && (
         <span
           aria-hidden="true"

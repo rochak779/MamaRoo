@@ -73,8 +73,8 @@ function NameRow({
         aria-pressed={favorite}
         disabled={disabled}
         onClick={onFavorite}
-        className={`tap-target inline-flex shrink-0 items-center justify-center rounded-full transition-[background-color,transform] duration-(--motion-fast) ease-standard focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-primary disabled:opacity-40 ${
-          favorite ? "bg-blush text-accent-primary" : "bg-transparent text-text-primary"
+        className={`tap-target inline-flex shrink-0 items-center justify-center rounded-full transition-[color,transform] duration-(--motion-fast) ease-standard active:scale-[0.96] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-primary disabled:opacity-40 ${
+          favorite ? "text-accent-primary [&_svg]:fill-current" : "bg-transparent text-text-primary"
         }`}
       >
         <Icon name="Heart" size="inline" weight={favorite ? "duotone" : "regular"} />
@@ -114,7 +114,8 @@ export function BabyNameScreen({
   ];
 
   function validationMessage(kind: BabyNameValidationError): string {
-    if (kind === "too_many") return babyCount === 2 ? t("errors.tooManyTwins") : t("errors.tooManySingleton");
+    if (kind === "too_many")
+      return babyCount === 2 ? t("errors.tooManyTwins") : t("errors.tooManySingleton");
     if (kind === "too_long") return t("errors.tooLong");
     if (kind === "duplicate") return t("errors.duplicate");
     if (kind === "empty") return t("errors.empty");
@@ -184,7 +185,11 @@ export function BabyNameScreen({
 
   if (activeName) {
     const isFavorite = favoriteIds.includes(activeName.id);
-    const isChosen = chosenNames.some((name) => name.normalize("NFKC").toLocaleLowerCase() === activeName.name.normalize("NFKC").toLocaleLowerCase());
+    const isChosen = chosenNames.some(
+      (name) =>
+        name.normalize("NFKC").toLocaleLowerCase() ===
+        activeName.name.normalize("NFKC").toLocaleLowerCase(),
+    );
     const atTwinLimit = babyCount === 2 && chosenNames.length >= 2 && !isChosen;
 
     return (
@@ -205,19 +210,39 @@ export function BabyNameScreen({
           <Icon name="ArrowLeft" size="inline" />
         </button>
 
-        <div className="flex flex-1 flex-col items-center justify-center gap-md pb-xl text-center">
-          <div className="flex size-[72px] items-center justify-center rounded-full bg-blush text-accent-primary" aria-hidden="true">
-            <Icon name="FlowerLotus" size="hero" weight="duotone" />
-          </div>
-          <h1 id="baby-name-detail-title" className="font-display text-display font-semibold text-text-primary">
+        <div className="flex flex-1 flex-col items-center gap-md pt-xl text-center">
+          <h1
+            id="baby-name-detail-title"
+            className="font-display text-display font-semibold text-text-primary"
+          >
             {activeName.name}
           </h1>
           <p className="max-w-[38ch] text-body text-text-secondary">{activeName.meaning}</p>
-          {isChosen && <p className="text-body-sm font-medium text-accent-secondary">{t("chosenMarker")}</p>}
-          {error && <p role="alert" className="max-w-[36ch] text-body-sm text-alert">{error}</p>}
+          {isChosen && (
+            <p className="text-body-sm font-medium text-accent-secondary">{t("chosenMarker")}</p>
+          )}
+          {error && (
+            <p role="alert" className="max-w-[36ch] text-body-sm text-alert">
+              {error}
+            </p>
+          )}
           <div className="mt-md flex w-full max-w-[360px] flex-col gap-sm">
             <Button
               type="button"
+              variant={isFavorite ? "primary" : "secondary"}
+              aria-label={favoriteLabel(activeName)}
+              aria-pressed={isFavorite}
+              disabled={!online || favoritePendingId === activeName.id}
+              {...(!online ? { disabledReason: t("offline") } : {})}
+              onClick={() => void toggleFavorite(activeName)}
+              className="w-full [&_svg]:fill-current"
+            >
+              <Icon name="Heart" size="inline" weight={isFavorite ? "duotone" : "regular"} />
+              {isFavorite ? t("favoriteSaved") : t("favoriteSave")}
+            </Button>
+            <Button
+              type="button"
+              variant="tertiary"
               loading={saving}
               disabled={isChosen || atTwinLimit || !online}
               {...(!online
@@ -228,22 +253,9 @@ export function BabyNameScreen({
                     ? { disabledReason: t("chosenMarker") }
                     : {})}
               onClick={() => void choose(activeName.name)}
-              className="w-full rounded-full"
+              className="w-full"
             >
               {isChosen ? t("chosenMarker") : t("useName", { name: activeName.name })}
-            </Button>
-            <Button
-              type="button"
-              variant="secondary"
-              aria-label={favoriteLabel(activeName)}
-              aria-pressed={isFavorite}
-              disabled={!online || favoritePendingId === activeName.id}
-              {...(!online ? { disabledReason: t("offline") } : {})}
-              onClick={() => void toggleFavorite(activeName)}
-              className="w-full rounded-full"
-            >
-              <Icon name="Heart" size="inline" weight={isFavorite ? "duotone" : "regular"} />
-              {isFavorite ? t("favoriteSaved") : t("favoriteSave")}
             </Button>
           </div>
         </div>
@@ -270,18 +282,26 @@ export function BabyNameScreen({
         </h1>
       </header>
 
-      {!online && <p role="status" className="rounded-sm bg-surface px-md py-sm text-body-sm text-text-secondary">{t("offline")}</p>}
+      {!online && (
+        <p
+          role="status"
+          className="rounded-sm bg-surface px-md py-sm text-body-sm text-text-secondary"
+        >
+          {t("offline")}
+        </p>
+      )}
 
-      <section className="rounded-[16px] bg-blush px-md py-sm" aria-labelledby="chosen-names-title">
-        <h2 id="chosen-names-title" className="font-display text-h2 font-semibold text-text-primary">
-          {babyCount === 2 ? t("chosenTitleTwins") : t("chosenTitle")}
-        </h2>
-        {chosenNames.length === 0 ? (
-          <p className="mt-xs text-body-sm text-text-secondary">{t("chosenEmpty")}</p>
-        ) : (
-          <ul className="mt-sm flex flex-wrap gap-sm">
+      {chosenNames.length > 0 && (
+        <section aria-labelledby="chosen-names-title">
+          <h2 id="chosen-names-title" className="sr-only">
+            {babyCount === 2 ? t("chosenTitleTwins") : t("chosenTitle")}
+          </h2>
+          <ul className="flex flex-wrap gap-sm">
             {chosenNames.map((name) => (
-              <li key={name} className="inline-flex min-h-[48px] items-center gap-xs rounded-full bg-surface-raised pl-md shadow-1">
+              <li
+                key={name}
+                className="inline-flex min-h-[48px] items-center gap-xs rounded-full bg-surface-raised pl-md shadow-1"
+              >
                 <span className="text-body font-medium">{name}</span>
                 <button
                   type="button"
@@ -295,8 +315,8 @@ export function BabyNameScreen({
               </li>
             ))}
           </ul>
-        )}
-      </section>
+        </section>
+      )}
 
       <div className="rounded-full bg-surface-raised p-xs shadow-1 [&_[role=tablist]]:gap-0 [&_[role=tab]]:flex-1 [&_[role=tab]]:rounded-full [&_[role=tab]]:font-semibold [&_[role=tab][aria-selected=true]]:bg-accent-secondary">
         <Tabs
@@ -309,8 +329,8 @@ export function BabyNameScreen({
         />
       </div>
 
-      {mode === "suggestions" && (
-        catalog.length === 0 ? (
+      {mode === "suggestions" &&
+        (catalog.length === 0 ? (
           <EmptyState iconName="Heart" message={t("emptyCatalog")} />
         ) : (
           <div className="flex flex-col gap-sm">
@@ -330,8 +350,7 @@ export function BabyNameScreen({
               />
             ))}
           </div>
-        )
-      )}
+        ))}
 
       {mode === "add" && (
         <div className="flex flex-col gap-sm">
@@ -351,9 +370,13 @@ export function BabyNameScreen({
             className="bg-surface-raised caret-accent-primary"
           />
           {error ? (
-            <p id="custom-baby-name-error" role="alert" className="text-caption text-alert">{error}</p>
+            <p id="custom-baby-name-error" role="alert" className="text-caption text-alert">
+              {error}
+            </p>
           ) : (
-            <p id="custom-baby-name-hint" className="text-caption text-text-secondary">{t("customHint")}</p>
+            <p id="custom-baby-name-hint" className="text-caption text-text-secondary">
+              {t("customHint")}
+            </p>
           )}
           <Button
             type="button"
@@ -408,7 +431,11 @@ export function BabyNameScreen({
         </div>
       )}
 
-      {error && mode !== "add" && <p role="alert" className="text-body-sm text-alert">{error}</p>}
+      {error && mode !== "add" && (
+        <p role="alert" className="text-body-sm text-alert">
+          {error}
+        </p>
+      )}
     </section>
   );
 }
