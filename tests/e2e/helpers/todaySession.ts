@@ -2,6 +2,7 @@ import { createClient } from "@supabase/supabase-js";
 import { createServerClient } from "@supabase/ssr";
 import { addDays, todayInAppZone } from "@/lib/domain/dates";
 import { eddFromLmp, pregnancyProgress } from "@/lib/domain/pregnancy";
+import { LEGAL_VERSION } from "@/lib/config";
 import type { Database } from "@/lib/supabase/database.types";
 
 // Same constraint as tests/e2e/auth.spec.ts and onboarding.spec.ts: this
@@ -153,6 +154,21 @@ export async function createOnboardedSession({
     pregnancy_flags: twins ? ["twins"] : [],
   });
   if (pregnancyError) throw pregnancyError;
+
+  // "Fully onboarded" includes having consented -- proxy.ts's hasConsented
+  // reads current_consents for terms+privacy, same as a real recordConsents()
+  // call (app/actions/consent.ts). Without this, CONSENT_REQUIRED=true sends
+  // every /today request from this fixture to /consent instead.
+  const { error: consentError } = await admin.from("consents").insert(
+    (["terms", "privacy"] as const).map((consent_key) => ({
+      consent_key,
+      granted: true,
+      user_id: userId,
+      version: LEGAL_VERSION,
+      locale: "en" as const,
+    })),
+  );
+  if (consentError) throw consentError;
 
   const cookies = await sessionCookies({ email, password, baseURL });
 
