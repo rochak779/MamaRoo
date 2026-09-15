@@ -4,6 +4,8 @@
 
 MamaRoo is a mobile web app — open it in your phone's browser, no install needed — for pregnant women in India.
 
+**Built independently by Rochak Agarwal:** product concept, design, and implementation.
+
 <img src="docs/readme/landing-page.jpg" alt="MamaRoo landing page on mobile" width="360" />
 
 ## The problem
