@@ -49,6 +49,10 @@ export interface TodayScreenProps {
     feeling: Feeling | null;
     inputMethod: "text" | "voice";
   }) => Promise<SaveCheckinResult>;
+  /** i18n key for today's breakfast line, e.g. "weeklyMealPlan.monday.breakfast"
+   * -- from the same real weekly plan the Meal Plan card links to, rather than
+   * static placeholder copy (see lib/domain/weeklyMealPlan.ts). */
+  mealPreviewKey: string;
   doctorName: string | null;
   clinicName: string | null;
 }
@@ -120,11 +124,13 @@ export function TodayScreen({
   showCheckupNudge,
   transcriber = webSpeechTranscriber,
   onSubmitCheckin,
+  mealPreviewKey,
   doctorName,
   clinicName,
 }: TodayScreenProps) {
   const t = useTranslations("today");
   const tNav = useTranslations("nav");
+  const tRoot = useTranslations();
   const [checkinResult, setCheckinResult] = useState<
     (Pick<TriageResultProps, "severity" | "guidance"> & { feeling: Feeling | null }) | null
   >(null);
@@ -263,7 +269,7 @@ export function TodayScreen({
                 {t("mealPlanCardLabel")}
               </p>
               <p className="text-body-sm text-text-primary">{t("mealPlanCardBody")}</p>
-              <p className="text-body-sm text-text-secondary">{t("mealPlanCardPreview")}</p>
+              <p className="text-body-sm text-text-secondary">{tRoot(mealPreviewKey)}</p>
             </Card>
           </Link>
         </div>

@@ -277,7 +277,6 @@
     "seeLoggedBefore": "See what you've logged before",
     "mealPlanCardLabel": "Meal plan",
     "mealPlanCardBody": "Matched to your trimester",
-    "mealPlanCardPreview": "Poha or upma for breakfast, dal-roti with sabzi for lunch, khichdi for dinner.",
     "checkupNudgeTitle": "Your checkup is coming up soon",
     "checkupNudgeBody": "Want to add a question?",
     "reminders": {
@@ -291,41 +290,99 @@
     "title": "Your meal plan for today",
     "trimesterLabel": "Matched to your {trimester} trimester",
     "disclaimer": "These are general suggestions based on common Indian meals, not a plan made for you. Please check with your doctor before making changes to your diet.",
-    "dietLabel": {
-      "veg": "Veg",
-      "nonveg": "Non Veg",
-      "vegan": "Vegan"
-    },
-    "slotLabel": {
-      "breakfast": "Breakfast",
-      "lunch": "Lunch",
-      "snack": "Snack",
-      "dinner": "Dinner",
-      "water": "Water",
-      "dryFruits": "Dry fruits"
-    },
-    "veg": {
-      "breakfast": "Poha or upma, a glass of milk, a small handful of nuts.",
-      "lunch": "Dal, roti, a seasonal vegetable, and curd.",
-      "dinner": "Khichdi or roti with sabzi, and a small bowl of dal."
-    },
-    "nonveg": {
-      "breakfast": "Eggs or poha, a glass of milk, a small handful of nuts.",
-      "lunch": "Dal, roti, a seasonal vegetable and curd, or grilled chicken with rice.",
-      "dinner": "Fish curry with rice, or khichdi with sabzi and a small bowl of dal."
-    },
-    "vegan": {
-      "breakfast": "Poha or upma, a glass of soy or almond milk, a small handful of nuts.",
-      "lunch": "Dal, roti, a seasonal vegetable, and coconut chutney.",
-      "dinner": "Khichdi or roti with sabzi, and a small bowl of dal."
-    },
-    "snack": "A piece of fruit and some roasted chana.",
-    "extras": {
-      "water": "Sip through the day rather than all at once, more if it is warm out.",
-      "dryFruits": "A few soaked almonds, walnuts or dates. Safe in small amounts through pregnancy."
-    },
     "whyLabel": "Why this matters",
     "whyBody": "Your baby is growing fast this trimester, so small steady meals matter more than big ones. Eating what you already enjoy, just a bit more often, is enough for now."
+  },
+  "weeklyMealPlan": {
+    "slotLabel": {
+      "beforeBreakfast": "Before breakfast",
+      "breakfast": "Breakfast",
+      "morningSnack": "Morning snack",
+      "lunch": "Lunch",
+      "afternoonSnack": "Afternoon snack",
+      "evening": "Evening",
+      "dinner": "Dinner",
+      "bedtime": "Bedtime"
+    },
+    "dayLabel": {
+      "monday": "Monday",
+      "tuesday": "Tuesday",
+      "wednesday": "Wednesday",
+      "thursday": "Thursday",
+      "friday": "Friday",
+      "saturday": "Saturday",
+      "sunday": "Sunday"
+    },
+    "monday": {
+      "beforeBreakfast": "Soaked 8 almonds; 1 glass milk",
+      "breakfast": "4 idlis; coconut chutney",
+      "morningSnack": "1 cup fruit salad",
+      "lunch": "2 cups brown rice; 1 cup dal + green sabji; 1 cup veg curry; 1 cup curd",
+      "afternoonSnack": "1 cup sprout salad",
+      "evening": "1 cup lemon/green tea; 2–3 biscuits",
+      "dinner": "2 cups brown rice or 4 rotis; 1 cup mixed veg curry; 1 cup curd",
+      "bedtime": "Apple custard"
+    },
+    "tuesday": {
+      "beforeBreakfast": "Warm lemon water",
+      "breakfast": "3 dosas; groundnut chutney; 1 glass milk",
+      "morningSnack": "1 cup sprout salad",
+      "lunch": "2 cups veg khichdi; 2 cups curd; 1/2 cup green chutney; 1 boiled egg",
+      "afternoonSnack": "1 cup fruit salad",
+      "evening": "1 cup milk; 2–3 biscuits",
+      "dinner": "2 cups brown rice; 1 cup green sabji; 1 cup beans curry; 1 cup curd",
+      "bedtime": "Fruit/milkshake"
+    },
+    "wednesday": {
+      "beforeBreakfast": "Soaked 10 almonds; 1 glass milk",
+      "breakfast": "1 cup poha with vegetables",
+      "morningSnack": "1 apple",
+      "lunch": "2 cups rice; 2 chicken; 1 cup curd; 1 cup sambar",
+      "afternoonSnack": "1 cup beans salad",
+      "evening": "1 cup lemon/green tea; 2–3 biscuits",
+      "dinner": "4 rotis; 1 cup paneer masala; 1 glass buttermilk",
+      "bedtime": "1 cup kheer"
+    },
+    "thursday": {
+      "beforeBreakfast": "Warm lemon water",
+      "breakfast": "1 cup upma with vegetables; 1 glass milk",
+      "morningSnack": "2 oranges",
+      "lunch": "2 cups sprouts khichdi; 1 cup curd; 1 cup rasam; 1 cup veg salad",
+      "afternoonSnack": "2 samosas",
+      "evening": "1 cup milk; 2–3 millet biscuits",
+      "dinner": "4 cups brown rice; 1 cup fish curry; 1 glass buttermilk",
+      "bedtime": "1 seasonal fruit"
+    },
+    "friday": {
+      "beforeBreakfast": "30 g soaked dry fruits; 1 glass milk",
+      "breakfast": "3 pesarattu with vegetables",
+      "morningSnack": "1 banana",
+      "lunch": "2 cups rice; 2 dal palak; 1 cup curd; 2 grilled fish",
+      "afternoonSnack": "1 cup moong chaat",
+      "evening": "1 cup buttermilk; 2–3 biscuits",
+      "dinner": "4 stuffed aloo methi rotis; 1 cup greens; 1 cup curd",
+      "bedtime": "Strawberry smoothie"
+    },
+    "saturday": {
+      "beforeBreakfast": "Warm lemon water",
+      "breakfast": "4 slices whole-wheat bread; 4 SP butter",
+      "morningSnack": "2 guavas",
+      "lunch": "2 cups ghee rice; 2 cups veg curry/non-veg; 1 cup sambar; 1 cup curd",
+      "afternoonSnack": "2 egg whites",
+      "evening": "1 cup lemon/green tea; 2–3 biscuits",
+      "dinner": "2 cups brown rice; 1 cup veg kurma; 1 cup sambar; 1 cup curd",
+      "bedtime": "Fruit juice"
+    },
+    "sunday": {
+      "beforeBreakfast": "8 almonds; 8 walnuts; 1 glass milk",
+      "breakfast": "3 rotis; 1 cup veg curry/non-veg",
+      "morningSnack": "1 cup mixed fruit chaat",
+      "lunch": "4 veg poshtik parathas; 1 cup veg salad; 1 cup paneer masala; 1 cup curd",
+      "afternoonSnack": "1 cup pulihora/lemon rice",
+      "evening": "1 cup milk; 2–3 millet biscuits",
+      "dinner": "2 cups tomato methi rice; 1 boiled egg; 2 egg whites; 1 cup curd",
+      "bedtime": "1 glass buttermilk"
+    }
   },
   "activity": {
     "title": "What you've logged",

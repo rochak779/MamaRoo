@@ -1,6 +1,7 @@
 import { MealPlanScreen } from "@/app/(app)/today/meal-plan/MealPlanScreen";
 import { todayInAppZone } from "@/lib/domain/dates";
 import { pregnancyProgress } from "@/lib/domain/pregnancy";
+import { weekdayFromDate } from "@/lib/domain/weeklyMealPlan";
 import { createServerSupabase } from "@/lib/supabase/server";
 
 export default async function MealPlanPage() {
@@ -13,9 +14,8 @@ export default async function MealPlanPage() {
 
   if (error) throw error;
 
-  const trimester = pregnancy
-    ? pregnancyProgress({ edd: pregnancy.edd, today: todayInAppZone() }).trimester
-    : 1;
+  const today = todayInAppZone();
+  const trimester = pregnancy ? pregnancyProgress({ edd: pregnancy.edd, today }).trimester : 1;
 
-  return <MealPlanScreen trimester={trimester} />;
+  return <MealPlanScreen trimester={trimester} day={weekdayFromDate(today)} />;
 }
