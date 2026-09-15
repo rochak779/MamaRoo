@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import type { Locale } from "@/lib/config";
 import { track } from "@/components/AnalyticsProvider";
 import { EVENTS } from "@/lib/analytics/events";
+import { startRouteProgress } from "@/components/patterns/RouteProgressBar";
 import "@/styles/welcome.css";
 
 // Fixed English, deliberately not run through next-intl: this is the screen
@@ -37,6 +38,7 @@ export function LanguageSelect({ next, onChooseLocale }: LanguageSelectProps) {
     if (!selected) return;
     track(EVENTS.language_chosen, { locale: selected });
     await onChooseLocale(selected);
+    startRouteProgress();
     router.push(next ? `/start?next=${encodeURIComponent(next)}` : "/start");
   }
 

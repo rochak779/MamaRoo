@@ -10,7 +10,7 @@ const onSubmit = vi.fn();
 function renderForm() {
   return render(
     <NextIntlClientProvider locale="en" messages={en}>
-      <ConsentForm onSubmit={onSubmit} onLocaleChange={vi.fn()} locale="en" />
+      <ConsentForm onSubmit={onSubmit} />
     </NextIntlClientProvider>,
   );
 }
@@ -57,9 +57,9 @@ describe("ConsentForm", () => {
     });
   });
 
-  it("offers the language switcher, because consent language matters most here", () => {
+  it("has no language switcher -- language is chosen once, on the Welcome screen", () => {
     renderForm();
-    expect(screen.getByRole("button", { name: "हिंदी" })).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "हिंदी" })).not.toBeInTheDocument();
   });
 
   it("renders no illustration and no motif, per the restrained register", () => {

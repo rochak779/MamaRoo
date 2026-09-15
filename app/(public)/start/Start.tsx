@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { BrandFilters } from "@/components/landing/Brand";
+import { startRouteProgress } from "@/components/patterns/RouteProgressBar";
 import { PRODUCT_NAME } from "@/lib/config";
 import startLogo from "@/public/brand/logo-icon.png";
 import "@/styles/start.css";
@@ -19,6 +20,7 @@ export function Start({ next }: StartProps) {
   const t = useTranslations("start");
 
   function goTo(path: "/signup" | "/signin") {
+    startRouteProgress();
     router.push(next ? `${path}?next=${encodeURIComponent(next)}` : path);
   }
 

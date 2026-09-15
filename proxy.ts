@@ -32,12 +32,19 @@ export async function proxy(request: NextRequest) {
   // to "/consent"), discarding the code and the route handler that exchanges
   // it would never run. The dev component gallery is an internal QA tool, not
   // part of her funnel; it stays reachable without an account, same as before
-  // this gate existed.
+  // this gate existed. Static assets (anything with a file extension) are
+  // exempt too, same as the pre-launch branch above and for the same reason
+  // -- an <img> under public/ carries no product surface of its own, and
+  // without this the funnel gate 307s every image request that isn't already
+  // covered by the matcher's own exclusion list (found 2026-09-15: every
+  // /illustrations/weeks/*.svg request was silently redirecting instead of
+  // rendering, once APP_LAUNCHED=true).
   const { pathname: launchedPathname } = request.nextUrl;
   if (
     launchedPathname.startsWith("/api/") ||
     launchedPathname.startsWith("/auth/") ||
-    launchedPathname.startsWith("/dev/")
+    launchedPathname.startsWith("/dev/") ||
+    HAS_FILE_EXTENSION.test(launchedPathname)
   ) {
     return NextResponse.next();
   }

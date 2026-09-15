@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/Button";
 import { resendState } from "@/lib/domain/otp";
+import { startRouteProgress } from "@/components/patterns/RouteProgressBar";
 import { track } from "@/components/AnalyticsProvider";
 import { EVENTS } from "@/lib/analytics/events";
 import type { AuthResult } from "@/app/actions/auth";
@@ -126,6 +127,7 @@ export function AuthForm({ mode, onSendOtp, onVerifyOtp, onGoogle, next }: AuthF
       setStep("verified");
       track(mode === "signup" ? EVENTS.signup_completed : EVENTS.signin_completed, { method: "email_otp" });
       const target = next && next.startsWith("/") && !next.startsWith("//") ? next : "/today";
+      startRouteProgress();
       router.push(target);
     } finally {
       setVerifying(false);

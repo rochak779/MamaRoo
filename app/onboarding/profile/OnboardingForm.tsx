@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Card } from "@/components/ui/Card";
 import { BackButton } from "@/components/patterns/BackButton";
+import { startRouteProgress } from "@/components/patterns/RouteProgressBar";
 import { BrandFilters } from "@/components/landing/Brand";
 import { PRODUCT_NAME } from "@/lib/config";
 import journeyLogo from "@/public/brand/logo-icon.png";
@@ -256,7 +257,13 @@ export function OnboardingForm({ onSave }: OnboardingFormProps) {
           {t("onboarding.journeyReady.subtitle", { productName: PRODUCT_NAME })}
         </p>
         <div className="min-h-xl flex-1" />
-        <Button className="w-full" onClick={() => router.push("/today")}>
+        <Button
+          className="w-full"
+          onClick={() => {
+            startRouteProgress();
+            router.push("/today");
+          }}
+        >
           {t("onboarding.journeyReady.cta")}
         </Button>
       </div>

@@ -4,6 +4,7 @@ import userEvent from "@testing-library/user-event";
 import { NextIntlClientProvider } from "next-intl";
 import en from "@/i18n/en.json";
 import { AuthForm } from "@/app/(auth)/AuthForm";
+import { RouteProgressBar } from "@/components/patterns/RouteProgressBar";
 import { EVENTS } from "@/lib/analytics/events";
 
 const sendOtp = vi.fn();
@@ -14,7 +15,9 @@ const push = vi.fn();
 vi.mock("@/components/AnalyticsProvider", () => ({
   track: (...args: unknown[]) => track(...args),
 }));
-vi.mock("next/navigation", () => ({ useRouter: () => ({ push }) }));
+// usePathname fixed at "/signup": AuthForm never reads it, but the wiring
+// test below mounts a real RouteProgressBar alongside it, which does.
+vi.mock("next/navigation", () => ({ useRouter: () => ({ push }), usePathname: () => "/signup" }));
 
 function renderForm(mode: "signup" | "signin" = "signup", next: string | null = null) {
   return render(
@@ -222,6 +225,24 @@ describe("AuthForm", () => {
     await userEvent.click(screen.getByRole("button", { name: /verify/i }));
 
     expect(push).toHaveBeenCalledWith("/today");
+  });
+
+  // Regression (found 2026-09-15): AuthForm navigates on success via
+  // router.push() from a plain button, not a <Link> click, so the top-of-
+  // screen loading bar never appeared here without startRouteProgress().
+  it("signals the route progress bar before navigating on to /today", async () => {
+    render(
+      <NextIntlClientProvider locale="en" messages={en}>
+        <RouteProgressBar />
+        <AuthForm mode="signup" onSendOtp={sendOtp} onVerifyOtp={verifyOtp} onGoogle={startGoogle} next={null} />
+      </NextIntlClientProvider>,
+    );
+    await userEvent.type(screen.getByLabelText(/email/i), "her@example.com");
+    await userEvent.click(screen.getByRole("button", { name: /send/i }));
+    await userEvent.type(await screen.findByLabelText(/6 digit code/i), "123456");
+    await userEvent.click(screen.getByRole("button", { name: /verify/i }));
+
+    expect(screen.getByTestId("route-progress-bar")).toBeInTheDocument();
   });
 
   it("captures signup_started (email_otp) when a code is sent in signup mode", async () => {

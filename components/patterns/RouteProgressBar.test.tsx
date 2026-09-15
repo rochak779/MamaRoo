@@ -1,6 +1,6 @@
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, act } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import { RouteProgressBar } from "@/components/patterns/RouteProgressBar";
+import { RouteProgressBar, startRouteProgress } from "@/components/patterns/RouteProgressBar";
 
 const mockUsePathname = vi.fn();
 vi.mock("next/navigation", () => ({ usePathname: () => mockUsePathname() }));
@@ -77,5 +77,29 @@ describe("RouteProgressBar", () => {
     renderWithLink("/baby");
     fireEvent.click(screen.getByText("Go"));
     expect(screen.getByTestId("route-progress-bar")).toHaveAttribute("aria-hidden", "true");
+  });
+
+  // Sessions across the pre-auth funnel (Start, LanguageSelect, AuthForm,
+  // OnboardingForm) navigate with router.push() from a plain button, not a
+  // <Link> -- found 2026-09-15 missing the bar entirely because the
+  // click-on-<a> detection above never fires for them.
+  it("activates via startRouteProgress(), for a programmatic router.push() with no <a> click behind it", () => {
+    mockUsePathname.mockReturnValue("/start");
+    render(<RouteProgressBar />);
+    expect(screen.queryByTestId("route-progress-bar")).not.toBeInTheDocument();
+
+    act(() => startRouteProgress());
+    expect(screen.getByTestId("route-progress-bar")).toBeInTheDocument();
+  });
+
+  it("clears a startRouteProgress()-activated bar once the pathname actually changes", () => {
+    mockUsePathname.mockReturnValue("/start");
+    const { rerender } = render(<RouteProgressBar />);
+    act(() => startRouteProgress());
+    expect(screen.getByTestId("route-progress-bar")).toBeInTheDocument();
+
+    mockUsePathname.mockReturnValue("/signup");
+    rerender(<RouteProgressBar />);
+    expect(screen.queryByTestId("route-progress-bar")).not.toBeInTheDocument();
   });
 });

@@ -5,8 +5,6 @@ import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { Checkbox } from "@/components/ui/Checkbox";
 import { Button } from "@/components/ui/Button";
-import { LanguageSwitcher } from "@/components/patterns/LanguageSwitcher";
-import type { Locale } from "@/lib/config";
 import "@/styles/start.css";
 
 export interface ConsentInput {
@@ -17,8 +15,6 @@ export interface ConsentInput {
 
 export interface ConsentFormProps {
   onSubmit: (input: ConsentInput) => Promise<void>;
-  locale: Locale;
-  onLocaleChange: (locale: Locale) => void;
 }
 
 const LINK_CLASS = "text-body-sm text-text-primary underline-offset-4 hover:underline";
@@ -30,8 +26,14 @@ const LINK_CLASS = "text-body-sm text-text-primary underline-offset-4 hover:unde
  * flow doesn't visually break stride right at the legal-consent step. The
  * optional consents start unchecked and stay genuinely separate from the
  * required one -- ticking "agree" never silently ticks them too.
+ *
+ * No language switcher here (product decision, 2026-09-15): language is
+ * chosen once, on the first Welcome/language-select screen, and carried by
+ * the mr_locale cookie from then on -- this screen (like LegalDocument) just
+ * renders in whatever that already set, rather than letting her change it
+ * mid-funnel right before an irreversible agreement.
  */
-export function ConsentForm({ onSubmit, locale, onLocaleChange }: ConsentFormProps) {
+export function ConsentForm({ onSubmit }: ConsentFormProps) {
   const t = useTranslations("consent");
   const baselineId = useId();
   const dataSharingId = useId();
@@ -85,7 +87,6 @@ export function ConsentForm({ onSubmit, locale, onLocaleChange }: ConsentFormPro
         <div className="auth-spacer" />
 
         <div className="auth-actions">
-          <LanguageSwitcher current={locale} onSelect={onLocaleChange} />
           <Button
             className="auth-primary"
             type="button"

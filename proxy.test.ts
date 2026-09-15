@@ -68,4 +68,16 @@ describe("launch gate", () => {
     expect(result.headers.get("location")).toBeNull();
   });
 
+  // Regression (found 2026-09-15): the matcher's own exclusion list only
+  // covers a handful of named paths (_next/static, favicon.ico, icons, ...),
+  // so anything else under public/ -- every /illustrations/weeks/*.svg among
+  // them -- reached the funnel gate below and got 307ed to /welcome or
+  // /consent instead of served, once launched. A signed-out visitor's request
+  // for a hero illustration is exactly that case.
+  it("lets a static asset through once launched, rather than routing it into the sign-in funnel", async () => {
+    vi.stubEnv("APP_LAUNCHED", "true");
+    const result = await proxy(request("/illustrations/weeks/week-20.svg"));
+    expect(result.status).toBe(200);
+    expect(result.headers.get("location")).toBeNull();
+  });
 });

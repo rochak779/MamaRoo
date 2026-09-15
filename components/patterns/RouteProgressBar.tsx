@@ -5,10 +5,24 @@ import { usePathname } from "next/navigation";
 
 // A thin bar across the very top of the screen, shown for the duration of
 // any tap that leads somewhere -- the PWA-standard "something is happening"
-// signal so a slow connection never reads as a dead tap. Driven entirely by
-// clicks on internal <a> elements (every navigation in this app already goes
-// through next/link, which renders one) rather than wrapping router.push, so
-// no existing screen needs to change to get it.
+// signal so a slow connection never reads as a dead tap. Driven mainly by
+// clicks on internal <a> elements (every Link-based navigation in this app
+// renders one), plus this event for the handful of screens that navigate
+// with router.push() from a plain button instead -- the pre-auth funnel's
+// own entry points (Start, LanguageSelect, AuthForm, OnboardingForm), found
+// missing the bar entirely on 2026-09-15 because none of them use <a href>.
+const ROUTE_PROGRESS_START_EVENT = "mr:route-progress-start";
+
+/**
+ * Call immediately before a programmatic `router.push()` triggered by a
+ * button rather than a <Link>, so the same loading signal covers it. A
+ * no-op outside the browser (SSR, or before this module's client boundary
+ * has mounted) -- there's no bar to show yet in that case anyway.
+ */
+export function startRouteProgress() {
+  if (typeof window !== "undefined") window.dispatchEvent(new Event(ROUTE_PROGRESS_START_EVENT));
+}
+
 export function RouteProgressBar() {
   const pathname = usePathname();
   const [active, setActive] = useState(false);
@@ -31,8 +45,16 @@ export function RouteProgressBar() {
       setActive(true);
     }
 
+    function handleProgressStart() {
+      setActive(true);
+    }
+
     document.addEventListener("click", handleClick);
-    return () => document.removeEventListener("click", handleClick);
+    window.addEventListener(ROUTE_PROGRESS_START_EVENT, handleProgressStart);
+    return () => {
+      document.removeEventListener("click", handleClick);
+      window.removeEventListener(ROUTE_PROGRESS_START_EVENT, handleProgressStart);
+    };
   }, [pathname]);
 
   // The pathname actually changing is the one reliable signal that the
