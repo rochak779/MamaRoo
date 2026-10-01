@@ -29,7 +29,6 @@ Middle-income pregnant women in India get real guidance only during brief, infre
 
 ## Results & evidence
 
-<!-- TODO(Rochak): confirm the number and wording below before publishing. Your profile README says "15 early users"; the previous version of this README said the site only collects waitlist signups. -->
 - Pre-launch, with 15 early users.
 - Built test-first. Every guarantee above (verbatim answers, sex-determination refusal, analytics allowlist) is an automated test.
 
