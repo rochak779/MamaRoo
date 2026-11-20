@@ -53,3 +53,7 @@ Middle-income pregnant women in India get real guidance only during brief, infre
 Next.js (App Router), TypeScript, Tailwind CSS, Supabase (Postgres, Auth, Storage, Row Level Security, hosted in Mumbai), Google Gemini behind a provider interface, PostHog (opt-in, allowlisted events only), deployed on Vercel.
 
 </details>
+
+---
+
+Built by [Rochak Agarwal](https://www.rochakagarwal.com). Read the full case study: [MamaRoo on rochakagarwal.com](https://www.rochakagarwal.com/projects/mamaroo).
