@@ -26,6 +26,13 @@ export async function LegalDocument({ slug }: { slug: "privacy" | "terms" }) {
       <div className="prose max-w-none text-body">
         <ReactMarkdown allowedElements={ALLOWED_ELEMENTS}>{markdown}</ReactMarkdown>
       </div>
+      <p className="text-caption text-text-secondary">
+        {locale === "hi" ? null : "Built by "}
+        <a href="https://www.rochakagarwal.com" className="underline underline-offset-2">
+          Rochak Agarwal
+        </a>
+        {locale === "hi" ? " द्वारा बनाया गया" : null}
+      </p>
     </div>
   );
 }
