@@ -465,7 +465,7 @@
   padding-top: var(--spacing-sm);
   text-align: center;
 }
-.landing-footer > span:last-child {
+.landing-footer > span:not(:first-child) {
   display: none;
 }
 .waitlist-success {
