@@ -29,7 +29,7 @@ Middle-income pregnant women in India get real guidance only during brief, infre
 
 ## Results & evidence
 
-- Pre-launch, with 15 early users.
+- Live, used by 5 moms.
 - Built test-first. Every guarantee above (verbatim answers, sex-determination refusal, analytics allowlist) is an automated test.
 
 ## Scope & limits
