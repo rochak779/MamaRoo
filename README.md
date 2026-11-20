@@ -22,7 +22,7 @@ Middle-income pregnant women in India get real guidance only during brief, infre
 ## Key product decisions
 
 - **The chatbot never writes health advice.** Search finds candidate passages from a reviewed library, and the model only *picks* one. The answer shown is the stored passage, byte for byte. If nothing fits, she is handed to triage. Generated answers were rejected until there is a real way to verify them and a medical reviewer.
-- **Legal rules are enforced by tests, not prompts.** Indian law (PCPNDT Act) forbids anything that could reveal the baby's sex. There is no gender field anywhere, questions about it are refused before any model call, and an automated scan checks the whole codebase.
+- **Legal rules are enforced by tests, not prompts.** Indian law (PCPNDT Act) forbids anything that could reveal whether the baby is male or female. No field stores it anywhere, questions about it are refused before any model call, and an automated scan checks the whole codebase.
 - **Analytics can't carry health data by design.** The analytics vendor has no India region, so every event has a fixed list of allowed fields and values, and free text can't be sent at all. A list of banned fields was rejected because `{ condition: "bleeding" }` would pass it.
 - **Nothing reviewed is machine-translated.** A Hindi question with only English material gets the English passage, marked "English only", because a machine translation of reviewed text is no longer reviewed text.
 - **A web app, not an app-store download.** It opens in the phone browser with nothing to install, and is packaged for Google Play from the same code.
