@@ -343,6 +343,12 @@
   color: var(--color-text-secondary);
   font-size: var(--text-caption);
   gap: var(--spacing-md);
+  flex-wrap: wrap;
+}
+.landing-credit {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }
 /* One arrival sequence: logo 0–400, heading 150–550, description 250–650,
    and signup 400–800. Defaults stay visible when animation is unavailable. */
@@ -459,7 +465,7 @@
   padding-top: var(--spacing-sm);
   text-align: center;
 }
-.landing-footer > span:last-child {
+.landing-footer > span:not(:first-child) {
   display: none;
 }
 .waitlist-success {

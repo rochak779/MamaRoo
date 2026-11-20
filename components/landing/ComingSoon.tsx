@@ -225,6 +225,13 @@ export function ComingSoon() {
       <footer className="landing-footer">
         <span>{copy.footer}</span>
         <span>{copy.place}</span>
+        <span>
+          {copy.builtByBefore}
+          <a href="https://www.rochakagarwal.com" className="landing-credit">
+            Rochak Agarwal
+          </a>
+          {copy.builtByAfter}
+        </span>
       </footer>
     </div>
   );
